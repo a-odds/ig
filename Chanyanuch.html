@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHANYANUCH</title>
+    <link rel="icon" href="https://img.icons8.com/fluency/48/instagram-pride.png">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fafafa; margin: 0; padding: 0; }
+        .header { text-align: center; padding: 20px; background: #fff; border-bottom: 1px solid #dbdbdb; position: sticky; top: 0; z-index: 100; }
+        h1 { margin: 0; font-size: 24px; color: #262626; }
+        .gallery-container { max-width: 935px; margin: 20px auto; padding: 0 5px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+        .grid-item { aspect-ratio: 1/1; overflow: hidden; background: #efefef; cursor: pointer; }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .grid-item:hover img { transform: scale(1.05); }
+
+        /* Lightbox Style */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
+        .lightbox img { 
+            max-width: 90%; max-height: 90%; 
+            object-fit: contain; 
+            user-select: none; 
+            -webkit-user-drag: none;
+        }
+        
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; font-size: 35px; padding: 10px 20px; cursor: pointer; z-index: 1010; border-radius: 8px; user-select: none; }
+        .nav-btn:hover { background: rgba(0,0,0,0.8); }
+        .nav-left { left: 20px; }
+        .nav-right { right: 20px; }
+
+        .top-bar { position: absolute; top: 20px; right: 20px; z-index: 1010; display: flex; gap: 10px; }
+        .top-bar button { background: rgba(0,0,0,0.5); color: white; border: none; font-size: 24px; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; }
+        .top-bar button:hover { background: rgba(0,0,0,0.8); }
+
+        /* ชุดปุ่มควบคุมมุมซ้ายบน */
+        .top-left-controls { position: absolute; top: 20px; left: 20px; z-index: 1010; display: flex; flex-direction: column; gap: 10px; }
+        
+        .control-bar { display: flex; gap: 15px; background: rgba(0,0,0,0.6); padding: 10px 25px; border-radius: 30px; align-items: center; justify-content: center; }
+        .control-bar button { background: none; border: none; color: white; font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .control-bar button:hover { color: #0095f6; transform: scale(1.1); }
+        .play-btn { font-size: 32px !important; }
+
+        .info-bar { display: flex; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; align-items: center; color: white; gap: 8px; font-size: 16px; justify-content: center; font-family: monospace; }
+        .info-bar input { width: 50px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; text-align: center; font-size: 16px; border-radius: 6px; padding: 4px; outline: none; transition: background 0.2s; font-family: monospace; }
+        .info-bar input:focus { background: rgba(255,255,255,0.4); border-color: #0095f6; }
+        
+        /* ซ่อนลูกศรใน input type number */
+        .info-bar input::-webkit-outer-spin-button, .info-bar input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .info-bar input[type=number] { -moz-appearance: textfield; }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
+            .top-left-controls { top: 15px; left: 15px; gap: 8px; }
+            .control-bar { padding: 5px 15px; gap: 10px; }
+            .control-bar button { font-size: 20px; }
+            .play-btn { font-size: 24px !important; }
+            .info-bar { font-size: 14px; padding: 5px 10px; }
+            .info-bar input { width: 40px; font-size: 14px; padding: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>CHANYANUCH</h1>
+    </div>
+
+    <div class="gallery-container">
+        <div class="grid">
+            
+        <div class="grid-item" onclick="openLightbox(0)">
+            <img src="Chanyanuch/01-chanyanuch_hong-3820597492732529697_1-20260129_141304.jpg" loading="lazy" alt="Image 0">
+        </div>
+        <div class="grid-item" onclick="openLightbox(1)">
+            <img src="Chanyanuch/01-chanyanuch_hong-3888925688560824883_1-20260503_204815.jpg" loading="lazy" alt="Image 1">
+        </div>
+        <div class="grid-item" onclick="openLightbox(2)">
+            <img src="Chanyanuch/01-chanyanuch_hong-3889741708758291093_1-20260504_235004.jpg" loading="lazy" alt="Image 2">
+        </div>
+        <div class="grid-item" onclick="openLightbox(3)">
+            <img src="Chanyanuch/01-chanyanuch_hong-3938792672683902484_1-20260711_160510.jpg" loading="lazy" alt="Image 3">
+        </div>
+        <div class="grid-item" onclick="openLightbox(4)">
+            <img src="Chanyanuch/01-chanyanuch_hong-3956883263560891254_1-20260805_150757.jpg" loading="lazy" alt="Image 4">
+        </div>
+        <div class="grid-item" onclick="openLightbox(5)">
+            <img src="Chanyanuch/01-chanyanuch_hong-3967755506285526842_1-20260820_151007.jpg" loading="lazy" alt="Image 5">
+        </div>
+        <div class="grid-item" onclick="openLightbox(6)">
+            <img src="Chanyanuch/01-chanyanuch_hong-3968559283720540824_1-20260821_174624.jpg" loading="lazy" alt="Image 6">
+        </div>
+        <div class="grid-item" onclick="openLightbox(7)">
+            <img src="Chanyanuch/02-chanyanuch_hong-3820597482842410390_2-20260129_141304.jpg" loading="lazy" alt="Image 7">
+        </div>
+        <div class="grid-item" onclick="openLightbox(8)">
+            <img src="Chanyanuch/02-chanyanuch_hong-3888925649092456141_2-20260503_204815.jpg" loading="lazy" alt="Image 8">
+        </div>
+        <div class="grid-item" onclick="openLightbox(9)">
+            <img src="Chanyanuch/02-chanyanuch_hong-3889741715938994263_2-20260504_235004.jpg" loading="lazy" alt="Image 9">
+        </div>
+        <div class="grid-item" onclick="openLightbox(10)">
+            <img src="Chanyanuch/02-chanyanuch_hong-3938792666107401733_2-20260711_160510.jpg" loading="lazy" alt="Image 10">
+        </div>
+        <div class="grid-item" onclick="openLightbox(11)">
+            <img src="Chanyanuch/02-chanyanuch_hong-3956883274029899777_2-20260805_150757.jpg" loading="lazy" alt="Image 11">
+        </div>
+        <div class="grid-item" onclick="openLightbox(12)">
+            <img src="Chanyanuch/02-chanyanuch_hong-3967755557447562277_2-20260820_151007.jpg" loading="lazy" alt="Image 12">
+        </div>
+        <div class="grid-item" onclick="openLightbox(13)">
+            <img src="Chanyanuch/02-chanyanuch_hong-3968559350351178554_2-20260821_174624.jpg" loading="lazy" alt="Image 13">
+        </div>
+        <div class="grid-item" onclick="openLightbox(14)">
+            <img src="Chanyanuch/03-chanyanuch_hong-3820597495811181729_3-20260129_141304.jpg" loading="lazy" alt="Image 14">
+        </div>
+        <div class="grid-item" onclick="openLightbox(15)">
+            <img src="Chanyanuch/03-chanyanuch_hong-3888925657908902850_3-20260503_204815.jpg" loading="lazy" alt="Image 15">
+        </div>
+        <div class="grid-item" onclick="openLightbox(16)">
+            <img src="Chanyanuch/03-chanyanuch_hong-3938792648625487749_3-20260711_160510.jpg" loading="lazy" alt="Image 16">
+        </div>
+        <div class="grid-item" onclick="openLightbox(17)">
+            <img src="Chanyanuch/03-chanyanuch_hong-3956883278551465744_3-20260805_150757.jpg" loading="lazy" alt="Image 17">
+        </div>
+        <div class="grid-item" onclick="openLightbox(18)">
+            <img src="Chanyanuch/03-chanyanuch_hong-3967755627844791452_3-20260820_151007.jpg" loading="lazy" alt="Image 18">
+        </div>
+        <div class="grid-item" onclick="openLightbox(19)">
+            <img src="Chanyanuch/03-chanyanuch_hong-3968559368646787238_3-20260821_174624.jpg" loading="lazy" alt="Image 19">
+        </div>
+        <div class="grid-item" onclick="openLightbox(20)">
+            <img src="Chanyanuch/04-chanyanuch_hong-3820597499149846806_4-20260129_141304.jpg" loading="lazy" alt="Image 20">
+        </div>
+        <div class="grid-item" onclick="openLightbox(21)">
+            <img src="Chanyanuch/04-chanyanuch_hong-3888925676145734015_4-20260503_204815.jpg" loading="lazy" alt="Image 21">
+        </div>
+        <div class="grid-item" onclick="openLightbox(22)">
+            <img src="Chanyanuch/04-chanyanuch_hong-3889741731298502820_4-20260504_235004.jpg" loading="lazy" alt="Image 22">
+        </div>
+        <div class="grid-item" onclick="openLightbox(23)">
+            <img src="Chanyanuch/04-chanyanuch_hong-3938792679084452020_4-20260711_160510.jpg" loading="lazy" alt="Image 23">
+        </div>
+        <div class="grid-item" onclick="openLightbox(24)">
+            <img src="Chanyanuch/04-chanyanuch_hong-3956883277284778363_4-20260805_150757.jpg" loading="lazy" alt="Image 24">
+        </div>
+        <div class="grid-item" onclick="openLightbox(25)">
+            <img src="Chanyanuch/04-chanyanuch_hong-3967755672362951517_4-20260820_151007.jpg" loading="lazy" alt="Image 25">
+        </div>
+        <div class="grid-item" onclick="openLightbox(26)">
+            <img src="Chanyanuch/04-chanyanuch_hong-3968559370257541448_4-20260821_174624.jpg" loading="lazy" alt="Image 26">
+        </div>
+        <div class="grid-item" onclick="openLightbox(27)">
+            <img src="Chanyanuch/05-chanyanuch_hong-3820597502379432374_5-20260129_141304.jpg" loading="lazy" alt="Image 27">
+        </div>
+        <div class="grid-item" onclick="openLightbox(28)">
+            <img src="Chanyanuch/05-chanyanuch_hong-3888925679702444267_5-20260503_204815.jpg" loading="lazy" alt="Image 28">
+        </div>
+        <div class="grid-item" onclick="openLightbox(29)">
+            <img src="Chanyanuch/05-chanyanuch_hong-3889741732456135714_5-20260504_235004.jpg" loading="lazy" alt="Image 29">
+        </div>
+        <div class="grid-item" onclick="openLightbox(30)">
+            <img src="Chanyanuch/05-chanyanuch_hong-3938792685484931454_5-20260711_160510.jpg" loading="lazy" alt="Image 30">
+        </div>
+        <div class="grid-item" onclick="openLightbox(31)">
+            <img src="Chanyanuch/05-chanyanuch_hong-3956883273895787256_5-20260805_150757.jpg" loading="lazy" alt="Image 31">
+        </div>
+        <div class="grid-item" onclick="openLightbox(32)">
+            <img src="Chanyanuch/05-chanyanuch_hong-3967755921387399213_5-20260820_151007.jpg" loading="lazy" alt="Image 32">
+        </div>
+        <div class="grid-item" onclick="openLightbox(33)">
+            <img src="Chanyanuch/05-chanyanuch_hong-3968559379065521705_5-20260821_174624.jpg" loading="lazy" alt="Image 33">
+        </div>
+        <div class="grid-item" onclick="openLightbox(34)">
+            <img src="Chanyanuch/06-chanyanuch_hong-3888925681866750377_6-20260503_204815.jpg" loading="lazy" alt="Image 34">
+        </div>
+        <div class="grid-item" onclick="openLightbox(35)">
+            <img src="Chanyanuch/06-chanyanuch_hong-3938792691206034468_6-20260711_160510.jpg" loading="lazy" alt="Image 35">
+        </div>
+        <div class="grid-item" onclick="openLightbox(36)">
+            <img src="Chanyanuch/06-chanyanuch_hong-3956883280271180986_6-20260805_150757.jpg" loading="lazy" alt="Image 36">
+        </div>
+        <div class="grid-item" onclick="openLightbox(37)">
+            <img src="Chanyanuch/06-chanyanuch_hong-3967755869965074817_6-20260820_151007.jpg" loading="lazy" alt="Image 37">
+        </div>
+        <div class="grid-item" onclick="openLightbox(38)">
+            <img src="Chanyanuch/06-chanyanuch_hong-3968559379795397365_6-20260821_174624.jpg" loading="lazy" alt="Image 38">
+        </div>
+        <div class="grid-item" onclick="openLightbox(39)">
+            <img src="Chanyanuch/07-chanyanuch_hong-3888925685113152221_7-20260503_204815.jpg" loading="lazy" alt="Image 39">
+        </div>
+        <div class="grid-item" onclick="openLightbox(40)">
+            <img src="Chanyanuch/07-chanyanuch_hong-3889741737019508041_7-20260504_235004.jpg" loading="lazy" alt="Image 40">
+        </div>
+        <div class="grid-item" onclick="openLightbox(41)">
+            <img src="Chanyanuch/07-chanyanuch_hong-3956883280908549477_7-20260805_150757.jpg" loading="lazy" alt="Image 41">
+        </div>
+        <div class="grid-item" onclick="openLightbox(42)">
+            <img src="Chanyanuch/07-chanyanuch_hong-3967755794970925019_7-20260820_151007.jpg" loading="lazy" alt="Image 42">
+        </div>
+        <div class="grid-item" onclick="openLightbox(43)">
+            <img src="Chanyanuch/07-chanyanuch_hong-3968559388024471803_7-20260821_174624.jpg" loading="lazy" alt="Image 43">
+        </div>
+        <div class="grid-item" onclick="openLightbox(44)">
+            <img src="Chanyanuch/08-chanyanuch_hong-3888925691580728367_8-20260503_204815.jpg" loading="lazy" alt="Image 44">
+        </div>
+        <div class="grid-item" onclick="openLightbox(45)">
+            <img src="Chanyanuch/08-chanyanuch_hong-3889741738755970306_8-20260504_235004.jpg" loading="lazy" alt="Image 45">
+        </div>
+        <div class="grid-item" onclick="openLightbox(46)">
+            <img src="Chanyanuch/08-chanyanuch_hong-3938792703470277444_8-20260711_160510.jpg" loading="lazy" alt="Image 46">
+        </div>
+        <div class="grid-item" onclick="openLightbox(47)">
+            <img src="Chanyanuch/08-chanyanuch_hong-3956883282879957404_8-20260805_150757.jpg" loading="lazy" alt="Image 47">
+        </div>
+        <div class="grid-item" onclick="openLightbox(48)">
+            <img src="Chanyanuch/08-chanyanuch_hong-3967755729833557098_8-20260820_151007.jpg" loading="lazy" alt="Image 48">
+        </div>
+        <div class="grid-item" onclick="openLightbox(49)">
+            <img src="Chanyanuch/08-chanyanuch_hong-3968559401815324375_8-20260821_174624.jpg" loading="lazy" alt="Image 49">
+        </div>
+        <div class="grid-item" onclick="openLightbox(50)">
+            <img src="Chanyanuch/09-chanyanuch_hong-3938792710474766701_9-20260711_160510.jpg" loading="lazy" alt="Image 50">
+        </div>
+        <div class="grid-item" onclick="openLightbox(51)">
+            <img src="Chanyanuch/09-chanyanuch_hong-3956883283735552978_9-20260805_150757.jpg" loading="lazy" alt="Image 51">
+        </div>
+        <div class="grid-item" onclick="openLightbox(52)">
+            <img src="Chanyanuch/09-chanyanuch_hong-3968559402327085486_9-20260821_174624.jpg" loading="lazy" alt="Image 52">
+        </div>
+        <div class="grid-item" onclick="openLightbox(53)">
+            <img src="Chanyanuch/10-chanyanuch_hong-3938792716858503654_10-20260711_160510.jpg" loading="lazy" alt="Image 53">
+        </div>
+        <div class="grid-item" onclick="openLightbox(54)">
+            <img src="Chanyanuch/10-chanyanuch_hong-3968559405925794170_10-20260821_174624.jpg" loading="lazy" alt="Image 54">
+        </div>
+        <div class="grid-item" onclick="openLightbox(55)">
+            <img src="Chanyanuch/12-chanyanuch_hong-3968559435067717957_12-20260821_174624.jpg" loading="lazy" alt="Image 55">
+        </div>
+        <div class="grid-item" onclick="openLightbox(56)">
+            <img src="Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/01-chanyanuch_hong-3591005465175804017_1-20250318_193352.jpg" loading="lazy" alt="Image 56">
+        </div>
+        <div class="grid-item" onclick="openLightbox(57)">
+            <img src="Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/02-chanyanuch_hong-3591005465041602579_2-20250318_193351.jpg" loading="lazy" alt="Image 57">
+        </div>
+        <div class="grid-item" onclick="openLightbox(58)">
+            <img src="Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/03-chanyanuch_hong-3591005465049936935_3-20250318_193351.jpg" loading="lazy" alt="Image 58">
+        </div>
+        <div class="grid-item" onclick="openLightbox(59)">
+            <img src="Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/04-chanyanuch_hong-3591005465041484866_4-20250318_193352.jpg" loading="lazy" alt="Image 59">
+        </div>
+        <div class="grid-item" onclick="openLightbox(60)">
+            <img src="Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/05-chanyanuch_hong-3591005465335145649_5-20250318_193352.jpg" loading="lazy" alt="Image 60">
+        </div>
+        <div class="grid-item" onclick="openLightbox(61)">
+            <img src="Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/06-chanyanuch_hong-3591005465041579938_6-20250318_193352.jpg" loading="lazy" alt="Image 61">
+        </div>
+        <div class="grid-item" onclick="openLightbox(62)">
+            <img src="Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/07-chanyanuch_hong-3591005465335056950_7-20250318_193352.jpg" loading="lazy" alt="Image 62">
+        </div>
+        <div class="grid-item" onclick="openLightbox(63)">
+            <img src="Chanyanuch/chanyanuch_hong-DQ3jGtuEqeD-20251110_144159/01-chanyanuch_hong-3762630394144517904_1-20251110_144157.jpg" loading="lazy" alt="Image 63">
+        </div>
+        <div class="grid-item" onclick="openLightbox(64)">
+            <img src="Chanyanuch/chanyanuch_hong-DQ3jGtuEqeD-20251110_144159/02-chanyanuch_hong-3762630394035471697_2-20251110_144157.jpg" loading="lazy" alt="Image 64">
+        </div>
+        <div class="grid-item" onclick="openLightbox(65)">
+            <img src="Chanyanuch/chanyanuch_hong-DQ3jGtuEqeD-20251110_144159/03-chanyanuch_hong-3762630394027076941_3-20251110_144157.jpg" loading="lazy" alt="Image 65">
+        </div>
+        <div class="grid-item" onclick="openLightbox(66)">
+            <img src="Chanyanuch/chanyanuch_hong-DQ3jGtuEqeD-20251110_144159/04-chanyanuch_hong-3762630394018674732_4-20251110_144157.jpg" loading="lazy" alt="Image 66">
+        </div>
+        <div class="grid-item" onclick="openLightbox(67)">
+            <img src="Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/01-chanyanuch_hong-3779201233467884965_1-20251203_112515.jpg" loading="lazy" alt="Image 67">
+        </div>
+        <div class="grid-item" onclick="openLightbox(68)">
+            <img src="Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/02-chanyanuch_hong-3779201233484667304_2-20251203_112515.jpg" loading="lazy" alt="Image 68">
+        </div>
+        <div class="grid-item" onclick="openLightbox(69)">
+            <img src="Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/03-chanyanuch_hong-3779201233484683444_3-20251203_112515.jpg" loading="lazy" alt="Image 69">
+        </div>
+        <div class="grid-item" onclick="openLightbox(70)">
+            <img src="Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/04-chanyanuch_hong-3779201233644069924_4-20251203_112515.jpg" loading="lazy" alt="Image 70">
+        </div>
+        <div class="grid-item" onclick="openLightbox(71)">
+            <img src="Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/06-chanyanuch_hong-3779201233811823461_6-20251203_112515.jpg" loading="lazy" alt="Image 71">
+        </div>
+        <div class="grid-item" onclick="openLightbox(72)">
+            <img src="Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/07-chanyanuch_hong-3779201233602107601_7-20251203_112515.jpg" loading="lazy" alt="Image 72">
+        </div>
+        <div class="grid-item" onclick="openLightbox(73)">
+            <img src="Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/08-chanyanuch_hong-3779201233467879511_8-20251203_112515.jpg" loading="lazy" alt="Image 73">
+        </div>
+        <div class="grid-item" onclick="openLightbox(74)">
+            <img src="Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/09-chanyanuch_hong-3779201233811833283_9-20251203_112515.jpg" loading="lazy" alt="Image 74">
+        </div>
+        <div class="grid-item" onclick="openLightbox(75)">
+            <img src="Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/10-chanyanuch_hong-3779201233509830516_10-20251203_112515.jpg" loading="lazy" alt="Image 75">
+        </div>
+        <div class="grid-item" onclick="openLightbox(76)">
+            <img src="Chanyanuch/chanyanuch_hong-DUFfZNOEqGf-20260129_141306/01-chanyanuch_hong-3820597492732529697_1-20260129_141304.jpg" loading="lazy" alt="Image 76">
+        </div>
+        <div class="grid-item" onclick="openLightbox(77)">
+            <img src="Chanyanuch/chanyanuch_hong-DUFfZNOEqGf-20260129_141306/02-chanyanuch_hong-3820597482842410390_2-20260129_141304.jpg" loading="lazy" alt="Image 77">
+        </div>
+        <div class="grid-item" onclick="openLightbox(78)">
+            <img src="Chanyanuch/chanyanuch_hong-DUFfZNOEqGf-20260129_141306/03-chanyanuch_hong-3820597495811181729_3-20260129_141304.jpg" loading="lazy" alt="Image 78">
+        </div>
+        <div class="grid-item" onclick="openLightbox(79)">
+            <img src="Chanyanuch/chanyanuch_hong-DUFfZNOEqGf-20260129_141306/04-chanyanuch_hong-3820597499149846806_4-20260129_141304.jpg" loading="lazy" alt="Image 79">
+        </div>
+        <div class="grid-item" onclick="openLightbox(80)">
+            <img src="Chanyanuch/chanyanuch_hong-DUFfZNOEqGf-20260129_141306/05-chanyanuch_hong-3820597502379432374_5-20260129_141304.jpg" loading="lazy" alt="Image 80">
+        </div>
+        <div class="grid-item" onclick="openLightbox(81)">
+            <img src="Chanyanuch/chanyanuch_hong-DVgBDkLEhiF-20260305_175854/01-chanyanuch_hong-3846078473329340150_1-20260305_175852.jpg" loading="lazy" alt="Image 81">
+        </div>
+        <div class="grid-item" onclick="openLightbox(82)">
+            <img src="Chanyanuch/chanyanuch_hong-DVgBDkLEhiF-20260305_175854/03-chanyanuch_hong-3846078499602432443_3-20260305_175852.jpg" loading="lazy" alt="Image 82">
+        </div>
+        <div class="grid-item" onclick="openLightbox(83)">
+            <img src="Chanyanuch/chanyanuch_hong-DVgBDkLEhiF-20260305_175854/04-chanyanuch_hong-3846078487992630432_4-20260305_175852.jpg" loading="lazy" alt="Image 83">
+        </div>
+        <div class="grid-item" onclick="openLightbox(84)">
+            <img src="Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/01-chanyanuch_hong-3868616727471263545_1-20260405_201801.jpg" loading="lazy" alt="Image 84">
+        </div>
+        <div class="grid-item" onclick="openLightbox(85)">
+            <img src="Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/02-chanyanuch_hong-3868616749306862346_2-20260405_201801.jpg" loading="lazy" alt="Image 85">
+        </div>
+        <div class="grid-item" onclick="openLightbox(86)">
+            <img src="Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/03-chanyanuch_hong-3868616720986914903_3-20260405_201801.jpg" loading="lazy" alt="Image 86">
+        </div>
+        <div class="grid-item" onclick="openLightbox(87)">
+            <img src="Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/04-chanyanuch_hong-3868616737831214500_4-20260405_201801.jpg" loading="lazy" alt="Image 87">
+        </div>
+        <div class="grid-item" onclick="openLightbox(88)">
+            <img src="Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/05-chanyanuch_hong-3868616739777403881_5-20260405_201801.jpg" loading="lazy" alt="Image 88">
+        </div>
+        <div class="grid-item" onclick="openLightbox(89)">
+            <img src="Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/07-chanyanuch_hong-3868616743485130252_7-20260405_201801.jpg" loading="lazy" alt="Image 89">
+        </div>
+        <div class="grid-item" onclick="openLightbox(90)">
+            <img src="Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/08-chanyanuch_hong-3868616748132419293_8-20260405_201801.jpg" loading="lazy" alt="Image 90">
+        </div>
+        <div class="grid-item" onclick="openLightbox(91)">
+            <img src="Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/09-chanyanuch_hong-3868616751101973712_9-20260405_201801.jpg" loading="lazy" alt="Image 91">
+        </div>
+        <div class="grid-item" onclick="openLightbox(92)">
+            <img src="Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/10-chanyanuch_hong-3868616755497651138_10-20260405_201801.jpg" loading="lazy" alt="Image 92">
+        </div>
+        <div class="grid-item" onclick="openLightbox(93)">
+            <img src="Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/01-chanyanuch_hong-3877102212032222353_1-20260417_131830.jpg" loading="lazy" alt="Image 93">
+        </div>
+        <div class="grid-item" onclick="openLightbox(94)">
+            <img src="Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/02-chanyanuch_hong-3877102228004130116_2-20260417_131830.jpg" loading="lazy" alt="Image 94">
+        </div>
+        <div class="grid-item" onclick="openLightbox(95)">
+            <img src="Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/03-chanyanuch_hong-3877102220898932185_3-20260417_131830.jpg" loading="lazy" alt="Image 95">
+        </div>
+        <div class="grid-item" onclick="openLightbox(96)">
+            <img src="Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/04-chanyanuch_hong-3877102220882172291_4-20260417_131830.jpg" loading="lazy" alt="Image 96">
+        </div>
+        <div class="grid-item" onclick="openLightbox(97)">
+            <img src="Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/05-chanyanuch_hong-3877102231049154210_5-20260417_131830.jpg" loading="lazy" alt="Image 97">
+        </div>
+        <div class="grid-item" onclick="openLightbox(98)">
+            <img src="Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/06-chanyanuch_hong-3877102228641673056_6-20260417_131830.jpg" loading="lazy" alt="Image 98">
+        </div>
+        <div class="grid-item" onclick="openLightbox(99)">
+            <img src="Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/07-chanyanuch_hong-3877102228473902058_7-20260417_131830.jpg" loading="lazy" alt="Image 99">
+        </div>
+        <div class="grid-item" onclick="openLightbox(100)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/01-chanyanuch_hong-3896788338366773809_1-20260514_171135.jpg" loading="lazy" alt="Image 100">
+        </div>
+        <div class="grid-item" onclick="openLightbox(101)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/02-chanyanuch_hong-3896788303646482701_2-20260514_171135.jpg" loading="lazy" alt="Image 101">
+        </div>
+        <div class="grid-item" onclick="openLightbox(102)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/03-chanyanuch_hong-3896788331479811010_3-20260514_171135.jpg" loading="lazy" alt="Image 102">
+        </div>
+        <div class="grid-item" onclick="openLightbox(103)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/04-chanyanuch_hong-3896788344574538494_4-20260514_171135.jpg" loading="lazy" alt="Image 103">
+        </div>
+        <div class="grid-item" onclick="openLightbox(104)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/05-chanyanuch_hong-3896788351696356899_5-20260514_171135.jpg" loading="lazy" alt="Image 104">
+        </div>
+        <div class="grid-item" onclick="openLightbox(105)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/06-chanyanuch_hong-3896788358206027721_6-20260514_171135.jpg" loading="lazy" alt="Image 105">
+        </div>
+        <div class="grid-item" onclick="openLightbox(106)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/07-chanyanuch_hong-3896788365319535771_7-20260514_171135.jpg" loading="lazy" alt="Image 106">
+        </div>
+        <div class="grid-item" onclick="openLightbox(107)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/08-chanyanuch_hong-3896788372131096838_8-20260514_171135.jpg" loading="lazy" alt="Image 107">
+        </div>
+        <div class="grid-item" onclick="openLightbox(108)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/09-chanyanuch_hong-3896788378925740154_9-20260514_171135.jpg" loading="lazy" alt="Image 108">
+        </div>
+        <div class="grid-item" onclick="openLightbox(109)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/10-chanyanuch_hong-3896788385426866230_10-20260514_171135.jpg" loading="lazy" alt="Image 109">
+        </div>
+        <div class="grid-item" onclick="openLightbox(110)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/11-chanyanuch_hong-3896788393790436018_11-20260514_171135.jpg" loading="lazy" alt="Image 110">
+        </div>
+        <div class="grid-item" onclick="openLightbox(111)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/12-chanyanuch_hong-3896788402254549914_12-20260514_171135.jpg" loading="lazy" alt="Image 111">
+        </div>
+        <div class="grid-item" onclick="openLightbox(112)">
+            <img src="Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/13-chanyanuch_hong-3896788408344665592_13-20260514_171135.jpg" loading="lazy" alt="Image 112">
+        </div>
+        <div class="grid-item" onclick="openLightbox(113)">
+            <img src="Chanyanuch/chanyanuch_hong-DalInDhmZrk-20260710_001805/01-chanyanuch_hong-3937591042086077728_1-20260710_001804.jpg" loading="lazy" alt="Image 113">
+        </div>
+        <div class="grid-item" onclick="openLightbox(114)">
+            <img src="Chanyanuch/chanyanuch_hong-DalInDhmZrk-20260710_001805/02-chanyanuch_hong-3937591015988116954_2-20260710_001804.jpg" loading="lazy" alt="Image 114">
+        </div>
+        <div class="grid-item" onclick="openLightbox(115)">
+            <img src="Chanyanuch/chanyanuch_hong-DalInDhmZrk-20260710_001805/03-chanyanuch_hong-3937591006198509045_3-20260710_001804.jpg" loading="lazy" alt="Image 115">
+        </div>
+        <div class="grid-item" onclick="openLightbox(116)">
+            <img src="Chanyanuch/chanyanuch_hong-DalInDhmZrk-20260710_001805/05-chanyanuch_hong-3937591079666045427_5-20260710_001804.jpg" loading="lazy" alt="Image 116">
+        </div>
+        </div>
+    </div>
+
+    <!-- Lightbox / Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="top-bar">
+            <button onclick="toggleFullscreen()" title="Fullscreen (f)">⛶</button>
+            <button onclick="closeLightbox()" title="Close (Esc)">✖</button>
+        </div>
+        
+        <button class="nav-btn nav-left" onclick="prevImg()">❮</button>
+        <button class="nav-btn nav-right" onclick="nextImg()">❯</button>
+        
+        <img id="lightbox-img" src="" alt="Gallery Image">
+        
+        <!-- กลุ่มควบคุมซ้ายบน -->
+        <div class="top-left-controls">
+            <div class="control-bar">
+                <button onclick="zoomOut()" title="Zoom Out (-)">➖</button>
+                <button id="play-btn" class="play-btn" onclick="togglePlay()" title="Auto Slide (Space)">▶</button>
+                <button onclick="zoomIn()" title="Zoom In (+)">➕</button>
+            </div>
+            
+            <div class="info-bar">
+                <input type="number" id="img-input" min="1" onchange="jumpToImg()" title="Type number and press Enter">
+                <span>/</span>
+                <span id="total-img">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const images = ["Chanyanuch/01-chanyanuch_hong-3820597492732529697_1-20260129_141304.jpg", "Chanyanuch/01-chanyanuch_hong-3888925688560824883_1-20260503_204815.jpg", "Chanyanuch/01-chanyanuch_hong-3889741708758291093_1-20260504_235004.jpg", "Chanyanuch/01-chanyanuch_hong-3938792672683902484_1-20260711_160510.jpg", "Chanyanuch/01-chanyanuch_hong-3956883263560891254_1-20260805_150757.jpg", "Chanyanuch/01-chanyanuch_hong-3967755506285526842_1-20260820_151007.jpg", "Chanyanuch/01-chanyanuch_hong-3968559283720540824_1-20260821_174624.jpg", "Chanyanuch/02-chanyanuch_hong-3820597482842410390_2-20260129_141304.jpg", "Chanyanuch/02-chanyanuch_hong-3888925649092456141_2-20260503_204815.jpg", "Chanyanuch/02-chanyanuch_hong-3889741715938994263_2-20260504_235004.jpg", "Chanyanuch/02-chanyanuch_hong-3938792666107401733_2-20260711_160510.jpg", "Chanyanuch/02-chanyanuch_hong-3956883274029899777_2-20260805_150757.jpg", "Chanyanuch/02-chanyanuch_hong-3967755557447562277_2-20260820_151007.jpg", "Chanyanuch/02-chanyanuch_hong-3968559350351178554_2-20260821_174624.jpg", "Chanyanuch/03-chanyanuch_hong-3820597495811181729_3-20260129_141304.jpg", "Chanyanuch/03-chanyanuch_hong-3888925657908902850_3-20260503_204815.jpg", "Chanyanuch/03-chanyanuch_hong-3938792648625487749_3-20260711_160510.jpg", "Chanyanuch/03-chanyanuch_hong-3956883278551465744_3-20260805_150757.jpg", "Chanyanuch/03-chanyanuch_hong-3967755627844791452_3-20260820_151007.jpg", "Chanyanuch/03-chanyanuch_hong-3968559368646787238_3-20260821_174624.jpg", "Chanyanuch/04-chanyanuch_hong-3820597499149846806_4-20260129_141304.jpg", "Chanyanuch/04-chanyanuch_hong-3888925676145734015_4-20260503_204815.jpg", "Chanyanuch/04-chanyanuch_hong-3889741731298502820_4-20260504_235004.jpg", "Chanyanuch/04-chanyanuch_hong-3938792679084452020_4-20260711_160510.jpg", "Chanyanuch/04-chanyanuch_hong-3956883277284778363_4-20260805_150757.jpg", "Chanyanuch/04-chanyanuch_hong-3967755672362951517_4-20260820_151007.jpg", "Chanyanuch/04-chanyanuch_hong-3968559370257541448_4-20260821_174624.jpg", "Chanyanuch/05-chanyanuch_hong-3820597502379432374_5-20260129_141304.jpg", "Chanyanuch/05-chanyanuch_hong-3888925679702444267_5-20260503_204815.jpg", "Chanyanuch/05-chanyanuch_hong-3889741732456135714_5-20260504_235004.jpg", "Chanyanuch/05-chanyanuch_hong-3938792685484931454_5-20260711_160510.jpg", "Chanyanuch/05-chanyanuch_hong-3956883273895787256_5-20260805_150757.jpg", "Chanyanuch/05-chanyanuch_hong-3967755921387399213_5-20260820_151007.jpg", "Chanyanuch/05-chanyanuch_hong-3968559379065521705_5-20260821_174624.jpg", "Chanyanuch/06-chanyanuch_hong-3888925681866750377_6-20260503_204815.jpg", "Chanyanuch/06-chanyanuch_hong-3938792691206034468_6-20260711_160510.jpg", "Chanyanuch/06-chanyanuch_hong-3956883280271180986_6-20260805_150757.jpg", "Chanyanuch/06-chanyanuch_hong-3967755869965074817_6-20260820_151007.jpg", "Chanyanuch/06-chanyanuch_hong-3968559379795397365_6-20260821_174624.jpg", "Chanyanuch/07-chanyanuch_hong-3888925685113152221_7-20260503_204815.jpg", "Chanyanuch/07-chanyanuch_hong-3889741737019508041_7-20260504_235004.jpg", "Chanyanuch/07-chanyanuch_hong-3956883280908549477_7-20260805_150757.jpg", "Chanyanuch/07-chanyanuch_hong-3967755794970925019_7-20260820_151007.jpg", "Chanyanuch/07-chanyanuch_hong-3968559388024471803_7-20260821_174624.jpg", "Chanyanuch/08-chanyanuch_hong-3888925691580728367_8-20260503_204815.jpg", "Chanyanuch/08-chanyanuch_hong-3889741738755970306_8-20260504_235004.jpg", "Chanyanuch/08-chanyanuch_hong-3938792703470277444_8-20260711_160510.jpg", "Chanyanuch/08-chanyanuch_hong-3956883282879957404_8-20260805_150757.jpg", "Chanyanuch/08-chanyanuch_hong-3967755729833557098_8-20260820_151007.jpg", "Chanyanuch/08-chanyanuch_hong-3968559401815324375_8-20260821_174624.jpg", "Chanyanuch/09-chanyanuch_hong-3938792710474766701_9-20260711_160510.jpg", "Chanyanuch/09-chanyanuch_hong-3956883283735552978_9-20260805_150757.jpg", "Chanyanuch/09-chanyanuch_hong-3968559402327085486_9-20260821_174624.jpg", "Chanyanuch/10-chanyanuch_hong-3938792716858503654_10-20260711_160510.jpg", "Chanyanuch/10-chanyanuch_hong-3968559405925794170_10-20260821_174624.jpg", "Chanyanuch/12-chanyanuch_hong-3968559435067717957_12-20260821_174624.jpg", "Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/01-chanyanuch_hong-3591005465175804017_1-20250318_193352.jpg", "Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/02-chanyanuch_hong-3591005465041602579_2-20250318_193351.jpg", "Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/03-chanyanuch_hong-3591005465049936935_3-20250318_193351.jpg", "Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/04-chanyanuch_hong-3591005465041484866_4-20250318_193352.jpg", "Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/05-chanyanuch_hong-3591005465335145649_5-20250318_193352.jpg", "Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/06-chanyanuch_hong-3591005465041579938_6-20250318_193352.jpg", "Chanyanuch/chanyanuch_hong-DHV0HYryeNU-20250318_193354/07-chanyanuch_hong-3591005465335056950_7-20250318_193352.jpg", "Chanyanuch/chanyanuch_hong-DQ3jGtuEqeD-20251110_144159/01-chanyanuch_hong-3762630394144517904_1-20251110_144157.jpg", "Chanyanuch/chanyanuch_hong-DQ3jGtuEqeD-20251110_144159/02-chanyanuch_hong-3762630394035471697_2-20251110_144157.jpg", "Chanyanuch/chanyanuch_hong-DQ3jGtuEqeD-20251110_144159/03-chanyanuch_hong-3762630394027076941_3-20251110_144157.jpg", "Chanyanuch/chanyanuch_hong-DQ3jGtuEqeD-20251110_144159/04-chanyanuch_hong-3762630394018674732_4-20251110_144157.jpg", "Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/01-chanyanuch_hong-3779201233467884965_1-20251203_112515.jpg", "Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/02-chanyanuch_hong-3779201233484667304_2-20251203_112515.jpg", "Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/03-chanyanuch_hong-3779201233484683444_3-20251203_112515.jpg", "Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/04-chanyanuch_hong-3779201233644069924_4-20251203_112515.jpg", "Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/06-chanyanuch_hong-3779201233811823461_6-20251203_112515.jpg", "Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/07-chanyanuch_hong-3779201233602107601_7-20251203_112515.jpg", "Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/08-chanyanuch_hong-3779201233467879511_8-20251203_112515.jpg", "Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/09-chanyanuch_hong-3779201233811833283_9-20251203_112515.jpg", "Chanyanuch/chanyanuch_hong-DRya4LuknqE-20251203_112517/10-chanyanuch_hong-3779201233509830516_10-20251203_112515.jpg", "Chanyanuch/chanyanuch_hong-DUFfZNOEqGf-20260129_141306/01-chanyanuch_hong-3820597492732529697_1-20260129_141304.jpg", "Chanyanuch/chanyanuch_hong-DUFfZNOEqGf-20260129_141306/02-chanyanuch_hong-3820597482842410390_2-20260129_141304.jpg", "Chanyanuch/chanyanuch_hong-DUFfZNOEqGf-20260129_141306/03-chanyanuch_hong-3820597495811181729_3-20260129_141304.jpg", "Chanyanuch/chanyanuch_hong-DUFfZNOEqGf-20260129_141306/04-chanyanuch_hong-3820597499149846806_4-20260129_141304.jpg", "Chanyanuch/chanyanuch_hong-DUFfZNOEqGf-20260129_141306/05-chanyanuch_hong-3820597502379432374_5-20260129_141304.jpg", "Chanyanuch/chanyanuch_hong-DVgBDkLEhiF-20260305_175854/01-chanyanuch_hong-3846078473329340150_1-20260305_175852.jpg", "Chanyanuch/chanyanuch_hong-DVgBDkLEhiF-20260305_175854/03-chanyanuch_hong-3846078499602432443_3-20260305_175852.jpg", "Chanyanuch/chanyanuch_hong-DVgBDkLEhiF-20260305_175854/04-chanyanuch_hong-3846078487992630432_4-20260305_175852.jpg", "Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/01-chanyanuch_hong-3868616727471263545_1-20260405_201801.jpg", "Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/02-chanyanuch_hong-3868616749306862346_2-20260405_201801.jpg", "Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/03-chanyanuch_hong-3868616720986914903_3-20260405_201801.jpg", "Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/04-chanyanuch_hong-3868616737831214500_4-20260405_201801.jpg", "Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/05-chanyanuch_hong-3868616739777403881_5-20260405_201801.jpg", "Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/07-chanyanuch_hong-3868616743485130252_7-20260405_201801.jpg", "Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/08-chanyanuch_hong-3868616748132419293_8-20260405_201801.jpg", "Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/09-chanyanuch_hong-3868616751101973712_9-20260405_201801.jpg", "Chanyanuch/chanyanuch_hong-DWwFn64GduM-20260405_201803/10-chanyanuch_hong-3868616755497651138_10-20260405_201801.jpg", "Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/01-chanyanuch_hong-3877102212032222353_1-20260417_131830.jpg", "Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/02-chanyanuch_hong-3877102228004130116_2-20260417_131830.jpg", "Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/03-chanyanuch_hong-3877102220898932185_3-20260417_131830.jpg", "Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/04-chanyanuch_hong-3877102220882172291_4-20260417_131830.jpg", "Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/05-chanyanuch_hong-3877102231049154210_5-20260417_131830.jpg", "Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/06-chanyanuch_hong-3877102228641673056_6-20260417_131830.jpg", "Chanyanuch/chanyanuch_hong-DXOPJt2GYQW-20260417_131832/07-chanyanuch_hong-3877102228473902058_7-20260417_131830.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/01-chanyanuch_hong-3896788338366773809_1-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/02-chanyanuch_hong-3896788303646482701_2-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/03-chanyanuch_hong-3896788331479811010_3-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/04-chanyanuch_hong-3896788344574538494_4-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/05-chanyanuch_hong-3896788351696356899_5-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/06-chanyanuch_hong-3896788358206027721_6-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/07-chanyanuch_hong-3896788365319535771_7-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/08-chanyanuch_hong-3896788372131096838_8-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/09-chanyanuch_hong-3896788378925740154_9-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/10-chanyanuch_hong-3896788385426866230_10-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/11-chanyanuch_hong-3896788393790436018_11-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/12-chanyanuch_hong-3896788402254549914_12-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DYULSZAGY5v-20260514_171136/13-chanyanuch_hong-3896788408344665592_13-20260514_171135.jpg", "Chanyanuch/chanyanuch_hong-DalInDhmZrk-20260710_001805/01-chanyanuch_hong-3937591042086077728_1-20260710_001804.jpg", "Chanyanuch/chanyanuch_hong-DalInDhmZrk-20260710_001805/02-chanyanuch_hong-3937591015988116954_2-20260710_001804.jpg", "Chanyanuch/chanyanuch_hong-DalInDhmZrk-20260710_001805/03-chanyanuch_hong-3937591006198509045_3-20260710_001804.jpg", "Chanyanuch/chanyanuch_hong-DalInDhmZrk-20260710_001805/05-chanyanuch_hong-3937591079666045427_5-20260710_001804.jpg"];
+        let currentIndex = 0;
+        let currentScale = 1;
+        let translateX = 0;
+        let translateY = 0;
+        let playing = false;
+        let playInterval;
+
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let swipeStartX = 0;
+
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        const playBtn = document.getElementById('play-btn');
+        const imgInput = document.getElementById('img-input');
+        const totalImgSpan = document.getElementById('total-img');
+
+        function openLightbox(index) {
+            currentIndex = index;
+            totalImgSpan.textContent = images.length;
+            imgInput.max = images.length;
+            
+            resetTransform();
+            updateImg(false);
+            lb.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeLightbox() {
+            lb.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            if(playing) togglePlay();
+            if(document.fullscreenElement) document.exitFullscreen();
+        }
+
+        function resetTransform() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+        }
+
+        function updateImg(smooth = true) {
+            lbImg.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
+            lbImg.src = images[currentIndex];
+            lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+            
+            // อัปเดตตัวเลขในช่อง Input
+            imgInput.value = currentIndex + 1;
+            
+            if (currentScale > 1) {
+                lbImg.style.cursor = isDragging ? 'grabbing' : 'grab';
+            } else {
+                lbImg.style.cursor = 'default';
+            }
+        }
+
+        function jumpToImg() {
+            let val = parseInt(imgInput.value);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > images.length) val = images.length;
+            
+            currentIndex = val - 1;
+            imgInput.value = val;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function nextImg() {
+            currentIndex = (currentIndex + 1) % images.length;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function prevImg() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function zoomIn() {
+            currentScale += 0.25;
+            updateImg(true);
+        }
+
+        function zoomOut() {
+            currentScale = Math.max(0.25, currentScale - 0.25);
+            if (currentScale <= 1) resetTransform();
+            updateImg(true);
+        }
+
+        function togglePlay() {
+            playing = !playing;
+            playBtn.innerHTML = playing ? '⏸' : '▶';
+            if(playing) {
+                playInterval = setInterval(nextImg, 2500);
+            } else {
+                clearInterval(playInterval);
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                lb.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function isInteractiveElement(target) {
+            const tag = target.tagName.toLowerCase();
+            return tag === 'button' || tag === 'input' || target.closest('button');
+        }
+
+        /* Drag, Pan & Swipe Events */
+        lb.addEventListener('mousedown', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
+            if (currentScale > 1) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                updateImg(false);
+                e.preventDefault();
+            } else {
+                isDragging = true;
+                swipeStartX = e.clientX;
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging && currentScale > 1) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateImg(false);
+            }
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
+            }
+        });
+
+        lb.addEventListener('touchstart', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
+            if (currentScale > 1 && e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            } else if (currentScale === 1 && e.touches.length === 1) {
+                isDragging = true;
+                swipeStartX = e.touches[0].clientX;
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && currentScale > 1 && e.touches.length === 1) {
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                updateImg(false);
+            }
+        });
+
+        window.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.changedTouches[0].clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
+            }
+        });
+
+        /* คีย์บอร์ด Shortcut */
+        window.addEventListener('keydown', function(e) {
+            if (lb.style.display === 'flex') {
+                if (document.activeElement === imgInput) {
+                    if (e.key === 'Enter') {
+                        imgInput.blur(); 
+                    } else if (e.key === 'Escape') {
+                        imgInput.blur();
+                    }
+                    return; 
+                }
+
+                if (e.key === 'ArrowRight') {
+                    nextImg();
+                } else if (e.key === 'ArrowLeft') {
+                    prevImg();
+                } else if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === '+' || e.key === '=') {
+                    zoomIn();
+                } else if (e.key === '-') {
+                    zoomOut();
+                } else if (e.key === ' ' || e.code === 'Space') {
+                    e.preventDefault(); 
+                    togglePlay();
+                } else if (e.key.toLowerCase() === 'f') {
+                    toggleFullscreen();
+                }
+            }
+        });
+
+        /* ลูกกลิ้งเมาส์ & Shift+Scroll */
+        lb.addEventListener('wheel', function(e) {
+            if (lb.style.display === 'flex') {
+                e.preventDefault(); 
+                
+                if (e.shiftKey) {
+                    if (e.deltaY < 0) {
+                        zoomIn(); 
+                    } else {
+                        zoomOut(); 
+                    }
+                } else {
+                    if (e.deltaY > 0) {
+                        nextImg(); 
+                    } else {
+                        prevImg(); 
+                    }
+                }
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>

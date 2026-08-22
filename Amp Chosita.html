@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMP CHOSITA</title>
+    <link rel="icon" href="https://img.icons8.com/fluency/48/instagram-pride.png">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fafafa; margin: 0; padding: 0; }
+        .header { text-align: center; padding: 20px; background: #fff; border-bottom: 1px solid #dbdbdb; position: sticky; top: 0; z-index: 100; }
+        h1 { margin: 0; font-size: 24px; color: #262626; }
+        .gallery-container { max-width: 935px; margin: 20px auto; padding: 0 5px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+        .grid-item { aspect-ratio: 1/1; overflow: hidden; background: #efefef; cursor: pointer; }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .grid-item:hover img { transform: scale(1.05); }
+
+        /* Lightbox Style */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
+        .lightbox img { 
+            max-width: 90%; max-height: 90%; 
+            object-fit: contain; 
+            user-select: none; 
+            -webkit-user-drag: none;
+        }
+        
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; font-size: 35px; padding: 10px 20px; cursor: pointer; z-index: 1010; border-radius: 8px; user-select: none; }
+        .nav-btn:hover { background: rgba(0,0,0,0.8); }
+        .nav-left { left: 20px; }
+        .nav-right { right: 20px; }
+
+        .top-bar { position: absolute; top: 20px; right: 20px; z-index: 1010; display: flex; gap: 10px; }
+        .top-bar button { background: rgba(0,0,0,0.5); color: white; border: none; font-size: 24px; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; }
+        .top-bar button:hover { background: rgba(0,0,0,0.8); }
+
+        /* ชุดปุ่มควบคุมมุมซ้ายบน */
+        .top-left-controls { position: absolute; top: 20px; left: 20px; z-index: 1010; display: flex; flex-direction: column; gap: 10px; }
+        
+        .control-bar { display: flex; gap: 15px; background: rgba(0,0,0,0.6); padding: 10px 25px; border-radius: 30px; align-items: center; justify-content: center; }
+        .control-bar button { background: none; border: none; color: white; font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .control-bar button:hover { color: #0095f6; transform: scale(1.1); }
+        .play-btn { font-size: 32px !important; }
+
+        .info-bar { display: flex; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; align-items: center; color: white; gap: 8px; font-size: 16px; justify-content: center; font-family: monospace; }
+        .info-bar input { width: 50px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; text-align: center; font-size: 16px; border-radius: 6px; padding: 4px; outline: none; transition: background 0.2s; font-family: monospace; }
+        .info-bar input:focus { background: rgba(255,255,255,0.4); border-color: #0095f6; }
+        
+        /* ซ่อนลูกศรใน input type number */
+        .info-bar input::-webkit-outer-spin-button, .info-bar input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .info-bar input[type=number] { -moz-appearance: textfield; }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
+            .top-left-controls { top: 15px; left: 15px; gap: 8px; }
+            .control-bar { padding: 5px 15px; gap: 10px; }
+            .control-bar button { font-size: 20px; }
+            .play-btn { font-size: 24px !important; }
+            .info-bar { font-size: 14px; padding: 5px 10px; }
+            .info-bar input { width: 40px; font-size: 14px; padding: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>AMP CHOSITA</h1>
+    </div>
+
+    <div class="gallery-container">
+        <div class="grid">
+            
+        <div class="grid-item" onclick="openLightbox(0)">
+            <img src="Amp Chosita/ampxrx_cho-20230518_152155-1358169915.jpg" loading="lazy" alt="Image 0">
+        </div>
+        <div class="grid-item" onclick="openLightbox(1)">
+            <img src="Amp Chosita/ampxrx_cho-20230518_152155-1363786470.jpg" loading="lazy" alt="Image 1">
+        </div>
+        <div class="grid-item" onclick="openLightbox(2)">
+            <img src="Amp Chosita/ampxrx_cho-20230518_152155-1520978726.jpg" loading="lazy" alt="Image 2">
+        </div>
+        <div class="grid-item" onclick="openLightbox(3)">
+            <img src="Amp Chosita/ampxrx_cho-20230518_152155-2341042726.jpg" loading="lazy" alt="Image 3">
+        </div>
+        <div class="grid-item" onclick="openLightbox(4)">
+            <img src="Amp Chosita/ampxrx_cho-20230518_152155-3323071971.jpg" loading="lazy" alt="Image 4">
+        </div>
+        <div class="grid-item" onclick="openLightbox(5)">
+            <img src="Amp Chosita/ampxrx_cho-20230518_152155-3606545922.jpg" loading="lazy" alt="Image 5">
+        </div>
+        <div class="grid-item" onclick="openLightbox(6)">
+            <img src="Amp Chosita/ampxrx_cho-20230524_142310-1072920713.jpg" loading="lazy" alt="Image 6">
+        </div>
+        <div class="grid-item" onclick="openLightbox(7)">
+            <img src="Amp Chosita/ampxrx_cho-20230524_142310-1896590074.jpg" loading="lazy" alt="Image 7">
+        </div>
+        <div class="grid-item" onclick="openLightbox(8)">
+            <img src="Amp Chosita/ampxrx_cho-20230524_142310-3673535771.jpg" loading="lazy" alt="Image 8">
+        </div>
+        <div class="grid-item" onclick="openLightbox(9)">
+            <img src="Amp Chosita/ampxrx_cho-20230605_185311-2039887720.jpg" loading="lazy" alt="Image 9">
+        </div>
+        <div class="grid-item" onclick="openLightbox(10)">
+            <img src="Amp Chosita/ampxrx_cho-20230605_185311-235219399.jpg" loading="lazy" alt="Image 10">
+        </div>
+        <div class="grid-item" onclick="openLightbox(11)">
+            <img src="Amp Chosita/ampxrx_cho-20230605_185311-3704012010.jpg" loading="lazy" alt="Image 11">
+        </div>
+        <div class="grid-item" onclick="openLightbox(12)">
+            <img src="Amp Chosita/ampxrx_cho-20230630_220048-2720962673.jpg" loading="lazy" alt="Image 12">
+        </div>
+        <div class="grid-item" onclick="openLightbox(13)">
+            <img src="Amp Chosita/ampxrx_cho-20230630_220048-3109780850.jpg" loading="lazy" alt="Image 13">
+        </div>
+        <div class="grid-item" onclick="openLightbox(14)">
+            <img src="Amp Chosita/ampxrx_cho-20230630_220048-912227404.jpg" loading="lazy" alt="Image 14">
+        </div>
+        <div class="grid-item" onclick="openLightbox(15)">
+            <img src="Amp Chosita/ampxrx_cho-20231112_094315-1526047597.jpg" loading="lazy" alt="Image 15">
+        </div>
+        <div class="grid-item" onclick="openLightbox(16)">
+            <img src="Amp Chosita/ampxrx_cho-20231112_094315-2186252791.jpg" loading="lazy" alt="Image 16">
+        </div>
+        <div class="grid-item" onclick="openLightbox(17)">
+            <img src="Amp Chosita/ampxrx_cho-20231112_094315-2460890060.jpg" loading="lazy" alt="Image 17">
+        </div>
+        <div class="grid-item" onclick="openLightbox(18)">
+            <img src="Amp Chosita/ampxrx_cho-20231112_094315-309721136.jpg" loading="lazy" alt="Image 18">
+        </div>
+        <div class="grid-item" onclick="openLightbox(19)">
+            <img src="Amp Chosita/ampxrx_cho-20231112_094315-4009995335.jpg" loading="lazy" alt="Image 19">
+        </div>
+        <div class="grid-item" onclick="openLightbox(20)">
+            <img src="Amp Chosita/ampxrx_cho-20231112_094315-4054161302.jpg" loading="lazy" alt="Image 20">
+        </div>
+        <div class="grid-item" onclick="openLightbox(21)">
+            <img src="Amp Chosita/ampxrx_cho-20231112_094315-42138028.jpg" loading="lazy" alt="Image 21">
+        </div>
+        <div class="grid-item" onclick="openLightbox(22)">
+            <img src="Amp Chosita/ampxrx_cho-20231112_094315-607768766.jpg" loading="lazy" alt="Image 22">
+        </div>
+        <div class="grid-item" onclick="openLightbox(23)">
+            <img src="Amp Chosita/ampxrx_cho-20231224_151935-1250913999.jpg" loading="lazy" alt="Image 23">
+        </div>
+        <div class="grid-item" onclick="openLightbox(24)">
+            <img src="Amp Chosita/ampxrx_cho-20231224_151935-2015620936.jpg" loading="lazy" alt="Image 24">
+        </div>
+        <div class="grid-item" onclick="openLightbox(25)">
+            <img src="Amp Chosita/ampxrx_cho-20231224_151935-2445463725.jpg" loading="lazy" alt="Image 25">
+        </div>
+        <div class="grid-item" onclick="openLightbox(26)">
+            <img src="Amp Chosita/ampxrx_cho-20231224_151935-2477144379.jpg" loading="lazy" alt="Image 26">
+        </div>
+        <div class="grid-item" onclick="openLightbox(27)">
+            <img src="Amp Chosita/ampxrx_cho-20231224_151935-2923754799.jpg" loading="lazy" alt="Image 27">
+        </div>
+        <div class="grid-item" onclick="openLightbox(28)">
+            <img src="Amp Chosita/ampxrx_cho-20231224_151935-3363541011.jpg" loading="lazy" alt="Image 28">
+        </div>
+        <div class="grid-item" onclick="openLightbox(29)">
+            <img src="Amp Chosita/ampxrx_cho-20231224_151935-4086113921.jpg" loading="lazy" alt="Image 29">
+        </div>
+        <div class="grid-item" onclick="openLightbox(30)">
+            <img src="Amp Chosita/ampxrx_cho-20231224_151935-4196382770.jpg" loading="lazy" alt="Image 30">
+        </div>
+        <div class="grid-item" onclick="openLightbox(31)">
+            <img src="Amp Chosita/ampxrx_cho-20240307_162221-1272919122.jpg" loading="lazy" alt="Image 31">
+        </div>
+        <div class="grid-item" onclick="openLightbox(32)">
+            <img src="Amp Chosita/ampxrx_cho-20240307_162221-3021430212.jpg" loading="lazy" alt="Image 32">
+        </div>
+        <div class="grid-item" onclick="openLightbox(33)">
+            <img src="Amp Chosita/ampxrx_cho-20240307_162221-350407577.jpg" loading="lazy" alt="Image 33">
+        </div>
+        <div class="grid-item" onclick="openLightbox(34)">
+            <img src="Amp Chosita/ampxrx_cho-20240307_162221-4023359201.jpg" loading="lazy" alt="Image 34">
+        </div>
+        <div class="grid-item" onclick="openLightbox(35)">
+            <img src="Amp Chosita/ampxrx_cho-20240314_194519-1079964071.jpg" loading="lazy" alt="Image 35">
+        </div>
+        <div class="grid-item" onclick="openLightbox(36)">
+            <img src="Amp Chosita/ampxrx_cho-20240314_194519-163195497.jpg" loading="lazy" alt="Image 36">
+        </div>
+        <div class="grid-item" onclick="openLightbox(37)">
+            <img src="Amp Chosita/ampxrx_cho-20240314_194519-171017511.jpg" loading="lazy" alt="Image 37">
+        </div>
+        <div class="grid-item" onclick="openLightbox(38)">
+            <img src="Amp Chosita/ampxrx_cho-20240314_194519-1824381307.jpg" loading="lazy" alt="Image 38">
+        </div>
+        <div class="grid-item" onclick="openLightbox(39)">
+            <img src="Amp Chosita/ampxrx_cho-20240314_194519-2596002988.jpg" loading="lazy" alt="Image 39">
+        </div>
+        <div class="grid-item" onclick="openLightbox(40)">
+            <img src="Amp Chosita/ampxrx_cho-20240314_194519-2625078544.jpg" loading="lazy" alt="Image 40">
+        </div>
+        <div class="grid-item" onclick="openLightbox(41)">
+            <img src="Amp Chosita/ampxrx_cho-20240519_130447-1220792268.jpg" loading="lazy" alt="Image 41">
+        </div>
+        <div class="grid-item" onclick="openLightbox(42)">
+            <img src="Amp Chosita/ampxrx_cho-20240519_130447-2635479546.jpg" loading="lazy" alt="Image 42">
+        </div>
+        <div class="grid-item" onclick="openLightbox(43)">
+            <img src="Amp Chosita/ampxrx_cho-20240519_130447-3523648971.jpg" loading="lazy" alt="Image 43">
+        </div>
+        <div class="grid-item" onclick="openLightbox(44)">
+            <img src="Amp Chosita/ampxrx_cho-20240519_130447-3752153941.jpg" loading="lazy" alt="Image 44">
+        </div>
+        <div class="grid-item" onclick="openLightbox(45)">
+            <img src="Amp Chosita/ampxrx_cho-20240519_130447-894511449.jpg" loading="lazy" alt="Image 45">
+        </div>
+        <div class="grid-item" onclick="openLightbox(46)">
+            <img src="Amp Chosita/ampxrx_cho-20240519_130448-390985464.jpg" loading="lazy" alt="Image 46">
+        </div>
+        <div class="grid-item" onclick="openLightbox(47)">
+            <img src="Amp Chosita/ampxrx_cho-20240524_184338-3316051954.jpg" loading="lazy" alt="Image 47">
+        </div>
+        <div class="grid-item" onclick="openLightbox(48)">
+            <img src="Amp Chosita/ampxrx_cho-20240524_184338-3316051955.jpg" loading="lazy" alt="Image 48">
+        </div>
+        <div class="grid-item" onclick="openLightbox(49)">
+            <img src="Amp Chosita/ampxrx_cho-20240524_184338-3316051956.jpg" loading="lazy" alt="Image 49">
+        </div>
+        <div class="grid-item" onclick="openLightbox(50)">
+            <img src="Amp Chosita/ampxrx_cho-20240623_231643-3734482433.jpg" loading="lazy" alt="Image 50">
+        </div>
+        <div class="grid-item" onclick="openLightbox(51)">
+            <img src="Amp Chosita/ampxrx_cho-20240623_231643-3734482434.jpg" loading="lazy" alt="Image 51">
+        </div>
+        <div class="grid-item" onclick="openLightbox(52)">
+            <img src="Amp Chosita/ampxrx_cho-20240626_203321-1650159439.jpg" loading="lazy" alt="Image 52">
+        </div>
+        <div class="grid-item" onclick="openLightbox(53)">
+            <img src="Amp Chosita/ampxrx_cho-20240626_203321-1810545417.jpg" loading="lazy" alt="Image 53">
+        </div>
+        <div class="grid-item" onclick="openLightbox(54)">
+            <img src="Amp Chosita/ampxrx_cho-20240626_203321-4221170796.jpg" loading="lazy" alt="Image 54">
+        </div>
+        <div class="grid-item" onclick="openLightbox(55)">
+            <img src="Amp Chosita/ampxrx_cho-20240626_203321-718717041.jpg" loading="lazy" alt="Image 55">
+        </div>
+        <div class="grid-item" onclick="openLightbox(56)">
+            <img src="Amp Chosita/ampxrx_cho-20240626_203322-3363534933.jpg" loading="lazy" alt="Image 56">
+        </div>
+        <div class="grid-item" onclick="openLightbox(57)">
+            <img src="Amp Chosita/ampxrx_cho-20240701_194851-2110839911.jpg" loading="lazy" alt="Image 57">
+        </div>
+        <div class="grid-item" onclick="openLightbox(58)">
+            <img src="Amp Chosita/ampxrx_cho-20240701_194851-295738656.jpg" loading="lazy" alt="Image 58">
+        </div>
+        <div class="grid-item" onclick="openLightbox(59)">
+            <img src="Amp Chosita/ampxrx_cho-20240701_194851-331986305.jpg" loading="lazy" alt="Image 59">
+        </div>
+        <div class="grid-item" onclick="openLightbox(60)">
+            <img src="Amp Chosita/ampxrx_cho-20240701_194851-4029866876.jpg" loading="lazy" alt="Image 60">
+        </div>
+        <div class="grid-item" onclick="openLightbox(61)">
+            <img src="Amp Chosita/ampxrx_cho-20240701_194851-4132829909.jpg" loading="lazy" alt="Image 61">
+        </div>
+        <div class="grid-item" onclick="openLightbox(62)">
+            <img src="Amp Chosita/ampxrx_cho-20240701_194852-450956461.jpg" loading="lazy" alt="Image 62">
+        </div>
+        <div class="grid-item" onclick="openLightbox(63)">
+            <img src="Amp Chosita/ampxrx_cho-20240718_100443-1438330755.jpg" loading="lazy" alt="Image 63">
+        </div>
+        <div class="grid-item" onclick="openLightbox(64)">
+            <img src="Amp Chosita/ampxrx_cho-20240718_100443-1438330756.jpg" loading="lazy" alt="Image 64">
+        </div>
+        <div class="grid-item" onclick="openLightbox(65)">
+            <img src="Amp Chosita/ampxrx_cho-20250427_165319-1464347640.jpg" loading="lazy" alt="Image 65">
+        </div>
+        <div class="grid-item" onclick="openLightbox(66)">
+            <img src="Amp Chosita/ampxrx_cho-20250506_211355-1683475682.jpg" loading="lazy" alt="Image 66">
+        </div>
+        <div class="grid-item" onclick="openLightbox(67)">
+            <img src="Amp Chosita/ampxrx_cho-20250506_211355-2630253306.jpg" loading="lazy" alt="Image 67">
+        </div>
+        <div class="grid-item" onclick="openLightbox(68)">
+            <img src="Amp Chosita/ampxrx_cho-20250506_211355-277651606.jpg" loading="lazy" alt="Image 68">
+        </div>
+        <div class="grid-item" onclick="openLightbox(69)">
+            <img src="Amp Chosita/ampxrx_cho-20250506_211355-46011649.jpg" loading="lazy" alt="Image 69">
+        </div>
+        <div class="grid-item" onclick="openLightbox(70)">
+            <img src="Amp Chosita/ampxrx_cho-20250705_115247-2665022651.jpg" loading="lazy" alt="Image 70">
+        </div>
+        <div class="grid-item" onclick="openLightbox(71)">
+            <img src="Amp Chosita/ampxrx_cho-20250705_115247-3083969089.jpg" loading="lazy" alt="Image 71">
+        </div>
+        <div class="grid-item" onclick="openLightbox(72)">
+            <img src="Amp Chosita/ampxrx_cho-20250705_115247-3374447379.jpg" loading="lazy" alt="Image 72">
+        </div>
+        <div class="grid-item" onclick="openLightbox(73)">
+            <img src="Amp Chosita/ampxrx_cho-20250705_115247-3971238529.jpg" loading="lazy" alt="Image 73">
+        </div>
+        <div class="grid-item" onclick="openLightbox(74)">
+            <img src="Amp Chosita/ampxrx_cho-20250727_121402-1801642540.jpg" loading="lazy" alt="Image 74">
+        </div>
+        <div class="grid-item" onclick="openLightbox(75)">
+            <img src="Amp Chosita/ampxrx_cho-20250727_121402-2653010391.jpg" loading="lazy" alt="Image 75">
+        </div>
+        <div class="grid-item" onclick="openLightbox(76)">
+            <img src="Amp Chosita/ampxrx_cho-20250727_121402-3427125027.jpg" loading="lazy" alt="Image 76">
+        </div>
+        <div class="grid-item" onclick="openLightbox(77)">
+            <img src="Amp Chosita/ampxrx_cho-20250727_121402-3492475306.jpg" loading="lazy" alt="Image 77">
+        </div>
+        <div class="grid-item" onclick="openLightbox(78)">
+            <img src="Amp Chosita/ampxrx_cho-20250727_121402-969702509.jpg" loading="lazy" alt="Image 78">
+        </div>
+        <div class="grid-item" onclick="openLightbox(79)">
+            <img src="Amp Chosita/ampxrx_cho-20250804_164451-1450438549.jpg" loading="lazy" alt="Image 79">
+        </div>
+        <div class="grid-item" onclick="openLightbox(80)">
+            <img src="Amp Chosita/ampxrx_cho-20250804_164451-3083499730.jpg" loading="lazy" alt="Image 80">
+        </div>
+        <div class="grid-item" onclick="openLightbox(81)">
+            <img src="Amp Chosita/ampxrx_cho-20250804_164451-3963711366.jpg" loading="lazy" alt="Image 81">
+        </div>
+        <div class="grid-item" onclick="openLightbox(82)">
+            <img src="Amp Chosita/ampxrx_cho-20250804_164451-4188035250.jpg" loading="lazy" alt="Image 82">
+        </div>
+        <div class="grid-item" onclick="openLightbox(83)">
+            <img src="Amp Chosita/ampxrx_cho-20250915_072803-1770257311.jpg" loading="lazy" alt="Image 83">
+        </div>
+        <div class="grid-item" onclick="openLightbox(84)">
+            <img src="Amp Chosita/ampxrx_cho-20250915_072803-538561097.jpg" loading="lazy" alt="Image 84">
+        </div>
+        <div class="grid-item" onclick="openLightbox(85)">
+            <img src="Amp Chosita/ampxrx_cho-20250915_072803-563683913.jpg" loading="lazy" alt="Image 85">
+        </div>
+        </div>
+    </div>
+
+    <!-- Lightbox / Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="top-bar">
+            <button onclick="toggleFullscreen()" title="Fullscreen (f)">⛶</button>
+            <button onclick="closeLightbox()" title="Close (Esc)">✖</button>
+        </div>
+        
+        <button class="nav-btn nav-left" onclick="prevImg()">❮</button>
+        <button class="nav-btn nav-right" onclick="nextImg()">❯</button>
+        
+        <img id="lightbox-img" src="" alt="Gallery Image">
+        
+        <!-- กลุ่มควบคุมซ้ายบน -->
+        <div class="top-left-controls">
+            <div class="control-bar">
+                <button onclick="zoomOut()" title="Zoom Out (-)">➖</button>
+                <button id="play-btn" class="play-btn" onclick="togglePlay()" title="Auto Slide (Space)">▶</button>
+                <button onclick="zoomIn()" title="Zoom In (+)">➕</button>
+            </div>
+            
+            <div class="info-bar">
+                <input type="number" id="img-input" min="1" onchange="jumpToImg()" title="Type number and press Enter">
+                <span>/</span>
+                <span id="total-img">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const images = ["Amp Chosita/ampxrx_cho-20230518_152155-1358169915.jpg", "Amp Chosita/ampxrx_cho-20230518_152155-1363786470.jpg", "Amp Chosita/ampxrx_cho-20230518_152155-1520978726.jpg", "Amp Chosita/ampxrx_cho-20230518_152155-2341042726.jpg", "Amp Chosita/ampxrx_cho-20230518_152155-3323071971.jpg", "Amp Chosita/ampxrx_cho-20230518_152155-3606545922.jpg", "Amp Chosita/ampxrx_cho-20230524_142310-1072920713.jpg", "Amp Chosita/ampxrx_cho-20230524_142310-1896590074.jpg", "Amp Chosita/ampxrx_cho-20230524_142310-3673535771.jpg", "Amp Chosita/ampxrx_cho-20230605_185311-2039887720.jpg", "Amp Chosita/ampxrx_cho-20230605_185311-235219399.jpg", "Amp Chosita/ampxrx_cho-20230605_185311-3704012010.jpg", "Amp Chosita/ampxrx_cho-20230630_220048-2720962673.jpg", "Amp Chosita/ampxrx_cho-20230630_220048-3109780850.jpg", "Amp Chosita/ampxrx_cho-20230630_220048-912227404.jpg", "Amp Chosita/ampxrx_cho-20231112_094315-1526047597.jpg", "Amp Chosita/ampxrx_cho-20231112_094315-2186252791.jpg", "Amp Chosita/ampxrx_cho-20231112_094315-2460890060.jpg", "Amp Chosita/ampxrx_cho-20231112_094315-309721136.jpg", "Amp Chosita/ampxrx_cho-20231112_094315-4009995335.jpg", "Amp Chosita/ampxrx_cho-20231112_094315-4054161302.jpg", "Amp Chosita/ampxrx_cho-20231112_094315-42138028.jpg", "Amp Chosita/ampxrx_cho-20231112_094315-607768766.jpg", "Amp Chosita/ampxrx_cho-20231224_151935-1250913999.jpg", "Amp Chosita/ampxrx_cho-20231224_151935-2015620936.jpg", "Amp Chosita/ampxrx_cho-20231224_151935-2445463725.jpg", "Amp Chosita/ampxrx_cho-20231224_151935-2477144379.jpg", "Amp Chosita/ampxrx_cho-20231224_151935-2923754799.jpg", "Amp Chosita/ampxrx_cho-20231224_151935-3363541011.jpg", "Amp Chosita/ampxrx_cho-20231224_151935-4086113921.jpg", "Amp Chosita/ampxrx_cho-20231224_151935-4196382770.jpg", "Amp Chosita/ampxrx_cho-20240307_162221-1272919122.jpg", "Amp Chosita/ampxrx_cho-20240307_162221-3021430212.jpg", "Amp Chosita/ampxrx_cho-20240307_162221-350407577.jpg", "Amp Chosita/ampxrx_cho-20240307_162221-4023359201.jpg", "Amp Chosita/ampxrx_cho-20240314_194519-1079964071.jpg", "Amp Chosita/ampxrx_cho-20240314_194519-163195497.jpg", "Amp Chosita/ampxrx_cho-20240314_194519-171017511.jpg", "Amp Chosita/ampxrx_cho-20240314_194519-1824381307.jpg", "Amp Chosita/ampxrx_cho-20240314_194519-2596002988.jpg", "Amp Chosita/ampxrx_cho-20240314_194519-2625078544.jpg", "Amp Chosita/ampxrx_cho-20240519_130447-1220792268.jpg", "Amp Chosita/ampxrx_cho-20240519_130447-2635479546.jpg", "Amp Chosita/ampxrx_cho-20240519_130447-3523648971.jpg", "Amp Chosita/ampxrx_cho-20240519_130447-3752153941.jpg", "Amp Chosita/ampxrx_cho-20240519_130447-894511449.jpg", "Amp Chosita/ampxrx_cho-20240519_130448-390985464.jpg", "Amp Chosita/ampxrx_cho-20240524_184338-3316051954.jpg", "Amp Chosita/ampxrx_cho-20240524_184338-3316051955.jpg", "Amp Chosita/ampxrx_cho-20240524_184338-3316051956.jpg", "Amp Chosita/ampxrx_cho-20240623_231643-3734482433.jpg", "Amp Chosita/ampxrx_cho-20240623_231643-3734482434.jpg", "Amp Chosita/ampxrx_cho-20240626_203321-1650159439.jpg", "Amp Chosita/ampxrx_cho-20240626_203321-1810545417.jpg", "Amp Chosita/ampxrx_cho-20240626_203321-4221170796.jpg", "Amp Chosita/ampxrx_cho-20240626_203321-718717041.jpg", "Amp Chosita/ampxrx_cho-20240626_203322-3363534933.jpg", "Amp Chosita/ampxrx_cho-20240701_194851-2110839911.jpg", "Amp Chosita/ampxrx_cho-20240701_194851-295738656.jpg", "Amp Chosita/ampxrx_cho-20240701_194851-331986305.jpg", "Amp Chosita/ampxrx_cho-20240701_194851-4029866876.jpg", "Amp Chosita/ampxrx_cho-20240701_194851-4132829909.jpg", "Amp Chosita/ampxrx_cho-20240701_194852-450956461.jpg", "Amp Chosita/ampxrx_cho-20240718_100443-1438330755.jpg", "Amp Chosita/ampxrx_cho-20240718_100443-1438330756.jpg", "Amp Chosita/ampxrx_cho-20250427_165319-1464347640.jpg", "Amp Chosita/ampxrx_cho-20250506_211355-1683475682.jpg", "Amp Chosita/ampxrx_cho-20250506_211355-2630253306.jpg", "Amp Chosita/ampxrx_cho-20250506_211355-277651606.jpg", "Amp Chosita/ampxrx_cho-20250506_211355-46011649.jpg", "Amp Chosita/ampxrx_cho-20250705_115247-2665022651.jpg", "Amp Chosita/ampxrx_cho-20250705_115247-3083969089.jpg", "Amp Chosita/ampxrx_cho-20250705_115247-3374447379.jpg", "Amp Chosita/ampxrx_cho-20250705_115247-3971238529.jpg", "Amp Chosita/ampxrx_cho-20250727_121402-1801642540.jpg", "Amp Chosita/ampxrx_cho-20250727_121402-2653010391.jpg", "Amp Chosita/ampxrx_cho-20250727_121402-3427125027.jpg", "Amp Chosita/ampxrx_cho-20250727_121402-3492475306.jpg", "Amp Chosita/ampxrx_cho-20250727_121402-969702509.jpg", "Amp Chosita/ampxrx_cho-20250804_164451-1450438549.jpg", "Amp Chosita/ampxrx_cho-20250804_164451-3083499730.jpg", "Amp Chosita/ampxrx_cho-20250804_164451-3963711366.jpg", "Amp Chosita/ampxrx_cho-20250804_164451-4188035250.jpg", "Amp Chosita/ampxrx_cho-20250915_072803-1770257311.jpg", "Amp Chosita/ampxrx_cho-20250915_072803-538561097.jpg", "Amp Chosita/ampxrx_cho-20250915_072803-563683913.jpg"];
+        let currentIndex = 0;
+        let currentScale = 1;
+        let translateX = 0;
+        let translateY = 0;
+        let playing = false;
+        let playInterval;
+
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let swipeStartX = 0;
+
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        const playBtn = document.getElementById('play-btn');
+        const imgInput = document.getElementById('img-input');
+        const totalImgSpan = document.getElementById('total-img');
+
+        function openLightbox(index) {
+            currentIndex = index;
+            totalImgSpan.textContent = images.length;
+            imgInput.max = images.length;
+            
+            resetTransform();
+            updateImg(false);
+            lb.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeLightbox() {
+            lb.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            if(playing) togglePlay();
+            if(document.fullscreenElement) document.exitFullscreen();
+        }
+
+        function resetTransform() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+        }
+
+        function updateImg(smooth = true) {
+            lbImg.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
+            lbImg.src = images[currentIndex];
+            lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+            
+            // อัปเดตตัวเลขในช่อง Input
+            imgInput.value = currentIndex + 1;
+            
+            if (currentScale > 1) {
+                lbImg.style.cursor = isDragging ? 'grabbing' : 'grab';
+            } else {
+                lbImg.style.cursor = 'default';
+            }
+        }
+
+        function jumpToImg() {
+            let val = parseInt(imgInput.value);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > images.length) val = images.length;
+            
+            currentIndex = val - 1;
+            imgInput.value = val;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function nextImg() {
+            currentIndex = (currentIndex + 1) % images.length;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function prevImg() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function zoomIn() {
+            currentScale += 0.25;
+            updateImg(true);
+        }
+
+        function zoomOut() {
+            currentScale = Math.max(0.25, currentScale - 0.25);
+            if (currentScale <= 1) resetTransform();
+            updateImg(true);
+        }
+
+        function togglePlay() {
+            playing = !playing;
+            playBtn.innerHTML = playing ? '⏸' : '▶';
+            if(playing) {
+                playInterval = setInterval(nextImg, 2500);
+            } else {
+                clearInterval(playInterval);
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                lb.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function isInteractiveElement(target) {
+            const tag = target.tagName.toLowerCase();
+            return tag === 'button' || tag === 'input' || target.closest('button');
+        }
+
+        /* Drag, Pan & Swipe Events */
+        lb.addEventListener('mousedown', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
+            if (currentScale > 1) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                updateImg(false);
+                e.preventDefault();
+            } else {
+                isDragging = true;
+                swipeStartX = e.clientX;
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging && currentScale > 1) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateImg(false);
+            }
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
+            }
+        });
+
+        lb.addEventListener('touchstart', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
+            if (currentScale > 1 && e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            } else if (currentScale === 1 && e.touches.length === 1) {
+                isDragging = true;
+                swipeStartX = e.touches[0].clientX;
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && currentScale > 1 && e.touches.length === 1) {
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                updateImg(false);
+            }
+        });
+
+        window.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.changedTouches[0].clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
+            }
+        });
+
+        /* คีย์บอร์ด Shortcut */
+        window.addEventListener('keydown', function(e) {
+            if (lb.style.display === 'flex') {
+                if (document.activeElement === imgInput) {
+                    if (e.key === 'Enter') {
+                        imgInput.blur(); 
+                    } else if (e.key === 'Escape') {
+                        imgInput.blur();
+                    }
+                    return; 
+                }
+
+                if (e.key === 'ArrowRight') {
+                    nextImg();
+                } else if (e.key === 'ArrowLeft') {
+                    prevImg();
+                } else if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === '+' || e.key === '=') {
+                    zoomIn();
+                } else if (e.key === '-') {
+                    zoomOut();
+                } else if (e.key === ' ' || e.code === 'Space') {
+                    e.preventDefault(); 
+                    togglePlay();
+                } else if (e.key.toLowerCase() === 'f') {
+                    toggleFullscreen();
+                }
+            }
+        });
+
+        /* ลูกกลิ้งเมาส์ & Shift+Scroll */
+        lb.addEventListener('wheel', function(e) {
+            if (lb.style.display === 'flex') {
+                e.preventDefault(); 
+                
+                if (e.shiftKey) {
+                    if (e.deltaY < 0) {
+                        zoomIn(); 
+                    } else {
+                        zoomOut(); 
+                    }
+                } else {
+                    if (e.deltaY > 0) {
+                        nextImg(); 
+                    } else {
+                        prevImg(); 
+                    }
+                }
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
