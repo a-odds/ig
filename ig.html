@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IG Images</title>
+    <link rel="icon" href="https://img.icons8.com/officel/80/instagram-new.png">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fafafa;
+        }
+        .header {
+            text-align: center;
+            padding: 15px 10px;
+            background: #fff;
+            border-bottom: 1px solid #dbdbdb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .search-box {
+            width: 100%;
+            max-width: 400px; 
+            padding: 10px 15px;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            background: #efefef;
+            outline: none;
+            font-size: 16px;
+        }
+        .search-box:focus {
+            border-color: #a8a8a8;
+        }
+        .gallery-container {
+            max-width: 935px;
+            margin: 20px auto;
+            padding: 0 5px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+        }
+        .grid-item {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: #efefef;
+        }
+        .id-badge {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10;
+            pointer-events: none; /* ทำให้คลิกทะลุไปที่รูปได้ */
+        }
+        .grid-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .grid-item:hover img {
+            transform: scale(1.05);
+        }
+        /* ปรับสำหรับหน้าจอมือถือ (Responsive 1 คอลัมน์) */
+        @media (max-width: 768px) {
+            .grid { 
+                grid-template-columns: 1fr; 
+                gap: 15px; 
+            }
+            .gallery-container { 
+                margin: 15px auto; 
+                padding: 0 15px; 
+            }
+            .grid-item {
+                border-radius: 8px; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <!-- ระบบจะแสดงจำนวน id ทั้งหมดแบบอัตโนมัติ -->
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหา (Search)...จำนวน id ทั้งหมด 33" onkeyup="filterImages()">
+    </div>
+
+    <div class="gallery-container">
+        <div class="grid" id="imageGrid">
+
+            <div class="grid-item" data-id="1" data-title="surqueen🍊 (@surqueen)" title="ID: 1 | SURQUEEN🍊 (@surqueen)">
+                <span class="id-badge">#1</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/surqueen-20251128_102642-3385331535.jpg?raw=true" alt="SURQUEEN🍊 (@surqueen)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="2" data-title="chanyanuch busaen (@chanyanuch_hong)" title="ID: 2 | Chanyanuch Busaen (@chanyanuch_hong)">
+                <span class="id-badge">#2</span>
+                <a href="Chanyanuch.html" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/chanyanuch_hong-3956883381770897460_18971003583_1-20260805_150758.jpg?raw=true" alt="Chanyanuch Busaen (@chanyanuch_hong)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="3" data-title="amp chosita (@ampxrx_cho)" title="ID: 3 | Amp Chosita (@ampxrx_cho)">
+                <span class="id-badge">#3</span>
+                <a href="Amp Chosita.html" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/ampxrx_cho-20230524_142310-1896590074.jpg?raw=true" alt="Amp Chosita (@ampxrx_cho)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="4" data-title="𝐀𝐍𝐃𝐑𝐄 🔥🌲 (@diarydear_l) • น้องเดียร์ เภสัช" title="ID: 4 | 𝐀𝐍𝐃𝐑𝐄 🔥🌲 (@diarydear_l) • น้องเดียร์ เภสัช">
+                <span class="id-badge">#4</span>
+                <a href="Deer.html" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/03-diarydear_l-20251224_203323-661618155.jpg?raw=true" alt="𝐀𝐍𝐃𝐑𝐄 🔥🌲 (@diarydear_l) • น้องเดียร์ เภสัช" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="5" data-title="yoko (@pawarisazzz) • น้องหยก" title="ID: 5 | yoko (@pawarisazzz) • น้องหยก">
+                <span class="id-badge">#5</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/01-pawarisazzz-20250402_204311-3296679378.jpg?raw=true" alt="yoko (@pawarisazzz) • น้องหยก" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="6" data-title="xiang pornsroung rouyruen🦋 (@xiangpornsroung)" title="ID: 6 | Xiang Pornsroung Rouyruen🦋 (@xiangpornsroung)">
+                <span class="id-badge">#6</span>
+                <a href="Xiang.html" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/xiangpornsroung-20250430_170623-1315585097.mp4_snapshot_01.25.439.jpg?raw=true" alt="Xiang Pornsroung Rouyruen🦋 (@xiangpornsroung)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="7" data-title="tarisa preechatangkit (@stang.tari) • สตางค์" title="ID: 7 | Tarisa Preechatangkit (@stang.tari) • สตางค์">
+                <span class="id-badge">#7</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/stang.tari-3881454907019208723_7615458278_4-20260423_132503.jpg?raw=true" alt="Tarisa Preechatangkit (@stang.tari) • สตางค์" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="8" data-title="jelly namjai (เจลลี่) (@jjellyjelly)" title="ID: 8 | Jelly Namjai (เจลลี่) (@jjellyjelly)">
+                <span class="id-badge">#8</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/jjellyjelly-3655517458089298503_18871327_4-20250615_194740%20-%20Copy.jpg?raw=true" alt="Jelly Namjai (เจลลี่) (@jjellyjelly)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="9" data-title="ramida p pawan (@_rramidaa_)" title="ID: 9 | Ramida P Pawan (@_rramidaa_)">
+                <span class="id-badge">#9</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/01-_rramidaa_-3882263578661823856_1-20260424_161159.jpg?raw=true" alt="Ramida P Pawan (@_rramidaa_)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="10" data-title="khaimook ;) (@khaimook.bnk48official)" title="ID: 10 | Khaimook ;) (@khaimook.bnk48official)">
+                <span class="id-badge">#10</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/04-khaimook.bnk48official-3924374766758616763_4-20260621_183955.jpg?raw=true" alt="Khaimook ;) (@khaimook.bnk48official)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="11" data-title="𝒩𝑒𝓃𝒾𝑒 (@neni3pcyy)" title="ID: 11 | 𝒩𝑒𝓃𝒾𝑒 (@neni3pcyy)">
+                <span class="id-badge">#11</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/01-neni3pcyy-20260403_194002-3172389540.jpg?raw=true" alt="𝒩𝑒𝓃𝒾𝑒 (@neni3pcyy)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="12" data-title="punch ̵ ̀◟🎀ᯓ﹆◞. 16.02.2006 (@ppunchii.wcrr)" title="ID: 12 | Punch ̵ ̀◟🎀ᯓ﹆◞. 16.02.2006 (@ppunchii.wcrr)">
+                <span class="id-badge">#12</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/01-ppunchii.wcrr-20260103_171844-2947661306.jpg?raw=true" alt="Punch ̵ ̀◟🎀ᯓ﹆◞. 16.02.2006 (@ppunchii.wcrr)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="13" data-title="sita teeradechsakul (@sitaaaaaaaaa.a)" title="ID: 13 | Sita Teeradechsakul (@sitaaaaaaaaa.a)">
+                <span class="id-badge">#13</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/gifgit.gif?raw=true" alt="Sita Teeradechsakul (@sitaaaaaaaaa.a)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="14" data-title="มิ นิ (@punyapohn_pyp)" title="ID: 14 | มิ นิ (@punyapohn_pyp)">
+                <span class="id-badge">#14</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/punyapohn_pyp-3856300615727522983_413848227_5-20260319_202758.jpg?raw=true" alt="มิ นิ (@punyapohn_pyp)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="15" data-title="tukta (@ttukta.03)" title="ID: 15 | TUKTA (@ttukta.03)">
+                <span class="id-badge">#15</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/03-ttukta.03-3890768163034318195_3-20260506_094852(1).jpg?raw=true" alt="TUKTA (@ttukta.03)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="16" data-title="nanui🌷⛈️🌈💕 (@nanui.q)" title="ID: 16 | Nanui🌷⛈️🌈💕 (@nanui.q)">
+                <span class="id-badge">#16</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/nanui.q__2026-06-19T154433.000Z.jpg?raw=true" alt="Nanui🌷⛈️🌈💕 (@nanui.q)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="17" data-title="อริสา สาวน้อยเวียงจันทน์ (@alisa.vongvinai)" title="ID: 17 | อริสา สาวน้อยเวียงจันทน์ (@alisa.vongvinai)">
+                <span class="id-badge">#17</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/alisa.vongvinai-3782160537531425299_17337304718_3-20251207_132452.jpg?raw=true" alt="อริสา สาวน้อยเวียงจันทน์ (@alisa.vongvinai)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="18" data-title="น้องเบนซ์ ทันตแพทย์" title="ID: 18 | น้องเบนซ์ ทันตแพทย์">
+                <span class="id-badge">#18</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/benzjrch-20250701_201059-1704737402.jpg?raw=true" alt="น้องเบนซ์ ทันตแพทย์" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="19" data-title="lê phương anh (@phuong.anh.17.09)" title="ID: 19 | Lê Phương Anh (@phuong.anh.17.09)">
+                <span class="id-badge">#19</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/03-phuong.anh.17.09-20250519_221448-2672285537.jpg?raw=true" alt="Lê Phương Anh (@phuong.anh.17.09)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="20" data-title="mint sarika (@mint_sarika)" title="ID: 20 | Mint Sarika (@mint_sarika)">
+                <span class="id-badge">#20</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/03-mint_sarika-20250404_205107-3964401320.jpg?raw=true" alt="Mint Sarika (@mint_sarika)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="21" data-title="noon (@noon_sutthipha)" title="ID: 21 | Noon (@noon_sutthipha)">
+                <span class="id-badge">#21</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/noon_sutthipha-20250701_103442-3766366635.jpg?raw=true" alt="Noon (@noon_sutthipha)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="22" data-title="𝕮𝖆𝖑𝖑 𝖒𝖊 𝕬𝖈𝖙𝖎𝖔𝖓 (@action.pc)" title="ID: 22 | 𝕮𝖆𝖑𝖑 𝖒𝖊 𝕬𝖈𝖙𝖎𝖔𝖓 (@action.pc)">
+                <span class="id-badge">#22</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/action.pc-3943836074376421887_143777273_1-20260718_150502.jpg?raw=true" alt="𝕮𝖆𝖑𝖑 𝖒𝖊 𝕬𝖈𝖙𝖎𝖔𝖓 (@action.pc)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="23" data-title="퓨딩 (@pureding_)" title="ID: 23 | 퓨딩 (@pureding_)">
+                <span class="id-badge">#23</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/pureding_-3951978486897395567_1482061312_1-20260729_204249.jpg?raw=true" alt="퓨딩 (@pureding_)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="24" data-title="dn. (@july.hydrangea)" title="ID: 24 | dn. (@july.hydrangea)">
+                <span class="id-badge">#24</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/nuttsu_cha-3773751434199126100_20492823852_1-20251125_225729.jpg?raw=true" alt="dn. (@july.hydrangea)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="25" data-title="π (@piepiies)" title="ID: 25 | π (@piepiies)">
+                <span class="id-badge">#25</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/piepiies-3895394547656768933_183651910_1-20260512_190038.jpg?raw=true" alt="π (@piepiies)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="26" data-title="mook (@mookptn_)" title="ID: 26 | mook (@mookptn_)">
+                <span class="id-badge">#26</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/mookptn_-3749457875375707288_1666494508_1-20251023_103031.jpg?raw=true" alt="mook (@mookptn_)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="27" data-title="지민 (@jimin._.uu)" title="ID: 27 | 지민 (@jimin._.uu)">
+                <span class="id-badge">#27</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/jimin._.uu-3959761373537354559_77209921251_2-20260809_142601.jpg?raw=true" alt="지민 (@jimin._.uu)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="28" data-title="patteera🌻 (@deewwwp)" title="ID: 28 | Patteera🌻 (@deewwwp)">
+                <span class="id-badge">#28</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/deewwwp-3920738574136214187_9018546_1-20260616_181441.jpg?raw=true" alt="Patteera🌻 (@deewwwp)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="29" data-title="viva pinya (@tettaviva)" title="ID: 29 | Viva Pinya (@tettaviva)">
+                <span class="id-badge">#29</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/tettaviva-3914921827768670874_195180623_1-20260608_173751.jpg?raw=true" alt="Viva Pinya (@tettaviva)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="30" data-title="❁ и α м f σ и ♡ (@fnamfon)" title="ID: 30 | ❁ и α м f σ и ♡ (@fnamfon)">
+                <span class="id-badge">#30</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/fnamfon-2826135058556202010_25265309_1-20220428_115254.jpg?raw=true" alt="❁ и α м f σ и ♡ (@fnamfon)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="31" data-title="puii pp :) (@puii_titakan)" title="ID: 31 | PUII PP :) (@puii_titakan)">
+                <span class="id-badge">#31</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/puii_titakan-3942554599505746838_7228956_1-20260716_203914.jpg?raw=true" alt="PUII PP :) (@puii_titakan)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="32" data-title="hồ mẫn nghi (@maaxn.nghi)" title="ID: 32 | Hồ Mẫn Nghi (@maaxn.nghi)">
+                <span class="id-badge">#32</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/maaxn.nghi-3914685966678398716_5713456476_1-20260608_094914.jpg?raw=true" alt="Hồ Mẫn Nghi (@maaxn.nghi)" loading="lazy">
+                </a>
+            </div>
+            <div class="grid-item" data-id="33" data-title="pd (@ploydaomncy)" title="ID: 33 | pd (@ploydaomncy)">
+                <span class="id-badge">#33</span>
+                <a href="" target="_blank">
+                    <img src="https://github.com/a-odds/ig/blob/main/ig/ploydaomncy-3664968060441761510_833085771_4-20250628_204420.jpg?raw=true" alt="pd (@ploydaomncy)" loading="lazy">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterImages() {
+            const input = document.getElementById('searchInput').value.trim().toLowerCase();
+            const items = document.querySelectorAll('.grid-item');
+            
+            // เช็คว่าช่องค้นหากรอกแต่ตัวเลขใช่หรือไม่
+            const isNumberOnly = /^\d+$/.test(input);
+            
+            items.forEach(item => {
+                const title = item.getAttribute('data-title');
+                const id = item.getAttribute('data-id');
+                
+                if (input === '') {
+                    item.style.display = '';
+                } else if (isNumberOnly) {
+                    // หากกรอกตัวเลข จะค้นหาจาก ID ที่เริ่มต้นด้วยเลขนั้น (เพื่อให้พิมพ์ 12 แล้วขึ้นเลยโดยไม่ต้องรอพิมพ์เสร็จ)
+                    // หากต้องการให้ตรงเป๊ะ เปลี่ยนเป็น: if (id === input)
+                    if (id.startsWith(input)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                } else {
+                    // หากกรอกตัวอักษร จะค้นหาจาก Hover Title
+                    if (title.includes(input)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
