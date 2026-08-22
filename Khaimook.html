@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KHAIMOOK</title>
+    <link rel="icon" href="https://img.icons8.com/fluency/48/instagram-pride.png">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fafafa; margin: 0; padding: 0; }
+        .header { text-align: center; padding: 20px; background: #fff; border-bottom: 1px solid #dbdbdb; position: sticky; top: 0; z-index: 100; }
+        h1 { margin: 0; font-size: 24px; color: #262626; }
+        .gallery-container { max-width: 935px; margin: 20px auto; padding: 0 5px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+        .grid-item { aspect-ratio: 1/1; overflow: hidden; background: #efefef; cursor: pointer; }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .grid-item:hover img { transform: scale(1.05); }
+
+        /* Lightbox Style */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
+        .lightbox img { 
+            max-width: 90%; max-height: 90%; 
+            object-fit: contain; 
+            user-select: none; 
+            -webkit-user-drag: none;
+        }
+        
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; font-size: 35px; padding: 10px 20px; cursor: pointer; z-index: 1010; border-radius: 8px; user-select: none; }
+        .nav-btn:hover { background: rgba(0,0,0,0.8); }
+        .nav-left { left: 20px; }
+        .nav-right { right: 20px; }
+
+        .top-bar { position: absolute; top: 20px; right: 20px; z-index: 1010; display: flex; gap: 10px; }
+        .top-bar button { background: rgba(0,0,0,0.5); color: white; border: none; font-size: 24px; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; }
+        .top-bar button:hover { background: rgba(0,0,0,0.8); }
+
+        /* ชุดปุ่มควบคุมมุมซ้ายบน */
+        .top-left-controls { position: absolute; top: 20px; left: 20px; z-index: 1010; display: flex; flex-direction: column; gap: 10px; }
+        
+        .control-bar { display: flex; gap: 15px; background: rgba(0,0,0,0.6); padding: 10px 25px; border-radius: 30px; align-items: center; justify-content: center; }
+        .control-bar button { background: none; border: none; color: white; font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .control-bar button:hover { color: #0095f6; transform: scale(1.1); }
+        .play-btn { font-size: 32px !important; }
+
+        .info-bar { display: flex; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; align-items: center; color: white; gap: 8px; font-size: 16px; justify-content: center; font-family: monospace; }
+        .info-bar input { width: 50px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; text-align: center; font-size: 16px; border-radius: 6px; padding: 4px; outline: none; transition: background 0.2s; font-family: monospace; }
+        .info-bar input:focus { background: rgba(255,255,255,0.4); border-color: #0095f6; }
+        
+        /* ซ่อนลูกศรใน input type number */
+        .info-bar input::-webkit-outer-spin-button, .info-bar input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .info-bar input[type=number] { -moz-appearance: textfield; }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
+            .top-left-controls { top: 15px; left: 15px; gap: 8px; }
+            .control-bar { padding: 5px 15px; gap: 10px; }
+            .control-bar button { font-size: 20px; }
+            .play-btn { font-size: 24px !important; }
+            .info-bar { font-size: 14px; padding: 5px 10px; }
+            .info-bar input { width: 40px; font-size: 14px; padding: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>KHAIMOOK</h1>
+    </div>
+
+    <div class="gallery-container">
+        <div class="grid">
+            
+        <div class="grid-item" onclick="openLightbox(0)">
+            <img src="Khaimook/01-khaimook.bnk48official-20251103_185625-539258227.jpg" loading="lazy" alt="Image 0">
+        </div>
+        <div class="grid-item" onclick="openLightbox(1)">
+            <img src="Khaimook/01-khaimook.bnk48official-20251130_190331-1722481813.jpg" loading="lazy" alt="Image 1">
+        </div>
+        <div class="grid-item" onclick="openLightbox(2)">
+            <img src="Khaimook/01-khaimook.bnk48official-20251216_163933-4007530402.jpg" loading="lazy" alt="Image 2">
+        </div>
+        <div class="grid-item" onclick="openLightbox(3)">
+            <img src="Khaimook/01-khaimook.bnk48official-20251229_203514-3661277299.jpg" loading="lazy" alt="Image 3">
+        </div>
+        <div class="grid-item" onclick="openLightbox(4)">
+            <img src="Khaimook/01-khaimook.bnk48official-20260125_165232-3750194160.jpg" loading="lazy" alt="Image 4">
+        </div>
+        <div class="grid-item" onclick="openLightbox(5)">
+            <img src="Khaimook/01-khaimook.bnk48official-20260131_183405-3571191561.jpg" loading="lazy" alt="Image 5">
+        </div>
+        <div class="grid-item" onclick="openLightbox(6)">
+            <img src="Khaimook/01-khaimook.bnk48official-20260322_114351-3074892111.jpg" loading="lazy" alt="Image 6">
+        </div>
+        <div class="grid-item" onclick="openLightbox(7)">
+            <img src="Khaimook/02-khaimook.bnk48official-20251103_185625-2467146736.jpg" loading="lazy" alt="Image 7">
+        </div>
+        <div class="grid-item" onclick="openLightbox(8)">
+            <img src="Khaimook/02-khaimook.bnk48official-20251130_190331-1716910954.jpg" loading="lazy" alt="Image 8">
+        </div>
+        <div class="grid-item" onclick="openLightbox(9)">
+            <img src="Khaimook/02-khaimook.bnk48official-20251216_163933-4291681523.jpg" loading="lazy" alt="Image 9">
+        </div>
+        <div class="grid-item" onclick="openLightbox(10)">
+            <img src="Khaimook/02-khaimook.bnk48official-20251229_203514-1817496909.jpg" loading="lazy" alt="Image 10">
+        </div>
+        <div class="grid-item" onclick="openLightbox(11)">
+            <img src="Khaimook/02-khaimook.bnk48official-20260125_165232-774010171.jpg" loading="lazy" alt="Image 11">
+        </div>
+        <div class="grid-item" onclick="openLightbox(12)">
+            <img src="Khaimook/02-khaimook.bnk48official-20260131_183405-3467296688.jpg" loading="lazy" alt="Image 12">
+        </div>
+        <div class="grid-item" onclick="openLightbox(13)">
+            <img src="Khaimook/02-khaimook.bnk48official-20260322_114351-529458177.jpg" loading="lazy" alt="Image 13">
+        </div>
+        <div class="grid-item" onclick="openLightbox(14)">
+            <img src="Khaimook/03-khaimook.bnk48official-20251103_185625-1225411615.jpg" loading="lazy" alt="Image 14">
+        </div>
+        <div class="grid-item" onclick="openLightbox(15)">
+            <img src="Khaimook/03-khaimook.bnk48official-20251130_190331-1716998315.jpg" loading="lazy" alt="Image 15">
+        </div>
+        <div class="grid-item" onclick="openLightbox(16)">
+            <img src="Khaimook/03-khaimook.bnk48official-20251229_203514-3744611684.jpg" loading="lazy" alt="Image 16">
+        </div>
+        <div class="grid-item" onclick="openLightbox(17)">
+            <img src="Khaimook/03-khaimook.bnk48official-20260125_165232-2457620767.jpg" loading="lazy" alt="Image 17">
+        </div>
+        <div class="grid-item" onclick="openLightbox(18)">
+            <img src="Khaimook/03-khaimook.bnk48official-20260131_183405-1443772690.jpg" loading="lazy" alt="Image 18">
+        </div>
+        <div class="grid-item" onclick="openLightbox(19)">
+            <img src="Khaimook/03-khaimook.bnk48official-20260322_114351-1459029798.jpg" loading="lazy" alt="Image 19">
+        </div>
+        <div class="grid-item" onclick="openLightbox(20)">
+            <img src="Khaimook/04-khaimook.bnk48official-20251103_185625-2468065570.jpg" loading="lazy" alt="Image 20">
+        </div>
+        <div class="grid-item" onclick="openLightbox(21)">
+            <img src="Khaimook/04-khaimook.bnk48official-20251130_190331-600607202.jpg" loading="lazy" alt="Image 21">
+        </div>
+        <div class="grid-item" onclick="openLightbox(22)">
+            <img src="Khaimook/04-khaimook.bnk48official-20251216_163933-4007568783.jpg" loading="lazy" alt="Image 22">
+        </div>
+        <div class="grid-item" onclick="openLightbox(23)">
+            <img src="Khaimook/04-khaimook.bnk48official-20251229_203514-3664969391.jpg" loading="lazy" alt="Image 23">
+        </div>
+        <div class="grid-item" onclick="openLightbox(24)">
+            <img src="Khaimook/04-khaimook.bnk48official-20260125_165232-159078024.jpg" loading="lazy" alt="Image 24">
+        </div>
+        <div class="grid-item" onclick="openLightbox(25)">
+            <img src="Khaimook/04-khaimook.bnk48official-20260131_183405-1788861994.jpg" loading="lazy" alt="Image 25">
+        </div>
+        <div class="grid-item" onclick="openLightbox(26)">
+            <img src="Khaimook/04-khaimook.bnk48official-20260322_114351-4279714004.jpg" loading="lazy" alt="Image 26">
+        </div>
+        <div class="grid-item" onclick="openLightbox(27)">
+            <img src="Khaimook/05-khaimook.bnk48official-20251103_185625-1255094882.jpg" loading="lazy" alt="Image 27">
+        </div>
+        <div class="grid-item" onclick="openLightbox(28)">
+            <img src="Khaimook/05-khaimook.bnk48official-20251130_190331-1292669679.jpg" loading="lazy" alt="Image 28">
+        </div>
+        <div class="grid-item" onclick="openLightbox(29)">
+            <img src="Khaimook/05-khaimook.bnk48official-20251229_203514-130281483.jpg" loading="lazy" alt="Image 29">
+        </div>
+        <div class="grid-item" onclick="openLightbox(30)">
+            <img src="Khaimook/05-khaimook.bnk48official-20260125_165232-3143081147.jpg" loading="lazy" alt="Image 30">
+        </div>
+        <div class="grid-item" onclick="openLightbox(31)">
+            <img src="Khaimook/05-khaimook.bnk48official-20260131_183405-3211602952.jpg" loading="lazy" alt="Image 31">
+        </div>
+        <div class="grid-item" onclick="openLightbox(32)">
+            <img src="Khaimook/05-khaimook.bnk48official-20260322_114351-4048023701.jpg" loading="lazy" alt="Image 32">
+        </div>
+        <div class="grid-item" onclick="openLightbox(33)">
+            <img src="Khaimook/06-khaimook.bnk48official-20251103_185625-1258641127.jpg" loading="lazy" alt="Image 33">
+        </div>
+        <div class="grid-item" onclick="openLightbox(34)">
+            <img src="Khaimook/06-khaimook.bnk48official-20251130_190331-1508777299.jpg" loading="lazy" alt="Image 34">
+        </div>
+        <div class="grid-item" onclick="openLightbox(35)">
+            <img src="Khaimook/06-khaimook.bnk48official-20251229_203514-272705144.jpg" loading="lazy" alt="Image 35">
+        </div>
+        <div class="grid-item" onclick="openLightbox(36)">
+            <img src="Khaimook/06-khaimook.bnk48official-20260322_114351-2981415531.jpg" loading="lazy" alt="Image 36">
+        </div>
+        <div class="grid-item" onclick="openLightbox(37)">
+            <img src="Khaimook/07-khaimook.bnk48official-20251103_185625-1254110912.jpg" loading="lazy" alt="Image 37">
+        </div>
+        <div class="grid-item" onclick="openLightbox(38)">
+            <img src="Khaimook/07-khaimook.bnk48official-20251130_190331-744980655.jpg" loading="lazy" alt="Image 38">
+        </div>
+        <div class="grid-item" onclick="openLightbox(39)">
+            <img src="Khaimook/07-khaimook.bnk48official-20251229_203514-3661365548.jpg" loading="lazy" alt="Image 39">
+        </div>
+        <div class="grid-item" onclick="openLightbox(40)">
+            <img src="Khaimook/07-khaimook.bnk48official-20260322_114351-3259562503.jpg" loading="lazy" alt="Image 40">
+        </div>
+        <div class="grid-item" onclick="openLightbox(41)">
+            <img src="Khaimook/08-khaimook.bnk48official-20251103_185625-540122319.jpg" loading="lazy" alt="Image 41">
+        </div>
+        <div class="grid-item" onclick="openLightbox(42)">
+            <img src="Khaimook/08-khaimook.bnk48official-20251130_190331-600601373.jpg" loading="lazy" alt="Image 42">
+        </div>
+        <div class="grid-item" onclick="openLightbox(43)">
+            <img src="Khaimook/08-khaimook.bnk48official-20251229_203514-83971319.jpg" loading="lazy" alt="Image 43">
+        </div>
+        <div class="grid-item" onclick="openLightbox(44)">
+            <img src="Khaimook/09-khaimook.bnk48official-20251103_185625-1255993421.jpg" loading="lazy" alt="Image 44">
+        </div>
+        <div class="grid-item" onclick="openLightbox(45)">
+            <img src="Khaimook/09-khaimook.bnk48official-20251130_190331-610926405.jpg" loading="lazy" alt="Image 45">
+        </div>
+        <div class="grid-item" onclick="openLightbox(46)">
+            <img src="Khaimook/10-khaimook.bnk48official-20251103_185625-1258585393.jpg" loading="lazy" alt="Image 46">
+        </div>
+        <div class="grid-item" onclick="openLightbox(47)">
+            <img src="Khaimook/10-khaimook.bnk48official-20251130_190331-1720779909.jpg" loading="lazy" alt="Image 47">
+        </div>
+        <div class="grid-item" onclick="openLightbox(48)">
+            <img src="Khaimook/11-khaimook.bnk48official-20251103_185625-564071281.jpg" loading="lazy" alt="Image 48">
+        </div>
+        <div class="grid-item" onclick="openLightbox(49)">
+            <img src="Khaimook/11-khaimook.bnk48official-20251130_190331-599713560.jpg" loading="lazy" alt="Image 49">
+        </div>
+        <div class="grid-item" onclick="openLightbox(50)">
+            <img src="Khaimook/13-khaimook.bnk48official-20251103_185625-3228500578.jpg" loading="lazy" alt="Image 50">
+        </div>
+        <div class="grid-item" onclick="openLightbox(51)">
+            <img src="Khaimook/14-khaimook.bnk48official-20251103_185625-482559162.jpg" loading="lazy" alt="Image 51">
+        </div>
+        <div class="grid-item" onclick="openLightbox(52)">
+            <img src="Khaimook/khaimook.bnk48official-20260317_225314-36240135.jpg" loading="lazy" alt="Image 52">
+        </div>
+        <div class="grid-item" onclick="openLightbox(53)">
+            <img src="Khaimook/khaimook.bnk48official-20260319_174158-1948006500.jpg" loading="lazy" alt="Image 53">
+        </div>
+        <div class="grid-item" onclick="openLightbox(54)">
+            <img src="Khaimook/khaimook.bnk48official-20260319_174158-1948006501.jpg" loading="lazy" alt="Image 54">
+        </div>
+        <div class="grid-item" onclick="openLightbox(55)">
+            <img src="Khaimook/khaimook.bnk48official-20260319_174158-1948006502.jpg" loading="lazy" alt="Image 55">
+        </div>
+        <div class="grid-item" onclick="openLightbox(56)">
+            <img src="Khaimook/khaimook.bnk48official-20260319_174158-1948006503.jpg" loading="lazy" alt="Image 56">
+        </div>
+        <div class="grid-item" onclick="openLightbox(57)">
+            <img src="Khaimook/khaimook.bnk48official-3939713542861804900_64197580804_14-20260712_223434.jpg" loading="lazy" alt="Image 57">
+        </div>
+        <div class="grid-item" onclick="openLightbox(58)">
+            <img src="Khaimook/khaimook.bnk48official-3939713542861804900_64197580804_3-20260712_223434.jpg" loading="lazy" alt="Image 58">
+        </div>
+        <div class="grid-item" onclick="openLightbox(59)">
+            <img src="Khaimook/khaimook.bnk48official-3939713542861804900_64197580804_5-20260712_223434.jpg" loading="lazy" alt="Image 59">
+        </div>
+        <div class="grid-item" onclick="openLightbox(60)">
+            <img src="Khaimook/khaimook.bnk48official-3939713542861804900_64197580804_8-20260712_223434.jpg" loading="lazy" alt="Image 60">
+        </div>
+        <div class="grid-item" onclick="openLightbox(61)">
+            <img src="Khaimook/khaimook.bnk48official-3939713542861804900_64197580804_9-20260712_223434.jpg" loading="lazy" alt="Image 61">
+        </div>
+        <div class="grid-item" onclick="openLightbox(62)">
+            <img src="Khaimook/khaimook.bnk48official-3940980771528420312_64197580804_2-20260714_163219.jpg" loading="lazy" alt="Image 62">
+        </div>
+        <div class="grid-item" onclick="openLightbox(63)">
+            <img src="Khaimook/khaimook.bnk48official-3940980771528420312_64197580804_5-20260714_163219.jpg" loading="lazy" alt="Image 63">
+        </div>
+        <div class="grid-item" onclick="openLightbox(64)">
+            <img src="Khaimook/khaimook.bnk48official-3940980771528420312_64197580804_7-20260714_163219.jpg" loading="lazy" alt="Image 64">
+        </div>
+        <div class="grid-item" onclick="openLightbox(65)">
+            <img src="Khaimook/khaimook.bnk48official-3940980771528420312_64197580804_8-20260714_163219.jpg" loading="lazy" alt="Image 65">
+        </div>
+        <div class="grid-item" onclick="openLightbox(66)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/01-khaimook.bnk48official-3904193801608270592_1-20260524_222451.jpg" loading="lazy" alt="Image 66">
+        </div>
+        <div class="grid-item" onclick="openLightbox(67)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/02-khaimook.bnk48official-3904193833577280355_2-20260524_222451.jpg" loading="lazy" alt="Image 67">
+        </div>
+        <div class="grid-item" onclick="openLightbox(68)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/03-khaimook.bnk48official-3904193841512849718_3-20260524_222451.jpg" loading="lazy" alt="Image 68">
+        </div>
+        <div class="grid-item" onclick="openLightbox(69)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/04-khaimook.bnk48official-3904193848509171294_4-20260524_222451.jpg" loading="lazy" alt="Image 69">
+        </div>
+        <div class="grid-item" onclick="openLightbox(70)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/05-khaimook.bnk48official-3904193855983428245_5-20260524_222451.jpg" loading="lazy" alt="Image 70">
+        </div>
+        <div class="grid-item" onclick="openLightbox(71)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/07-khaimook.bnk48official-3904193863222576594_7-20260524_222451.jpg" loading="lazy" alt="Image 71">
+        </div>
+        <div class="grid-item" onclick="openLightbox(72)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/08-khaimook.bnk48official-3904193870176912767_8-20260524_222451.jpg" loading="lazy" alt="Image 72">
+        </div>
+        <div class="grid-item" onclick="openLightbox(73)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/09-khaimook.bnk48official-3904193883573346469_9-20260524_222451.jpg" loading="lazy" alt="Image 73">
+        </div>
+        <div class="grid-item" onclick="openLightbox(74)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/10-khaimook.bnk48official-3904193892188581543_10-20260524_222451.jpg" loading="lazy" alt="Image 74">
+        </div>
+        <div class="grid-item" onclick="openLightbox(75)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/12-khaimook.bnk48official-3904193907330048324_12-20260524_222451.jpg" loading="lazy" alt="Image 75">
+        </div>
+        <div class="grid-item" onclick="openLightbox(76)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/13-khaimook.bnk48official-3904193946076903490_13-20260524_222451.jpg" loading="lazy" alt="Image 76">
+        </div>
+        <div class="grid-item" onclick="openLightbox(77)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/14-khaimook.bnk48official-3904193971561541859_14-20260524_222451.jpg" loading="lazy" alt="Image 77">
+        </div>
+        <div class="grid-item" onclick="openLightbox(78)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/15-khaimook.bnk48official-3904193978364740958_15-20260524_222451.jpg" loading="lazy" alt="Image 78">
+        </div>
+        <div class="grid-item" onclick="openLightbox(79)">
+            <img src="Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/17-khaimook.bnk48official-3904193979916560210_17-20260524_222451.jpg" loading="lazy" alt="Image 79">
+        </div>
+        <div class="grid-item" onclick="openLightbox(80)">
+            <img src="Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/01-khaimook.bnk48official-3924374725427781862_1-20260621_183955.jpg" loading="lazy" alt="Image 80">
+        </div>
+        <div class="grid-item" onclick="openLightbox(81)">
+            <img src="Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/02-khaimook.bnk48official-3924374749629041803_2-20260621_183955.jpg" loading="lazy" alt="Image 81">
+        </div>
+        <div class="grid-item" onclick="openLightbox(82)">
+            <img src="Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/03-khaimook.bnk48official-3924374755291249035_3-20260621_183955.jpg" loading="lazy" alt="Image 82">
+        </div>
+        <div class="grid-item" onclick="openLightbox(83)">
+            <img src="Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/04-khaimook.bnk48official-3924374766758616763_4-20260621_183955.jpg" loading="lazy" alt="Image 83">
+        </div>
+        <div class="grid-item" onclick="openLightbox(84)">
+            <img src="Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/05-khaimook.bnk48official-3924374813869075433_5-20260621_183955.jpg" loading="lazy" alt="Image 84">
+        </div>
+        <div class="grid-item" onclick="openLightbox(85)">
+            <img src="Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/08-khaimook.bnk48official-3924374828582611412_8-20260621_183955.jpg" loading="lazy" alt="Image 85">
+        </div>
+        <div class="grid-item" onclick="openLightbox(86)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/01-khaimook.bnk48official-3926522490605966214_1-20260624_174730.jpg" loading="lazy" alt="Image 86">
+        </div>
+        <div class="grid-item" onclick="openLightbox(87)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/02-khaimook.bnk48official-3926522520041547742_2-20260624_174730.jpg" loading="lazy" alt="Image 87">
+        </div>
+        <div class="grid-item" onclick="openLightbox(88)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/03-khaimook.bnk48official-3926522530812476993_3-20260624_174730.jpg" loading="lazy" alt="Image 88">
+        </div>
+        <div class="grid-item" onclick="openLightbox(89)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/04-khaimook.bnk48official-3926522569769113810_4-20260624_174730.jpg" loading="lazy" alt="Image 89">
+        </div>
+        <div class="grid-item" onclick="openLightbox(90)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/05-khaimook.bnk48official-3926522581605643870_5-20260624_174730.jpg" loading="lazy" alt="Image 90">
+        </div>
+        <div class="grid-item" onclick="openLightbox(91)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/06-khaimook.bnk48official-3926522599196454781_6-20260624_174730.jpg" loading="lazy" alt="Image 91">
+        </div>
+        <div class="grid-item" onclick="openLightbox(92)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/07-khaimook.bnk48official-3926522596897870593_7-20260624_174730.jpg" loading="lazy" alt="Image 92">
+        </div>
+        <div class="grid-item" onclick="openLightbox(93)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/08-khaimook.bnk48official-3926522617559048666_8-20260624_174730.jpg" loading="lazy" alt="Image 93">
+        </div>
+        <div class="grid-item" onclick="openLightbox(94)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/09-khaimook.bnk48official-3926522652145480708_9-20260624_174730.jpg" loading="lazy" alt="Image 94">
+        </div>
+        <div class="grid-item" onclick="openLightbox(95)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/10-khaimook.bnk48official-3926522670348675986_10-20260624_174730.jpg" loading="lazy" alt="Image 95">
+        </div>
+        <div class="grid-item" onclick="openLightbox(96)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/11-khaimook.bnk48official-3926522693710895792_11-20260624_174730.jpg" loading="lazy" alt="Image 96">
+        </div>
+        <div class="grid-item" onclick="openLightbox(97)">
+            <img src="Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/13-khaimook.bnk48official-3926522761440423875_13-20260624_174730.jpg" loading="lazy" alt="Image 97">
+        </div>
+        <div class="grid-item" onclick="openLightbox(98)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/01-khaimook.bnk48official-3911364520679144994_1-20260603_195049.jpg" loading="lazy" alt="Image 98">
+        </div>
+        <div class="grid-item" onclick="openLightbox(99)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/02-khaimook.bnk48official-3911364564358778225_2-20260603_195049.jpg" loading="lazy" alt="Image 99">
+        </div>
+        <div class="grid-item" onclick="openLightbox(100)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/03-khaimook.bnk48official-3911364592904971966_3-20260603_195049.jpg" loading="lazy" alt="Image 100">
+        </div>
+        <div class="grid-item" onclick="openLightbox(101)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/05-khaimook.bnk48official-3911364616661524558_5-20260603_195049.jpg" loading="lazy" alt="Image 101">
+        </div>
+        <div class="grid-item" onclick="openLightbox(102)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/06-khaimook.bnk48official-3911364625117248606_6-20260603_195049.jpg" loading="lazy" alt="Image 102">
+        </div>
+        <div class="grid-item" onclick="openLightbox(103)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/07-khaimook.bnk48official-3911364634999116545_7-20260603_195049.jpg" loading="lazy" alt="Image 103">
+        </div>
+        <div class="grid-item" onclick="openLightbox(104)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/08-khaimook.bnk48official-3911364650182512252_8-20260603_195049.jpg" loading="lazy" alt="Image 104">
+        </div>
+        <div class="grid-item" onclick="openLightbox(105)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/09-khaimook.bnk48official-3911364655081556994_9-20260603_195049.jpg" loading="lazy" alt="Image 105">
+        </div>
+        <div class="grid-item" onclick="openLightbox(106)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/10-khaimook.bnk48official-3911364665130911894_10-20260603_195049.jpg" loading="lazy" alt="Image 106">
+        </div>
+        <div class="grid-item" onclick="openLightbox(107)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/11-khaimook.bnk48official-3911364679232357951_11-20260603_195049.jpg" loading="lazy" alt="Image 107">
+        </div>
+        <div class="grid-item" onclick="openLightbox(108)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/12-khaimook.bnk48official-3911364707510291159_12-20260603_195049.jpg" loading="lazy" alt="Image 108">
+        </div>
+        <div class="grid-item" onclick="openLightbox(109)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/13-khaimook.bnk48official-3911364722576319471_13-20260603_195049.jpg" loading="lazy" alt="Image 109">
+        </div>
+        <div class="grid-item" onclick="openLightbox(110)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/14-khaimook.bnk48official-3911364733632333471_14-20260603_195049.jpg" loading="lazy" alt="Image 110">
+        </div>
+        <div class="grid-item" onclick="openLightbox(111)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/15-khaimook.bnk48official-3911364739915478125_15-20260603_195049.jpg" loading="lazy" alt="Image 111">
+        </div>
+        <div class="grid-item" onclick="openLightbox(112)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/16-khaimook.bnk48official-3911364747414969217_16-20260603_195049.jpg" loading="lazy" alt="Image 112">
+        </div>
+        <div class="grid-item" onclick="openLightbox(113)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/17-khaimook.bnk48official-3911364756709475420_17-20260603_195049.jpg" loading="lazy" alt="Image 113">
+        </div>
+        <div class="grid-item" onclick="openLightbox(114)">
+            <img src="Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/18-khaimook.bnk48official-3911364763344858081_18-20260603_195049.jpg" loading="lazy" alt="Image 114">
+        </div>
+        <div class="grid-item" onclick="openLightbox(115)">
+            <img src="Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/01-khaimook.bnk48official-3914130806077319366_1-20260607_152737.jpg" loading="lazy" alt="Image 115">
+        </div>
+        <div class="grid-item" onclick="openLightbox(116)">
+            <img src="Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/02-khaimook.bnk48official-3914130819725568406_2-20260607_152737.jpg" loading="lazy" alt="Image 116">
+        </div>
+        <div class="grid-item" onclick="openLightbox(117)">
+            <img src="Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/03-khaimook.bnk48official-3914130828315431759_3-20260607_152737.jpg" loading="lazy" alt="Image 117">
+        </div>
+        <div class="grid-item" onclick="openLightbox(118)">
+            <img src="Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/04-khaimook.bnk48official-3914130832962720064_4-20260607_152737.jpg" loading="lazy" alt="Image 118">
+        </div>
+        <div class="grid-item" onclick="openLightbox(119)">
+            <img src="Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/05-khaimook.bnk48official-3914130836586702172_5-20260607_152737.jpg" loading="lazy" alt="Image 119">
+        </div>
+        <div class="grid-item" onclick="openLightbox(120)">
+            <img src="Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/07-khaimook.bnk48official-3914130854680801700_7-20260607_152737.jpg" loading="lazy" alt="Image 120">
+        </div>
+        <div class="grid-item" onclick="openLightbox(121)">
+            <img src="Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/08-khaimook.bnk48official-3914130860980588778_8-20260607_152737.jpg" loading="lazy" alt="Image 121">
+        </div>
+        <div class="grid-item" onclick="openLightbox(122)">
+            <img src="Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/09-khaimook.bnk48official-3914130868891262530_9-20260607_152737.jpg" loading="lazy" alt="Image 122">
+        </div>
+        <div class="grid-item" onclick="openLightbox(123)">
+            <img src="Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/01-khaimook.bnk48official-3964172233683109435_1-20260815_163014.jpg" loading="lazy" alt="Image 123">
+        </div>
+        <div class="grid-item" onclick="openLightbox(124)">
+            <img src="Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/02-khaimook.bnk48official-3964172239748180782_2-20260815_163014.jpg" loading="lazy" alt="Image 124">
+        </div>
+        <div class="grid-item" onclick="openLightbox(125)">
+            <img src="Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/03-khaimook.bnk48official-3964172231988530837_3-20260815_163014.jpg" loading="lazy" alt="Image 125">
+        </div>
+        <div class="grid-item" onclick="openLightbox(126)">
+            <img src="Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/05-khaimook.bnk48official-3964172255837551855_5-20260815_163014.jpg" loading="lazy" alt="Image 126">
+        </div>
+        <div class="grid-item" onclick="openLightbox(127)">
+            <img src="Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/06-khaimook.bnk48official-3964172261902430691_6-20260815_163014.jpg" loading="lazy" alt="Image 127">
+        </div>
+        <div class="grid-item" onclick="openLightbox(128)">
+            <img src="Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/07-khaimook.bnk48official-3964172266457390712_7-20260815_163014.jpg" loading="lazy" alt="Image 128">
+        </div>
+        <div class="grid-item" onclick="openLightbox(129)">
+            <img src="Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/08-khaimook.bnk48official-3964172270307891905_8-20260815_163014.jpg" loading="lazy" alt="Image 129">
+        </div>
+        <div class="grid-item" onclick="openLightbox(130)">
+            <img src="Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/10-khaimook.bnk48official-3964172277966443632_10-20260815_163014.jpg" loading="lazy" alt="Image 130">
+        </div>
+        <div class="grid-item" onclick="openLightbox(131)">
+            <img src="Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/11-khaimook.bnk48official-3964172287965782549_11-20260815_163014.jpg" loading="lazy" alt="Image 131">
+        </div>
+        <div class="grid-item" onclick="openLightbox(132)">
+            <img src="Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/12-khaimook.bnk48official-3964172281867146008_12-20260815_163014.jpg" loading="lazy" alt="Image 132">
+        </div>
+        <div class="grid-item" onclick="openLightbox(133)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/01-khaimook.bnk48official-3969201913142294991_1-20260822_150330.jpg" loading="lazy" alt="Image 133">
+        </div>
+        <div class="grid-item" onclick="openLightbox(134)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/02-khaimook.bnk48official-3969201926010322553_2-20260822_150330.jpg" loading="lazy" alt="Image 134">
+        </div>
+        <div class="grid-item" onclick="openLightbox(135)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/03-khaimook.bnk48official-3969201944582755772_3-20260822_150330.jpg" loading="lazy" alt="Image 135">
+        </div>
+        <div class="grid-item" onclick="openLightbox(136)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/04-khaimook.bnk48official-3969201957308410979_4-20260822_150330.jpg" loading="lazy" alt="Image 136">
+        </div>
+        <div class="grid-item" onclick="openLightbox(137)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/05-khaimook.bnk48official-3969201961410293873_5-20260822_150330.jpg" loading="lazy" alt="Image 137">
+        </div>
+        <div class="grid-item" onclick="openLightbox(138)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/06-khaimook.bnk48official-3969201966661674132_6-20260822_150330.jpg" loading="lazy" alt="Image 138">
+        </div>
+        <div class="grid-item" onclick="openLightbox(139)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/07-khaimook.bnk48official-3969201971862506883_7-20260822_150330.jpg" loading="lazy" alt="Image 139">
+        </div>
+        <div class="grid-item" onclick="openLightbox(140)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/08-khaimook.bnk48official-3969201979697610013_8-20260822_150330.jpg" loading="lazy" alt="Image 140">
+        </div>
+        <div class="grid-item" onclick="openLightbox(141)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/09-khaimook.bnk48official-3969201984227430917_9-20260822_150330.jpg" loading="lazy" alt="Image 141">
+        </div>
+        <div class="grid-item" onclick="openLightbox(142)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/11-khaimook.bnk48official-3969201987322830494_11-20260822_150330.jpg" loading="lazy" alt="Image 142">
+        </div>
+        <div class="grid-item" onclick="openLightbox(143)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/12-khaimook.bnk48official-3969201992960024973_12-20260822_150330.jpg" loading="lazy" alt="Image 143">
+        </div>
+        <div class="grid-item" onclick="openLightbox(144)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/13-khaimook.bnk48official-3969201995400882840_13-20260822_150330.jpg" loading="lazy" alt="Image 144">
+        </div>
+        <div class="grid-item" onclick="openLightbox(145)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/14-khaimook.bnk48official-3969202000551555220_14-20260822_150330.jpg" loading="lazy" alt="Image 145">
+        </div>
+        <div class="grid-item" onclick="openLightbox(146)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/15-khaimook.bnk48official-3969202014728301431_15-20260822_150330.jpg" loading="lazy" alt="Image 146">
+        </div>
+        <div class="grid-item" onclick="openLightbox(147)">
+            <img src="Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/16-khaimook.bnk48official-3969202023880436626_16-20260822_150330.jpg" loading="lazy" alt="Image 147">
+        </div>
+        <div class="grid-item" onclick="openLightbox(148)">
+            <img src="Khaimook/khaimook.bnk48official_DULG2ofEWEE_20260131_183407/01-khaimook.bnk48official-20260131_183405-3571191561.jpg" loading="lazy" alt="Image 148">
+        </div>
+        <div class="grid-item" onclick="openLightbox(149)">
+            <img src="Khaimook/khaimook.bnk48official_DULG2ofEWEE_20260131_183407/02-khaimook.bnk48official-20260131_183405-3467296688.jpg" loading="lazy" alt="Image 149">
+        </div>
+        <div class="grid-item" onclick="openLightbox(150)">
+            <img src="Khaimook/khaimook.bnk48official_DULG2ofEWEE_20260131_183407/03-khaimook.bnk48official-20260131_183405-1443772690.jpg" loading="lazy" alt="Image 150">
+        </div>
+        <div class="grid-item" onclick="openLightbox(151)">
+            <img src="Khaimook/khaimook.bnk48official_DULG2ofEWEE_20260131_183407/04-khaimook.bnk48official-20260131_183405-1788861994.jpg" loading="lazy" alt="Image 151">
+        </div>
+        <div class="grid-item" onclick="openLightbox(152)">
+            <img src="Khaimook/khaimook.bnk48official_DULG2ofEWEE_20260131_183407/05-khaimook.bnk48official-20260131_183405-3211602952.jpg" loading="lazy" alt="Image 152">
+        </div>
+        <div class="grid-item" onclick="openLightbox(153)">
+            <img src="Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/01-khaimook.bnk48official-20260206_122152-2894850646.jpg" loading="lazy" alt="Image 153">
+        </div>
+        <div class="grid-item" onclick="openLightbox(154)">
+            <img src="Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/02-khaimook.bnk48official-20260206_122152-3145724568.jpg" loading="lazy" alt="Image 154">
+        </div>
+        <div class="grid-item" onclick="openLightbox(155)">
+            <img src="Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/03-khaimook.bnk48official-20260206_122152-4006902793.jpg" loading="lazy" alt="Image 155">
+        </div>
+        <div class="grid-item" onclick="openLightbox(156)">
+            <img src="Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/04-khaimook.bnk48official-20260206_122152-1377364314.jpg" loading="lazy" alt="Image 156">
+        </div>
+        <div class="grid-item" onclick="openLightbox(157)">
+            <img src="Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/05-khaimook.bnk48official-20260206_122152-3498607160.jpg" loading="lazy" alt="Image 157">
+        </div>
+        <div class="grid-item" onclick="openLightbox(158)">
+            <img src="Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/06-khaimook.bnk48official-20260206_122152-2253336800.jpg" loading="lazy" alt="Image 158">
+        </div>
+        <div class="grid-item" onclick="openLightbox(159)">
+            <img src="Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/07-khaimook.bnk48official-20260206_122152-1670789850.jpg" loading="lazy" alt="Image 159">
+        </div>
+        <div class="grid-item" onclick="openLightbox(160)">
+            <img src="Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/01-khaimook.bnk48official-20260322_114351-3074892111.jpg" loading="lazy" alt="Image 160">
+        </div>
+        <div class="grid-item" onclick="openLightbox(161)">
+            <img src="Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/02-khaimook.bnk48official-20260322_114351-529458177.jpg" loading="lazy" alt="Image 161">
+        </div>
+        <div class="grid-item" onclick="openLightbox(162)">
+            <img src="Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/03-khaimook.bnk48official-20260322_114351-1459029798.jpg" loading="lazy" alt="Image 162">
+        </div>
+        <div class="grid-item" onclick="openLightbox(163)">
+            <img src="Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/04-khaimook.bnk48official-20260322_114351-4279714004.jpg" loading="lazy" alt="Image 163">
+        </div>
+        <div class="grid-item" onclick="openLightbox(164)">
+            <img src="Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/05-khaimook.bnk48official-20260322_114351-4048023701.jpg" loading="lazy" alt="Image 164">
+        </div>
+        <div class="grid-item" onclick="openLightbox(165)">
+            <img src="Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/06-khaimook.bnk48official-20260322_114351-2981415531.jpg" loading="lazy" alt="Image 165">
+        </div>
+        <div class="grid-item" onclick="openLightbox(166)">
+            <img src="Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/07-khaimook.bnk48official-20260322_114351-3259562503.jpg" loading="lazy" alt="Image 166">
+        </div>
+        </div>
+    </div>
+
+    <!-- Lightbox / Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="top-bar">
+            <button onclick="toggleFullscreen()" title="Fullscreen (f)">⛶</button>
+            <button onclick="closeLightbox()" title="Close (Esc)">✖</button>
+        </div>
+        
+        <button class="nav-btn nav-left" onclick="prevImg()">❮</button>
+        <button class="nav-btn nav-right" onclick="nextImg()">❯</button>
+        
+        <img id="lightbox-img" src="" alt="Gallery Image">
+        
+        <!-- กลุ่มควบคุมซ้ายบน -->
+        <div class="top-left-controls">
+            <div class="control-bar">
+                <button onclick="zoomOut()" title="Zoom Out (-)">➖</button>
+                <button id="play-btn" class="play-btn" onclick="togglePlay()" title="Auto Slide (Space)">▶</button>
+                <button onclick="zoomIn()" title="Zoom In (+)">➕</button>
+            </div>
+            
+            <div class="info-bar">
+                <input type="number" id="img-input" min="1" onchange="jumpToImg()" title="Type number and press Enter">
+                <span>/</span>
+                <span id="total-img">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const images = ["Khaimook/01-khaimook.bnk48official-20251103_185625-539258227.jpg", "Khaimook/01-khaimook.bnk48official-20251130_190331-1722481813.jpg", "Khaimook/01-khaimook.bnk48official-20251216_163933-4007530402.jpg", "Khaimook/01-khaimook.bnk48official-20251229_203514-3661277299.jpg", "Khaimook/01-khaimook.bnk48official-20260125_165232-3750194160.jpg", "Khaimook/01-khaimook.bnk48official-20260131_183405-3571191561.jpg", "Khaimook/01-khaimook.bnk48official-20260322_114351-3074892111.jpg", "Khaimook/02-khaimook.bnk48official-20251103_185625-2467146736.jpg", "Khaimook/02-khaimook.bnk48official-20251130_190331-1716910954.jpg", "Khaimook/02-khaimook.bnk48official-20251216_163933-4291681523.jpg", "Khaimook/02-khaimook.bnk48official-20251229_203514-1817496909.jpg", "Khaimook/02-khaimook.bnk48official-20260125_165232-774010171.jpg", "Khaimook/02-khaimook.bnk48official-20260131_183405-3467296688.jpg", "Khaimook/02-khaimook.bnk48official-20260322_114351-529458177.jpg", "Khaimook/03-khaimook.bnk48official-20251103_185625-1225411615.jpg", "Khaimook/03-khaimook.bnk48official-20251130_190331-1716998315.jpg", "Khaimook/03-khaimook.bnk48official-20251229_203514-3744611684.jpg", "Khaimook/03-khaimook.bnk48official-20260125_165232-2457620767.jpg", "Khaimook/03-khaimook.bnk48official-20260131_183405-1443772690.jpg", "Khaimook/03-khaimook.bnk48official-20260322_114351-1459029798.jpg", "Khaimook/04-khaimook.bnk48official-20251103_185625-2468065570.jpg", "Khaimook/04-khaimook.bnk48official-20251130_190331-600607202.jpg", "Khaimook/04-khaimook.bnk48official-20251216_163933-4007568783.jpg", "Khaimook/04-khaimook.bnk48official-20251229_203514-3664969391.jpg", "Khaimook/04-khaimook.bnk48official-20260125_165232-159078024.jpg", "Khaimook/04-khaimook.bnk48official-20260131_183405-1788861994.jpg", "Khaimook/04-khaimook.bnk48official-20260322_114351-4279714004.jpg", "Khaimook/05-khaimook.bnk48official-20251103_185625-1255094882.jpg", "Khaimook/05-khaimook.bnk48official-20251130_190331-1292669679.jpg", "Khaimook/05-khaimook.bnk48official-20251229_203514-130281483.jpg", "Khaimook/05-khaimook.bnk48official-20260125_165232-3143081147.jpg", "Khaimook/05-khaimook.bnk48official-20260131_183405-3211602952.jpg", "Khaimook/05-khaimook.bnk48official-20260322_114351-4048023701.jpg", "Khaimook/06-khaimook.bnk48official-20251103_185625-1258641127.jpg", "Khaimook/06-khaimook.bnk48official-20251130_190331-1508777299.jpg", "Khaimook/06-khaimook.bnk48official-20251229_203514-272705144.jpg", "Khaimook/06-khaimook.bnk48official-20260322_114351-2981415531.jpg", "Khaimook/07-khaimook.bnk48official-20251103_185625-1254110912.jpg", "Khaimook/07-khaimook.bnk48official-20251130_190331-744980655.jpg", "Khaimook/07-khaimook.bnk48official-20251229_203514-3661365548.jpg", "Khaimook/07-khaimook.bnk48official-20260322_114351-3259562503.jpg", "Khaimook/08-khaimook.bnk48official-20251103_185625-540122319.jpg", "Khaimook/08-khaimook.bnk48official-20251130_190331-600601373.jpg", "Khaimook/08-khaimook.bnk48official-20251229_203514-83971319.jpg", "Khaimook/09-khaimook.bnk48official-20251103_185625-1255993421.jpg", "Khaimook/09-khaimook.bnk48official-20251130_190331-610926405.jpg", "Khaimook/10-khaimook.bnk48official-20251103_185625-1258585393.jpg", "Khaimook/10-khaimook.bnk48official-20251130_190331-1720779909.jpg", "Khaimook/11-khaimook.bnk48official-20251103_185625-564071281.jpg", "Khaimook/11-khaimook.bnk48official-20251130_190331-599713560.jpg", "Khaimook/13-khaimook.bnk48official-20251103_185625-3228500578.jpg", "Khaimook/14-khaimook.bnk48official-20251103_185625-482559162.jpg", "Khaimook/khaimook.bnk48official-20260317_225314-36240135.jpg", "Khaimook/khaimook.bnk48official-20260319_174158-1948006500.jpg", "Khaimook/khaimook.bnk48official-20260319_174158-1948006501.jpg", "Khaimook/khaimook.bnk48official-20260319_174158-1948006502.jpg", "Khaimook/khaimook.bnk48official-20260319_174158-1948006503.jpg", "Khaimook/khaimook.bnk48official-3939713542861804900_64197580804_14-20260712_223434.jpg", "Khaimook/khaimook.bnk48official-3939713542861804900_64197580804_3-20260712_223434.jpg", "Khaimook/khaimook.bnk48official-3939713542861804900_64197580804_5-20260712_223434.jpg", "Khaimook/khaimook.bnk48official-3939713542861804900_64197580804_8-20260712_223434.jpg", "Khaimook/khaimook.bnk48official-3939713542861804900_64197580804_9-20260712_223434.jpg", "Khaimook/khaimook.bnk48official-3940980771528420312_64197580804_2-20260714_163219.jpg", "Khaimook/khaimook.bnk48official-3940980771528420312_64197580804_5-20260714_163219.jpg", "Khaimook/khaimook.bnk48official-3940980771528420312_64197580804_7-20260714_163219.jpg", "Khaimook/khaimook.bnk48official-3940980771528420312_64197580804_8-20260714_163219.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/01-khaimook.bnk48official-3904193801608270592_1-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/02-khaimook.bnk48official-3904193833577280355_2-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/03-khaimook.bnk48official-3904193841512849718_3-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/04-khaimook.bnk48official-3904193848509171294_4-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/05-khaimook.bnk48official-3904193855983428245_5-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/07-khaimook.bnk48official-3904193863222576594_7-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/08-khaimook.bnk48official-3904193870176912767_8-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/09-khaimook.bnk48official-3904193883573346469_9-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/10-khaimook.bnk48official-3904193892188581543_10-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/12-khaimook.bnk48official-3904193907330048324_12-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/13-khaimook.bnk48official-3904193946076903490_13-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/14-khaimook.bnk48official-3904193971561541859_14-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/15-khaimook.bnk48official-3904193978364740958_15-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DYufFnRmNnS-20260524_222452/17-khaimook.bnk48official-3904193979916560210_17-20260524_222451.jpg", "Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/01-khaimook.bnk48official-3924374725427781862_1-20260621_183955.jpg", "Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/02-khaimook.bnk48official-3924374749629041803_2-20260621_183955.jpg", "Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/03-khaimook.bnk48official-3924374755291249035_3-20260621_183955.jpg", "Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/04-khaimook.bnk48official-3924374766758616763_4-20260621_183955.jpg", "Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/05-khaimook.bnk48official-3924374813869075433_5-20260621_183955.jpg", "Khaimook/khaimook.bnk48official-DZ2LmtGGNyM-20260621_183956/08-khaimook.bnk48official-3924374828582611412_8-20260621_183955.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/01-khaimook.bnk48official-3926522490605966214_1-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/02-khaimook.bnk48official-3926522520041547742_2-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/03-khaimook.bnk48official-3926522530812476993_3-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/04-khaimook.bnk48official-3926522569769113810_4-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/05-khaimook.bnk48official-3926522581605643870_5-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/06-khaimook.bnk48official-3926522599196454781_6-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/07-khaimook.bnk48official-3926522596897870593_7-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/08-khaimook.bnk48official-3926522617559048666_8-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/09-khaimook.bnk48official-3926522652145480708_9-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/10-khaimook.bnk48official-3926522670348675986_10-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/11-khaimook.bnk48official-3926522693710895792_11-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZ9z_agmLRV-20260624_174731/13-khaimook.bnk48official-3926522761440423875_13-20260624_174730.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/01-khaimook.bnk48official-3911364520679144994_1-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/02-khaimook.bnk48official-3911364564358778225_2-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/03-khaimook.bnk48official-3911364592904971966_3-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/05-khaimook.bnk48official-3911364616661524558_5-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/06-khaimook.bnk48official-3911364625117248606_6-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/07-khaimook.bnk48official-3911364634999116545_7-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/08-khaimook.bnk48official-3911364650182512252_8-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/09-khaimook.bnk48official-3911364655081556994_9-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/10-khaimook.bnk48official-3911364665130911894_10-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/11-khaimook.bnk48official-3911364679232357951_11-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/12-khaimook.bnk48official-3911364707510291159_12-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/13-khaimook.bnk48official-3911364722576319471_13-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/14-khaimook.bnk48official-3911364733632333471_14-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/15-khaimook.bnk48official-3911364739915478125_15-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/16-khaimook.bnk48official-3911364747414969217_16-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/17-khaimook.bnk48official-3911364756709475420_17-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZH9aROmLG3-20260603_195051/18-khaimook.bnk48official-3911364763344858081_18-20260603_195049.jpg", "Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/01-khaimook.bnk48official-3914130806077319366_1-20260607_152737.jpg", "Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/02-khaimook.bnk48official-3914130819725568406_2-20260607_152737.jpg", "Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/03-khaimook.bnk48official-3914130828315431759_3-20260607_152737.jpg", "Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/04-khaimook.bnk48official-3914130832962720064_4-20260607_152737.jpg", "Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/05-khaimook.bnk48official-3914130836586702172_5-20260607_152737.jpg", "Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/07-khaimook.bnk48official-3914130854680801700_7-20260607_152737.jpg", "Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/08-khaimook.bnk48official-3914130860980588778_8-20260607_152737.jpg", "Khaimook/khaimook.bnk48official-DZRyd9UmN2X-20260607_152738/09-khaimook.bnk48official-3914130868891262530_9-20260607_152737.jpg", "Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/01-khaimook.bnk48official-3964172233683109435_1-20260815_163014.jpg", "Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/02-khaimook.bnk48official-3964172239748180782_2-20260815_163014.jpg", "Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/03-khaimook.bnk48official-3964172231988530837_3-20260815_163014.jpg", "Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/05-khaimook.bnk48official-3964172255837551855_5-20260815_163014.jpg", "Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/06-khaimook.bnk48official-3964172261902430691_6-20260815_163014.jpg", "Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/07-khaimook.bnk48official-3964172266457390712_7-20260815_163014.jpg", "Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/08-khaimook.bnk48official-3964172270307891905_8-20260815_163014.jpg", "Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/10-khaimook.bnk48official-3964172277966443632_10-20260815_163014.jpg", "Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/11-khaimook.bnk48official-3964172287965782549_11-20260815_163014.jpg", "Khaimook/khaimook.bnk48official-DcDke-kGMCz-20260815_163015/12-khaimook.bnk48official-3964172281867146008_12-20260815_163014.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/01-khaimook.bnk48official-3969201913142294991_1-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/02-khaimook.bnk48official-3969201926010322553_2-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/03-khaimook.bnk48official-3969201944582755772_3-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/04-khaimook.bnk48official-3969201957308410979_4-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/05-khaimook.bnk48official-3969201961410293873_5-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/06-khaimook.bnk48official-3969201966661674132_6-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/07-khaimook.bnk48official-3969201971862506883_7-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/08-khaimook.bnk48official-3969201979697610013_8-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/09-khaimook.bnk48official-3969201984227430917_9-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/11-khaimook.bnk48official-3969201987322830494_11-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/12-khaimook.bnk48official-3969201992960024973_12-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/13-khaimook.bnk48official-3969201995400882840_13-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/14-khaimook.bnk48official-3969202000551555220_14-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/15-khaimook.bnk48official-3969202014728301431_15-20260822_150330.jpg", "Khaimook/khaimook.bnk48official-DcVcH0FGE_e-20260822_150331/16-khaimook.bnk48official-3969202023880436626_16-20260822_150330.jpg", "Khaimook/khaimook.bnk48official_DULG2ofEWEE_20260131_183407/01-khaimook.bnk48official-20260131_183405-3571191561.jpg", "Khaimook/khaimook.bnk48official_DULG2ofEWEE_20260131_183407/02-khaimook.bnk48official-20260131_183405-3467296688.jpg", "Khaimook/khaimook.bnk48official_DULG2ofEWEE_20260131_183407/03-khaimook.bnk48official-20260131_183405-1443772690.jpg", "Khaimook/khaimook.bnk48official_DULG2ofEWEE_20260131_183407/04-khaimook.bnk48official-20260131_183405-1788861994.jpg", "Khaimook/khaimook.bnk48official_DULG2ofEWEE_20260131_183407/05-khaimook.bnk48official-20260131_183405-3211602952.jpg", "Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/01-khaimook.bnk48official-20260206_122152-2894850646.jpg", "Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/02-khaimook.bnk48official-20260206_122152-3145724568.jpg", "Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/03-khaimook.bnk48official-20260206_122152-4006902793.jpg", "Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/04-khaimook.bnk48official-20260206_122152-1377364314.jpg", "Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/05-khaimook.bnk48official-20260206_122152-3498607160.jpg", "Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/06-khaimook.bnk48official-20260206_122152-2253336800.jpg", "Khaimook/khaimook.bnk48official_DUZ5Bp6EWgV_20260206_122153/07-khaimook.bnk48official-20260206_122152-1670789850.jpg", "Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/01-khaimook.bnk48official-20260322_114351-3074892111.jpg", "Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/02-khaimook.bnk48official-20260322_114351-529458177.jpg", "Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/03-khaimook.bnk48official-20260322_114351-1459029798.jpg", "Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/04-khaimook.bnk48official-20260322_114351-4279714004.jpg", "Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/05-khaimook.bnk48official-20260322_114351-4048023701.jpg", "Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/06-khaimook.bnk48official-20260322_114351-2981415531.jpg", "Khaimook/khaimook.bnk48official_DWLHpuzkXfH_20260322_114353/07-khaimook.bnk48official-20260322_114351-3259562503.jpg"];
+        let currentIndex = 0;
+        let currentScale = 1;
+        let translateX = 0;
+        let translateY = 0;
+        let playing = false;
+        let playInterval;
+
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let swipeStartX = 0;
+
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        const playBtn = document.getElementById('play-btn');
+        const imgInput = document.getElementById('img-input');
+        const totalImgSpan = document.getElementById('total-img');
+
+        function openLightbox(index) {
+            currentIndex = index;
+            totalImgSpan.textContent = images.length;
+            imgInput.max = images.length;
+            
+            resetTransform();
+            updateImg(false);
+            lb.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeLightbox() {
+            lb.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            if(playing) togglePlay();
+            if(document.fullscreenElement) document.exitFullscreen();
+        }
+
+        function resetTransform() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+        }
+
+        function updateImg(smooth = true) {
+            lbImg.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
+            lbImg.src = images[currentIndex];
+            lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+            
+            // อัปเดตตัวเลขในช่อง Input
+            imgInput.value = currentIndex + 1;
+            
+            if (currentScale > 1) {
+                lbImg.style.cursor = isDragging ? 'grabbing' : 'grab';
+            } else {
+                lbImg.style.cursor = 'default';
+            }
+        }
+
+        function jumpToImg() {
+            let val = parseInt(imgInput.value);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > images.length) val = images.length;
+            
+            currentIndex = val - 1;
+            imgInput.value = val;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function nextImg() {
+            currentIndex = (currentIndex + 1) % images.length;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function prevImg() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function zoomIn() {
+            currentScale += 0.25;
+            updateImg(true);
+        }
+
+        function zoomOut() {
+            currentScale = Math.max(0.25, currentScale - 0.25);
+            if (currentScale <= 1) resetTransform();
+            updateImg(true);
+        }
+
+        function togglePlay() {
+            playing = !playing;
+            playBtn.innerHTML = playing ? '⏸' : '▶';
+            if(playing) {
+                playInterval = setInterval(nextImg, 2500);
+            } else {
+                clearInterval(playInterval);
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                lb.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function isInteractiveElement(target) {
+            const tag = target.tagName.toLowerCase();
+            return tag === 'button' || tag === 'input' || target.closest('button');
+        }
+
+        /* Drag, Pan & Swipe Events */
+        lb.addEventListener('mousedown', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
+            if (currentScale > 1) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                updateImg(false);
+                e.preventDefault();
+            } else {
+                isDragging = true;
+                swipeStartX = e.clientX;
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging && currentScale > 1) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateImg(false);
+            }
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
+            }
+        });
+
+        lb.addEventListener('touchstart', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
+            if (currentScale > 1 && e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            } else if (currentScale === 1 && e.touches.length === 1) {
+                isDragging = true;
+                swipeStartX = e.touches[0].clientX;
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && currentScale > 1 && e.touches.length === 1) {
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                updateImg(false);
+            }
+        });
+
+        window.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.changedTouches[0].clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
+            }
+        });
+
+        /* คีย์บอร์ด Shortcut */
+        window.addEventListener('keydown', function(e) {
+            if (lb.style.display === 'flex') {
+                if (document.activeElement === imgInput) {
+                    if (e.key === 'Enter') {
+                        imgInput.blur(); 
+                    } else if (e.key === 'Escape') {
+                        imgInput.blur();
+                    }
+                    return; 
+                }
+
+                if (e.key === 'ArrowRight') {
+                    nextImg();
+                } else if (e.key === 'ArrowLeft') {
+                    prevImg();
+                } else if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === '+' || e.key === '=') {
+                    zoomIn();
+                } else if (e.key === '-') {
+                    zoomOut();
+                } else if (e.key === ' ' || e.code === 'Space') {
+                    e.preventDefault(); 
+                    togglePlay();
+                } else if (e.key.toLowerCase() === 'f') {
+                    toggleFullscreen();
+                }
+            }
+        });
+
+        /* ลูกกลิ้งเมาส์ & Shift+Scroll */
+        lb.addEventListener('wheel', function(e) {
+            if (lb.style.display === 'flex') {
+                e.preventDefault(); 
+                
+                if (e.shiftKey) {
+                    if (e.deltaY < 0) {
+                        zoomIn(); 
+                    } else {
+                        zoomOut(); 
+                    }
+                } else {
+                    if (e.deltaY > 0) {
+                        nextImg(); 
+                    } else {
+                        prevImg(); 
+                    }
+                }
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
