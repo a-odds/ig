@@ -33,16 +33,30 @@
         .top-bar button { background: rgba(0,0,0,0.5); color: white; border: none; font-size: 24px; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; }
         .top-bar button:hover { background: rgba(0,0,0,0.8); }
 
-        .control-bar { position: absolute; top: 20px; left: 20px; display: flex; gap: 15px; background: rgba(0,0,0,0.6); padding: 10px 25px; border-radius: 30px; z-index: 1010; align-items: center; }
+        /* ชุดปุ่มควบคุมมุมซ้ายบน */
+        .top-left-controls { position: absolute; top: 20px; left: 20px; z-index: 1010; display: flex; flex-direction: column; gap: 10px; }
+        
+        .control-bar { display: flex; gap: 15px; background: rgba(0,0,0,0.6); padding: 10px 25px; border-radius: 30px; align-items: center; justify-content: center; }
         .control-bar button { background: none; border: none; color: white; font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .control-bar button:hover { color: #0095f6; transform: scale(1.1); }
         .play-btn { font-size: 32px !important; }
 
+        .info-bar { display: flex; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; align-items: center; color: white; gap: 8px; font-size: 16px; justify-content: center; font-family: monospace; }
+        .info-bar input { width: 50px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; text-align: center; font-size: 16px; border-radius: 6px; padding: 4px; outline: none; transition: background 0.2s; font-family: monospace; }
+        .info-bar input:focus { background: rgba(255,255,255,0.4); border-color: #0095f6; }
+        
+        /* ซ่อนลูกศรใน input type number */
+        .info-bar input::-webkit-outer-spin-button, .info-bar input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .info-bar input[type=number] { -moz-appearance: textfield; }
+
         @media (max-width: 768px) {
             .grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
-            .control-bar { padding: 5px 15px; top: 15px; left: 15px; gap: 10px; }
+            .top-left-controls { top: 15px; left: 15px; gap: 8px; }
+            .control-bar { padding: 5px 15px; gap: 10px; }
             .control-bar button { font-size: 20px; }
             .play-btn { font-size: 24px !important; }
+            .info-bar { font-size: 14px; padding: 5px 10px; }
+            .info-bar input { width: 40px; font-size: 14px; padding: 2px; }
         }
     </style>
 </head>
@@ -421,10 +435,19 @@
         
         <img id="lightbox-img" src="" alt="Gallery Image">
         
-        <div class="control-bar">
-            <button onclick="zoomOut()" title="Zoom Out (-)">➖</button>
-            <button id="play-btn" class="play-btn" onclick="togglePlay()" title="Auto Slide (Space)">▶</button>
-            <button onclick="zoomIn()" title="Zoom In (+)">➕</button>
+        <!-- กลุ่มควบคุมซ้ายบน -->
+        <div class="top-left-controls">
+            <div class="control-bar">
+                <button onclick="zoomOut()" title="Zoom Out (-)">➖</button>
+                <button id="play-btn" class="play-btn" onclick="togglePlay()" title="Auto Slide (Space)">▶</button>
+                <button onclick="zoomIn()" title="Zoom In (+)">➕</button>
+            </div>
+            
+            <div class="info-bar">
+                <input type="number" id="img-input" min="1" onchange="jumpToImg()" title="Type number and press Enter">
+                <span>/</span>
+                <span id="total-img">0</span>
+            </div>
         </div>
     </div>
 
@@ -439,13 +462,19 @@
 
         let isDragging = false;
         let startX = 0, startY = 0;
+        let swipeStartX = 0;
 
         const lb = document.getElementById('lightbox');
         const lbImg = document.getElementById('lightbox-img');
         const playBtn = document.getElementById('play-btn');
+        const imgInput = document.getElementById('img-input');
+        const totalImgSpan = document.getElementById('total-img');
 
         function openLightbox(index) {
             currentIndex = index;
+            totalImgSpan.textContent = images.length;
+            imgInput.max = images.length;
+            
             resetTransform();
             updateImg(false);
             lb.style.display = 'flex';
@@ -470,11 +499,25 @@
             lbImg.src = images[currentIndex];
             lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
             
+            // อัปเดตตัวเลขในช่อง Input
+            imgInput.value = currentIndex + 1;
+            
             if (currentScale > 1) {
                 lbImg.style.cursor = isDragging ? 'grabbing' : 'grab';
             } else {
                 lbImg.style.cursor = 'default';
             }
+        }
+
+        function jumpToImg() {
+            let val = parseInt(imgInput.value);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > images.length) val = images.length;
+            
+            currentIndex = val - 1;
+            imgInput.value = val;
+            resetTransform();
+            updateImg(true);
         }
 
         function nextImg() {
@@ -518,58 +561,95 @@
             }
         }
 
-        /* Drag & Pan */
-        lbImg.addEventListener('mousedown', (e) => {
+        function isInteractiveElement(target) {
+            const tag = target.tagName.toLowerCase();
+            return tag === 'button' || tag === 'input' || target.closest('button');
+        }
+
+        /* Drag, Pan & Swipe Events */
+        lb.addEventListener('mousedown', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
             if (currentScale > 1) {
                 isDragging = true;
                 startX = e.clientX - translateX;
                 startY = e.clientY - translateY;
                 updateImg(false);
                 e.preventDefault();
+            } else {
+                isDragging = true;
+                swipeStartX = e.clientX;
+                e.preventDefault();
             }
         });
 
         window.addEventListener('mousemove', (e) => {
-            if (isDragging) {
+            if (isDragging && currentScale > 1) {
                 translateX = e.clientX - startX;
                 translateY = e.clientY - startY;
                 updateImg(false);
             }
         });
 
-        window.addEventListener('mouseup', () => {
+        window.addEventListener('mouseup', (e) => {
             if (isDragging) {
                 isDragging = false;
-                updateImg(false);
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
             }
         });
 
-        lbImg.addEventListener('touchstart', (e) => {
+        lb.addEventListener('touchstart', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
             if (currentScale > 1 && e.touches.length === 1) {
                 isDragging = true;
                 startX = e.touches[0].clientX - translateX;
                 startY = e.touches[0].clientY - translateY;
+            } else if (currentScale === 1 && e.touches.length === 1) {
+                isDragging = true;
+                swipeStartX = e.touches[0].clientX;
             }
         });
 
         window.addEventListener('touchmove', (e) => {
-            if (isDragging && e.touches.length === 1) {
+            if (isDragging && currentScale > 1 && e.touches.length === 1) {
                 translateX = e.touches[0].clientX - startX;
                 translateY = e.touches[0].clientY - startY;
                 updateImg(false);
             }
         });
 
-        window.addEventListener('touchend', () => {
+        window.addEventListener('touchend', (e) => {
             if (isDragging) {
                 isDragging = false;
-                updateImg(false);
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.changedTouches[0].clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
             }
         });
 
         /* คีย์บอร์ด Shortcut */
         window.addEventListener('keydown', function(e) {
             if (lb.style.display === 'flex') {
+                if (document.activeElement === imgInput) {
+                    if (e.key === 'Enter') {
+                        imgInput.blur(); 
+                    } else if (e.key === 'Escape') {
+                        imgInput.blur();
+                    }
+                    return; 
+                }
+
                 if (e.key === 'ArrowRight') {
                     nextImg();
                 } else if (e.key === 'ArrowLeft') {
@@ -595,18 +675,16 @@
                 e.preventDefault(); 
                 
                 if (e.shiftKey) {
-                    // ถ้ากด Shift ค้างไว้ ให้ย่อ/ขยายรูป
                     if (e.deltaY < 0) {
-                        zoomIn(); // เลื่อนขึ้น = ขยาย
+                        zoomIn(); 
                     } else {
-                        zoomOut(); // เลื่อนลง = ย่อ
+                        zoomOut(); 
                     }
                 } else {
-                    // ถ้าไม่ได้กด Shift ให้เลื่อนเพื่อเปลี่ยนรูป
                     if (e.deltaY > 0) {
-                        nextImg(); // เลื่อนลง = รูปถัดไป
+                        nextImg(); 
                     } else {
-                        prevImg(); // เลื่อนขึ้น = รูปก่อนหน้า
+                        prevImg(); 
                     }
                 }
             }
