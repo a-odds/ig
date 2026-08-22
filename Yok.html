@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOK</title>
+    <link rel="icon" href="https://img.icons8.com/fluency/48/instagram-pride.png">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fafafa; margin: 0; padding: 0; }
+        .header { text-align: center; padding: 20px; background: #fff; border-bottom: 1px solid #dbdbdb; position: sticky; top: 0; z-index: 100; }
+        h1 { margin: 0; font-size: 24px; color: #262626; }
+        .gallery-container { max-width: 935px; margin: 20px auto; padding: 0 5px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+        .grid-item { aspect-ratio: 1/1; overflow: hidden; background: #efefef; cursor: pointer; }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .grid-item:hover img { transform: scale(1.05); }
+
+        /* Lightbox Style */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
+        .lightbox img { 
+            max-width: 90%; max-height: 90%; 
+            object-fit: contain; 
+            user-select: none; 
+            -webkit-user-drag: none;
+        }
+        
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; font-size: 35px; padding: 10px 20px; cursor: pointer; z-index: 1010; border-radius: 8px; user-select: none; }
+        .nav-btn:hover { background: rgba(0,0,0,0.8); }
+        .nav-left { left: 20px; }
+        .nav-right { right: 20px; }
+
+        .top-bar { position: absolute; top: 20px; right: 20px; z-index: 1010; display: flex; gap: 10px; }
+        .top-bar button { background: rgba(0,0,0,0.5); color: white; border: none; font-size: 24px; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; }
+        .top-bar button:hover { background: rgba(0,0,0,0.8); }
+
+        /* ชุดปุ่มควบคุมมุมซ้ายบน */
+        .top-left-controls { position: absolute; top: 20px; left: 20px; z-index: 1010; display: flex; flex-direction: column; gap: 10px; }
+        
+        .control-bar { display: flex; gap: 15px; background: rgba(0,0,0,0.6); padding: 10px 25px; border-radius: 30px; align-items: center; justify-content: center; }
+        .control-bar button { background: none; border: none; color: white; font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .control-bar button:hover { color: #0095f6; transform: scale(1.1); }
+        .play-btn { font-size: 32px !important; }
+
+        .info-bar { display: flex; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; align-items: center; color: white; gap: 8px; font-size: 16px; justify-content: center; font-family: monospace; }
+        .info-bar input { width: 50px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; text-align: center; font-size: 16px; border-radius: 6px; padding: 4px; outline: none; transition: background 0.2s; font-family: monospace; }
+        .info-bar input:focus { background: rgba(255,255,255,0.4); border-color: #0095f6; }
+        
+        /* ซ่อนลูกศรใน input type number */
+        .info-bar input::-webkit-outer-spin-button, .info-bar input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .info-bar input[type=number] { -moz-appearance: textfield; }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
+            .top-left-controls { top: 15px; left: 15px; gap: 8px; }
+            .control-bar { padding: 5px 15px; gap: 10px; }
+            .control-bar button { font-size: 20px; }
+            .play-btn { font-size: 24px !important; }
+            .info-bar { font-size: 14px; padding: 5px 10px; }
+            .info-bar input { width: 40px; font-size: 14px; padding: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>YOK</h1>
+    </div>
+
+    <div class="gallery-container">
+        <div class="grid">
+            
+        <div class="grid-item" onclick="openLightbox(0)">
+            <img src="Yok/01-pawarisazzz-20250402_204311-3296679378.jpg" loading="lazy" alt="Image 0">
+        </div>
+        <div class="grid-item" onclick="openLightbox(1)">
+            <img src="Yok/01-pawarisazzz-20260215_192113-2220198629.jpg" loading="lazy" alt="Image 1">
+        </div>
+        <div class="grid-item" onclick="openLightbox(2)">
+            <img src="Yok/02-pawarisazzz-20250402_204311-4239572657.jpg" loading="lazy" alt="Image 2">
+        </div>
+        <div class="grid-item" onclick="openLightbox(3)">
+            <img src="Yok/02-pawarisazzz-20260215_192113-381713989.jpg" loading="lazy" alt="Image 3">
+        </div>
+        <div class="grid-item" onclick="openLightbox(4)">
+            <img src="Yok/03-pawarisazzz-20250402_204311-3403900509.jpg" loading="lazy" alt="Image 4">
+        </div>
+        <div class="grid-item" onclick="openLightbox(5)">
+            <img src="Yok/03-pawarisazzz-20260215_192113-117701665.jpg" loading="lazy" alt="Image 5">
+        </div>
+        <div class="grid-item" onclick="openLightbox(6)">
+            <img src="Yok/04-pawarisazzz-20250402_204311-569148172.jpg" loading="lazy" alt="Image 6">
+        </div>
+        <div class="grid-item" onclick="openLightbox(7)">
+            <img src="Yok/04-pawarisazzz-20260215_192113-4251430471.jpg" loading="lazy" alt="Image 7">
+        </div>
+        <div class="grid-item" onclick="openLightbox(8)">
+            <img src="Yok/05-pawarisazzz-20250402_204311-1450419664.jpg" loading="lazy" alt="Image 8">
+        </div>
+        <div class="grid-item" onclick="openLightbox(9)">
+            <img src="Yok/05-pawarisazzz-20260215_192113-4173557539.jpg" loading="lazy" alt="Image 9">
+        </div>
+        <div class="grid-item" onclick="openLightbox(10)">
+            <img src="Yok/06-pawarisazzz-20250402_204311-572658549.jpg" loading="lazy" alt="Image 10">
+        </div>
+        <div class="grid-item" onclick="openLightbox(11)">
+            <img src="Yok/06-pawarisazzz-20260215_192113-455439305.jpg" loading="lazy" alt="Image 11">
+        </div>
+        <div class="grid-item" onclick="openLightbox(12)">
+            <img src="Yok/07-pawarisazzz-20250402_204311-3405688779.jpg" loading="lazy" alt="Image 12">
+        </div>
+        <div class="grid-item" onclick="openLightbox(13)">
+            <img src="Yok/07-pawarisazzz-20260215_192113-2294098813.jpg" loading="lazy" alt="Image 13">
+        </div>
+        <div class="grid-item" onclick="openLightbox(14)">
+            <img src="Yok/08-pawarisazzz-20250402_204311-4187048308.jpg" loading="lazy" alt="Image 14">
+        </div>
+        <div class="grid-item" onclick="openLightbox(15)">
+            <img src="Yok/08-pawarisazzz-20260215_192113-248643098.jpg" loading="lazy" alt="Image 15">
+        </div>
+        <div class="grid-item" onclick="openLightbox(16)">
+            <img src="Yok/09-pawarisazzz-20250402_204311-3412066999.jpg" loading="lazy" alt="Image 16">
+        </div>
+        <div class="grid-item" onclick="openLightbox(17)">
+            <img src="Yok/09-pawarisazzz-20260215_192113-2155581335.jpg" loading="lazy" alt="Image 17">
+        </div>
+        <div class="grid-item" onclick="openLightbox(18)">
+            <img src="Yok/10-pawarisazzz-20250402_204311-1450474253.jpg" loading="lazy" alt="Image 18">
+        </div>
+        <div class="grid-item" onclick="openLightbox(19)">
+            <img src="Yok/10-pawarisazzz-20260215_192113-216761854.jpg" loading="lazy" alt="Image 19">
+        </div>
+        <div class="grid-item" onclick="openLightbox(20)">
+            <img src="Yok/11-pawarisazzz-20260215_192113-1985017929.jpg" loading="lazy" alt="Image 20">
+        </div>
+        <div class="grid-item" onclick="openLightbox(21)">
+            <img src="Yok/12-pawarisazzz-20260215_192113-3659316747.jpg" loading="lazy" alt="Image 21">
+        </div>
+        <div class="grid-item" onclick="openLightbox(22)">
+            <img src="Yok/13-pawarisazzz-20260215_192113-311600603.jpg" loading="lazy" alt="Image 22">
+        </div>
+        <div class="grid-item" onclick="openLightbox(23)">
+            <img src="Yok/14-pawarisazzz-20260215_192113-4252005996.jpg" loading="lazy" alt="Image 23">
+        </div>
+        <div class="grid-item" onclick="openLightbox(24)">
+            <img src="Yok/15-pawarisazzz-20260215_192113-1899640710.jpg" loading="lazy" alt="Image 24">
+        </div>
+        <div class="grid-item" onclick="openLightbox(25)">
+            <img src="Yok/pawarisazzz-20230607_195326-665680808.jpg" loading="lazy" alt="Image 25">
+        </div>
+        <div class="grid-item" onclick="openLightbox(26)">
+            <img src="Yok/pawarisazzz-20250402_204313-350808825.jpg" loading="lazy" alt="Image 26">
+        </div>
+        <div class="grid-item" onclick="openLightbox(27)">
+            <img src="Yok/pawarisazzz-20250427_194647-2655082521.jpg" loading="lazy" alt="Image 27">
+        </div>
+        <div class="grid-item" onclick="openLightbox(28)">
+            <img src="Yok/pawarisazzz-20250427_194647-2655082522.jpg" loading="lazy" alt="Image 28">
+        </div>
+        <div class="grid-item" onclick="openLightbox(29)">
+            <img src="Yok/pawarisazzz-20250427_194647-3687878457.jpg" loading="lazy" alt="Image 29">
+        </div>
+        <div class="grid-item" onclick="openLightbox(30)">
+            <img src="Yok/pawarisazzz-20250427_194647-3687878458.jpg" loading="lazy" alt="Image 30">
+        </div>
+        <div class="grid-item" onclick="openLightbox(31)">
+            <img src="Yok/pawarisazzz-20250427_194647-3687878459.jpg" loading="lazy" alt="Image 31">
+        </div>
+        <div class="grid-item" onclick="openLightbox(32)">
+            <img src="Yok/pawarisazzz-20250427_194647-3687878460.jpg" loading="lazy" alt="Image 32">
+        </div>
+        <div class="grid-item" onclick="openLightbox(33)">
+            <img src="Yok/pawarisazzz-20250427_194647-3687878462.jpg" loading="lazy" alt="Image 33">
+        </div>
+        <div class="grid-item" onclick="openLightbox(34)">
+            <img src="Yok/pawarisazzz-20250427_194647-3687878463.jpg" loading="lazy" alt="Image 34">
+        </div>
+        <div class="grid-item" onclick="openLightbox(35)">
+            <img src="Yok/pawarisazzz-20250427_194647-3687878464.jpg" loading="lazy" alt="Image 35">
+        </div>
+        <div class="grid-item" onclick="openLightbox(36)">
+            <img src="Yok/pawarisazzz-20250427_194647-3687878465.jpg" loading="lazy" alt="Image 36">
+        </div>
+        <div class="grid-item" onclick="openLightbox(37)">
+            <img src="Yok/pawarisazzz-20250427_210341-608764270.jpg" loading="lazy" alt="Image 37">
+        </div>
+        <div class="grid-item" onclick="openLightbox(38)">
+            <img src="Yok/pawarisazzz-20250504_181756-955131559.jpg" loading="lazy" alt="Image 38">
+        </div>
+        <div class="grid-item" onclick="openLightbox(39)">
+            <img src="Yok/pawarisazzz-20250504_181756-955131563.jpg" loading="lazy" alt="Image 39">
+        </div>
+        <div class="grid-item" onclick="openLightbox(40)">
+            <img src="Yok/pawarisazzz-20250504_181756-955131565.jpg" loading="lazy" alt="Image 40">
+        </div>
+        <div class="grid-item" onclick="openLightbox(41)">
+            <img src="Yok/pawarisazzz-20250508_194241-2643786863.jpg" loading="lazy" alt="Image 41">
+        </div>
+        <div class="grid-item" onclick="openLightbox(42)">
+            <img src="Yok/pawarisazzz-20250512_204626-1734179466.jpg" loading="lazy" alt="Image 42">
+        </div>
+        <div class="grid-item" onclick="openLightbox(43)">
+            <img src="Yok/pawarisazzz-20250512_204626-1734179467.jpg" loading="lazy" alt="Image 43">
+        </div>
+        <div class="grid-item" onclick="openLightbox(44)">
+            <img src="Yok/pawarisazzz-20250512_204626-1734179468.jpg" loading="lazy" alt="Image 44">
+        </div>
+        <div class="grid-item" onclick="openLightbox(45)">
+            <img src="Yok/pawarisazzz-20250512_204626-1734179469.jpg" loading="lazy" alt="Image 45">
+        </div>
+        <div class="grid-item" onclick="openLightbox(46)">
+            <img src="Yok/pawarisazzz-20250512_204626-1734179473.jpg" loading="lazy" alt="Image 46">
+        </div>
+        <div class="grid-item" onclick="openLightbox(47)">
+            <img src="Yok/pawarisazzz-20250512_204626-1734179474.jpg" loading="lazy" alt="Image 47">
+        </div>
+        <div class="grid-item" onclick="openLightbox(48)">
+            <img src="Yok/pawarisazzz-20250512_204626-2219955942.jpg" loading="lazy" alt="Image 48">
+        </div>
+        <div class="grid-item" onclick="openLightbox(49)">
+            <img src="Yok/pawarisazzz-20250512_204626-2219955943.jpg" loading="lazy" alt="Image 49">
+        </div>
+        <div class="grid-item" onclick="openLightbox(50)">
+            <img src="Yok/pawarisazzz-20250531_193931-3436865769.jpg" loading="lazy" alt="Image 50">
+        </div>
+        <div class="grid-item" onclick="openLightbox(51)">
+            <img src="Yok/pawarisazzz-20250531_193931-3436865770.jpg" loading="lazy" alt="Image 51">
+        </div>
+        <div class="grid-item" onclick="openLightbox(52)">
+            <img src="Yok/pawarisazzz-20250531_193931-3436865772.jpg" loading="lazy" alt="Image 52">
+        </div>
+        <div class="grid-item" onclick="openLightbox(53)">
+            <img src="Yok/pawarisazzz-20250531_193931-3436865773.jpg" loading="lazy" alt="Image 53">
+        </div>
+        <div class="grid-item" onclick="openLightbox(54)">
+            <img src="Yok/pawarisazzz-20250531_193931-3436865776.jpg" loading="lazy" alt="Image 54">
+        </div>
+        <div class="grid-item" onclick="openLightbox(55)">
+            <img src="Yok/pawarisazzz-20250531_193931-3463623784.jpg" loading="lazy" alt="Image 55">
+        </div>
+        <div class="grid-item" onclick="openLightbox(56)">
+            <img src="Yok/pawarisazzz-20250817_195616-1121060237.jpg" loading="lazy" alt="Image 56">
+        </div>
+        <div class="grid-item" onclick="openLightbox(57)">
+            <img src="Yok/pawarisazzz-20250817_195616-1985388836.jpg" loading="lazy" alt="Image 57">
+        </div>
+        <div class="grid-item" onclick="openLightbox(58)">
+            <img src="Yok/pawarisazzz-20250817_195616-2672129394.jpg" loading="lazy" alt="Image 58">
+        </div>
+        <div class="grid-item" onclick="openLightbox(59)">
+            <img src="Yok/pawarisazzz-20250817_195616-2732295254.jpg" loading="lazy" alt="Image 59">
+        </div>
+        <div class="grid-item" onclick="openLightbox(60)">
+            <img src="Yok/pawarisazzz-20250817_195616-2747952272.jpg" loading="lazy" alt="Image 60">
+        </div>
+        <div class="grid-item" onclick="openLightbox(61)">
+            <img src="Yok/pawarisazzz-20250817_195616-3419223732.jpg" loading="lazy" alt="Image 61">
+        </div>
+        <div class="grid-item" onclick="openLightbox(62)">
+            <img src="Yok/pawarisazzz-20250817_195616-3935243474.jpg" loading="lazy" alt="Image 62">
+        </div>
+        <div class="grid-item" onclick="openLightbox(63)">
+            <img src="Yok/pawarisazzz-20250817_195616-776883459.jpg" loading="lazy" alt="Image 63">
+        </div>
+        <div class="grid-item" onclick="openLightbox(64)">
+            <img src="Yok/pawarisazzz-20250817_195616-874887063.jpg" loading="lazy" alt="Image 64">
+        </div>
+        <div class="grid-item" onclick="openLightbox(65)">
+            <img src="Yok/pawarisazzz-20250817_195616-974265333.jpg" loading="lazy" alt="Image 65">
+        </div>
+        <div class="grid-item" onclick="openLightbox(66)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/01-pawarisazzz-20260126_193526-4169138143.jpg" loading="lazy" alt="Image 66">
+        </div>
+        <div class="grid-item" onclick="openLightbox(67)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/02-pawarisazzz-20260126_193526-2196656744.jpg" loading="lazy" alt="Image 67">
+        </div>
+        <div class="grid-item" onclick="openLightbox(68)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/03-pawarisazzz-20260126_193526-2021386000.jpg" loading="lazy" alt="Image 68">
+        </div>
+        <div class="grid-item" onclick="openLightbox(69)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/04-pawarisazzz-20260126_193526-961213729.jpg" loading="lazy" alt="Image 69">
+        </div>
+        <div class="grid-item" onclick="openLightbox(70)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/05-pawarisazzz-20260126_193526-3461786202.jpg" loading="lazy" alt="Image 70">
+        </div>
+        <div class="grid-item" onclick="openLightbox(71)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/06-pawarisazzz-20260126_193526-4212420095.jpg" loading="lazy" alt="Image 71">
+        </div>
+        <div class="grid-item" onclick="openLightbox(72)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/07-pawarisazzz-20260126_193526-1428188039.jpg" loading="lazy" alt="Image 72">
+        </div>
+        <div class="grid-item" onclick="openLightbox(73)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/08-pawarisazzz-20260126_193526-3319016336.jpg" loading="lazy" alt="Image 73">
+        </div>
+        <div class="grid-item" onclick="openLightbox(74)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/09-pawarisazzz-20260126_193526-3950160510.jpg" loading="lazy" alt="Image 74">
+        </div>
+        <div class="grid-item" onclick="openLightbox(75)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/10-pawarisazzz-20260126_193526-1890619998.jpg" loading="lazy" alt="Image 75">
+        </div>
+        <div class="grid-item" onclick="openLightbox(76)">
+            <img src="Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/12-pawarisazzz-20260126_193526-919500591.jpg" loading="lazy" alt="Image 76">
+        </div>
+        <div class="grid-item" onclick="openLightbox(77)">
+            <img src="Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/01-pawarisazzz-20260217_192331-1889709967.jpg" loading="lazy" alt="Image 77">
+        </div>
+        <div class="grid-item" onclick="openLightbox(78)">
+            <img src="Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/02-pawarisazzz-20260217_192331-413663367.jpg" loading="lazy" alt="Image 78">
+        </div>
+        <div class="grid-item" onclick="openLightbox(79)">
+            <img src="Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/03-pawarisazzz-20260217_192331-3295669321.jpg" loading="lazy" alt="Image 79">
+        </div>
+        <div class="grid-item" onclick="openLightbox(80)">
+            <img src="Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/05-pawarisazzz-20260217_192331-4024220508.jpg" loading="lazy" alt="Image 80">
+        </div>
+        <div class="grid-item" onclick="openLightbox(81)">
+            <img src="Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/06-pawarisazzz-20260217_192331-2022556372.jpg" loading="lazy" alt="Image 81">
+        </div>
+        <div class="grid-item" onclick="openLightbox(82)">
+            <img src="Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/07-pawarisazzz-20260217_192331-3678560791.jpg" loading="lazy" alt="Image 82">
+        </div>
+        <div class="grid-item" onclick="openLightbox(83)">
+            <img src="Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/08-pawarisazzz-20260217_192331-2861227763.jpg" loading="lazy" alt="Image 83">
+        </div>
+        <div class="grid-item" onclick="openLightbox(84)">
+            <img src="Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/09-pawarisazzz-20260217_192331-1898402695.jpg" loading="lazy" alt="Image 84">
+        </div>
+        <div class="grid-item" onclick="openLightbox(85)">
+            <img src="Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/10-pawarisazzz-20260217_192331-2064832523.jpg" loading="lazy" alt="Image 85">
+        </div>
+        <div class="grid-item" onclick="openLightbox(86)">
+            <img src="Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/11-pawarisazzz-20260217_192331-1654819735.jpg" loading="lazy" alt="Image 86">
+        </div>
+        <div class="grid-item" onclick="openLightbox(87)">
+            <img src="Yok/xoxoyo___-20250424_223007-2656076826.jpg" loading="lazy" alt="Image 87">
+        </div>
+        <div class="grid-item" onclick="openLightbox(88)">
+            <img src="Yok/xoxoyo___-20250424_223007-2656076827.jpg" loading="lazy" alt="Image 88">
+        </div>
+        <div class="grid-item" onclick="openLightbox(89)">
+            <img src="Yok/xoxoyo___-20250627_110557-3877696555.jpg" loading="lazy" alt="Image 89">
+        </div>
+        <div class="grid-item" onclick="openLightbox(90)">
+            <img src="Yok/xoxoyo___-20250627_110557-3877696556.jpg" loading="lazy" alt="Image 90">
+        </div>
+        <div class="grid-item" onclick="openLightbox(91)">
+            <img src="Yok/xoxoyo___-20250627_110557-3877696562.jpg" loading="lazy" alt="Image 91">
+        </div>
+        <div class="grid-item" onclick="openLightbox(92)">
+            <img src="Yok/xoxoyo___-20250627_110557-3877696563.jpg" loading="lazy" alt="Image 92">
+        </div>
+        <div class="grid-item" onclick="openLightbox(93)">
+            <img src="Yok/xoxoyo___-20250811_220727-1406337945.jpg" loading="lazy" alt="Image 93">
+        </div>
+        <div class="grid-item" onclick="openLightbox(94)">
+            <img src="Yok/xoxoyo___-20250811_220727-1406337946.jpg" loading="lazy" alt="Image 94">
+        </div>
+        </div>
+    </div>
+
+    <!-- Lightbox / Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="top-bar">
+            <button onclick="toggleFullscreen()" title="Fullscreen (f)">⛶</button>
+            <button onclick="closeLightbox()" title="Close (Esc)">✖</button>
+        </div>
+        
+        <button class="nav-btn nav-left" onclick="prevImg()">❮</button>
+        <button class="nav-btn nav-right" onclick="nextImg()">❯</button>
+        
+        <img id="lightbox-img" src="" alt="Gallery Image">
+        
+        <!-- กลุ่มควบคุมซ้ายบน -->
+        <div class="top-left-controls">
+            <div class="control-bar">
+                <button onclick="zoomOut()" title="Zoom Out (-)">➖</button>
+                <button id="play-btn" class="play-btn" onclick="togglePlay()" title="Auto Slide (Space)">▶</button>
+                <button onclick="zoomIn()" title="Zoom In (+)">➕</button>
+            </div>
+            
+            <div class="info-bar">
+                <input type="number" id="img-input" min="1" onchange="jumpToImg()" title="Type number and press Enter">
+                <span>/</span>
+                <span id="total-img">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const images = ["Yok/01-pawarisazzz-20250402_204311-3296679378.jpg", "Yok/01-pawarisazzz-20260215_192113-2220198629.jpg", "Yok/02-pawarisazzz-20250402_204311-4239572657.jpg", "Yok/02-pawarisazzz-20260215_192113-381713989.jpg", "Yok/03-pawarisazzz-20250402_204311-3403900509.jpg", "Yok/03-pawarisazzz-20260215_192113-117701665.jpg", "Yok/04-pawarisazzz-20250402_204311-569148172.jpg", "Yok/04-pawarisazzz-20260215_192113-4251430471.jpg", "Yok/05-pawarisazzz-20250402_204311-1450419664.jpg", "Yok/05-pawarisazzz-20260215_192113-4173557539.jpg", "Yok/06-pawarisazzz-20250402_204311-572658549.jpg", "Yok/06-pawarisazzz-20260215_192113-455439305.jpg", "Yok/07-pawarisazzz-20250402_204311-3405688779.jpg", "Yok/07-pawarisazzz-20260215_192113-2294098813.jpg", "Yok/08-pawarisazzz-20250402_204311-4187048308.jpg", "Yok/08-pawarisazzz-20260215_192113-248643098.jpg", "Yok/09-pawarisazzz-20250402_204311-3412066999.jpg", "Yok/09-pawarisazzz-20260215_192113-2155581335.jpg", "Yok/10-pawarisazzz-20250402_204311-1450474253.jpg", "Yok/10-pawarisazzz-20260215_192113-216761854.jpg", "Yok/11-pawarisazzz-20260215_192113-1985017929.jpg", "Yok/12-pawarisazzz-20260215_192113-3659316747.jpg", "Yok/13-pawarisazzz-20260215_192113-311600603.jpg", "Yok/14-pawarisazzz-20260215_192113-4252005996.jpg", "Yok/15-pawarisazzz-20260215_192113-1899640710.jpg", "Yok/pawarisazzz-20230607_195326-665680808.jpg", "Yok/pawarisazzz-20250402_204313-350808825.jpg", "Yok/pawarisazzz-20250427_194647-2655082521.jpg", "Yok/pawarisazzz-20250427_194647-2655082522.jpg", "Yok/pawarisazzz-20250427_194647-3687878457.jpg", "Yok/pawarisazzz-20250427_194647-3687878458.jpg", "Yok/pawarisazzz-20250427_194647-3687878459.jpg", "Yok/pawarisazzz-20250427_194647-3687878460.jpg", "Yok/pawarisazzz-20250427_194647-3687878462.jpg", "Yok/pawarisazzz-20250427_194647-3687878463.jpg", "Yok/pawarisazzz-20250427_194647-3687878464.jpg", "Yok/pawarisazzz-20250427_194647-3687878465.jpg", "Yok/pawarisazzz-20250427_210341-608764270.jpg", "Yok/pawarisazzz-20250504_181756-955131559.jpg", "Yok/pawarisazzz-20250504_181756-955131563.jpg", "Yok/pawarisazzz-20250504_181756-955131565.jpg", "Yok/pawarisazzz-20250508_194241-2643786863.jpg", "Yok/pawarisazzz-20250512_204626-1734179466.jpg", "Yok/pawarisazzz-20250512_204626-1734179467.jpg", "Yok/pawarisazzz-20250512_204626-1734179468.jpg", "Yok/pawarisazzz-20250512_204626-1734179469.jpg", "Yok/pawarisazzz-20250512_204626-1734179473.jpg", "Yok/pawarisazzz-20250512_204626-1734179474.jpg", "Yok/pawarisazzz-20250512_204626-2219955942.jpg", "Yok/pawarisazzz-20250512_204626-2219955943.jpg", "Yok/pawarisazzz-20250531_193931-3436865769.jpg", "Yok/pawarisazzz-20250531_193931-3436865770.jpg", "Yok/pawarisazzz-20250531_193931-3436865772.jpg", "Yok/pawarisazzz-20250531_193931-3436865773.jpg", "Yok/pawarisazzz-20250531_193931-3436865776.jpg", "Yok/pawarisazzz-20250531_193931-3463623784.jpg", "Yok/pawarisazzz-20250817_195616-1121060237.jpg", "Yok/pawarisazzz-20250817_195616-1985388836.jpg", "Yok/pawarisazzz-20250817_195616-2672129394.jpg", "Yok/pawarisazzz-20250817_195616-2732295254.jpg", "Yok/pawarisazzz-20250817_195616-2747952272.jpg", "Yok/pawarisazzz-20250817_195616-3419223732.jpg", "Yok/pawarisazzz-20250817_195616-3935243474.jpg", "Yok/pawarisazzz-20250817_195616-776883459.jpg", "Yok/pawarisazzz-20250817_195616-874887063.jpg", "Yok/pawarisazzz-20250817_195616-974265333.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/01-pawarisazzz-20260126_193526-4169138143.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/02-pawarisazzz-20260126_193526-2196656744.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/03-pawarisazzz-20260126_193526-2021386000.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/04-pawarisazzz-20260126_193526-961213729.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/05-pawarisazzz-20260126_193526-3461786202.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/06-pawarisazzz-20260126_193526-4212420095.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/07-pawarisazzz-20260126_193526-1428188039.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/08-pawarisazzz-20260126_193526-3319016336.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/09-pawarisazzz-20260126_193526-3950160510.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/10-pawarisazzz-20260126_193526-1890619998.jpg", "Yok/pawarisazzz_DT-V5jOiRtL_20260126_193527/12-pawarisazzz-20260126_193526-919500591.jpg", "Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/01-pawarisazzz-20260217_192331-1889709967.jpg", "Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/02-pawarisazzz-20260217_192331-413663367.jpg", "Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/03-pawarisazzz-20260217_192331-3295669321.jpg", "Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/05-pawarisazzz-20260217_192331-4024220508.jpg", "Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/06-pawarisazzz-20260217_192331-2022556372.jpg", "Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/07-pawarisazzz-20260217_192331-3678560791.jpg", "Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/08-pawarisazzz-20260217_192331-2861227763.jpg", "Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/09-pawarisazzz-20260217_192331-1898402695.jpg", "Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/10-pawarisazzz-20260217_192331-2064832523.jpg", "Yok/pawarisazzz_DU2-BkvieAv_20260217_192333/11-pawarisazzz-20260217_192331-1654819735.jpg", "Yok/xoxoyo___-20250424_223007-2656076826.jpg", "Yok/xoxoyo___-20250424_223007-2656076827.jpg", "Yok/xoxoyo___-20250627_110557-3877696555.jpg", "Yok/xoxoyo___-20250627_110557-3877696556.jpg", "Yok/xoxoyo___-20250627_110557-3877696562.jpg", "Yok/xoxoyo___-20250627_110557-3877696563.jpg", "Yok/xoxoyo___-20250811_220727-1406337945.jpg", "Yok/xoxoyo___-20250811_220727-1406337946.jpg"];
+        let currentIndex = 0;
+        let currentScale = 1;
+        let translateX = 0;
+        let translateY = 0;
+        let playing = false;
+        let playInterval;
+
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let swipeStartX = 0;
+
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        const playBtn = document.getElementById('play-btn');
+        const imgInput = document.getElementById('img-input');
+        const totalImgSpan = document.getElementById('total-img');
+
+        function openLightbox(index) {
+            currentIndex = index;
+            totalImgSpan.textContent = images.length;
+            imgInput.max = images.length;
+            
+            resetTransform();
+            updateImg(false);
+            lb.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeLightbox() {
+            lb.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            if(playing) togglePlay();
+            if(document.fullscreenElement) document.exitFullscreen();
+        }
+
+        function resetTransform() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+        }
+
+        function updateImg(smooth = true) {
+            lbImg.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
+            lbImg.src = images[currentIndex];
+            lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+            
+            // อัปเดตตัวเลขในช่อง Input
+            imgInput.value = currentIndex + 1;
+            
+            if (currentScale > 1) {
+                lbImg.style.cursor = isDragging ? 'grabbing' : 'grab';
+            } else {
+                lbImg.style.cursor = 'default';
+            }
+        }
+
+        function jumpToImg() {
+            let val = parseInt(imgInput.value);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > images.length) val = images.length;
+            
+            currentIndex = val - 1;
+            imgInput.value = val;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function nextImg() {
+            currentIndex = (currentIndex + 1) % images.length;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function prevImg() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function zoomIn() {
+            currentScale += 0.25;
+            updateImg(true);
+        }
+
+        function zoomOut() {
+            currentScale = Math.max(0.25, currentScale - 0.25);
+            if (currentScale <= 1) resetTransform();
+            updateImg(true);
+        }
+
+        function togglePlay() {
+            playing = !playing;
+            playBtn.innerHTML = playing ? '⏸' : '▶';
+            if(playing) {
+                playInterval = setInterval(nextImg, 2500);
+            } else {
+                clearInterval(playInterval);
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                lb.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function isInteractiveElement(target) {
+            const tag = target.tagName.toLowerCase();
+            return tag === 'button' || tag === 'input' || target.closest('button');
+        }
+
+        /* Drag, Pan & Swipe Events */
+        lb.addEventListener('mousedown', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
+            if (currentScale > 1) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                updateImg(false);
+                e.preventDefault();
+            } else {
+                isDragging = true;
+                swipeStartX = e.clientX;
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging && currentScale > 1) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateImg(false);
+            }
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
+            }
+        });
+
+        lb.addEventListener('touchstart', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
+            if (currentScale > 1 && e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            } else if (currentScale === 1 && e.touches.length === 1) {
+                isDragging = true;
+                swipeStartX = e.touches[0].clientX;
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && currentScale > 1 && e.touches.length === 1) {
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                updateImg(false);
+            }
+        });
+
+        window.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.changedTouches[0].clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
+            }
+        });
+
+        /* คีย์บอร์ด Shortcut */
+        window.addEventListener('keydown', function(e) {
+            if (lb.style.display === 'flex') {
+                if (document.activeElement === imgInput) {
+                    if (e.key === 'Enter') {
+                        imgInput.blur(); 
+                    } else if (e.key === 'Escape') {
+                        imgInput.blur();
+                    }
+                    return; 
+                }
+
+                if (e.key === 'ArrowRight') {
+                    nextImg();
+                } else if (e.key === 'ArrowLeft') {
+                    prevImg();
+                } else if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === '+' || e.key === '=') {
+                    zoomIn();
+                } else if (e.key === '-') {
+                    zoomOut();
+                } else if (e.key === ' ' || e.code === 'Space') {
+                    e.preventDefault(); 
+                    togglePlay();
+                } else if (e.key.toLowerCase() === 'f') {
+                    toggleFullscreen();
+                }
+            }
+        });
+
+        /* ลูกกลิ้งเมาส์ & Shift+Scroll */
+        lb.addEventListener('wheel', function(e) {
+            if (lb.style.display === 'flex') {
+                e.preventDefault(); 
+                
+                if (e.shiftKey) {
+                    if (e.deltaY < 0) {
+                        zoomIn(); 
+                    } else {
+                        zoomOut(); 
+                    }
+                } else {
+                    if (e.deltaY > 0) {
+                        nextImg(); 
+                    } else {
+                        prevImg(); 
+                    }
+                }
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
