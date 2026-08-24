@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUKTA</title>
+    <link rel="icon" href="https://img.icons8.com/fluency/48/instagram-pride.png">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fafafa; margin: 0; padding: 0; }
+        .header { text-align: center; padding: 20px; background: #fff; border-bottom: 1px solid #dbdbdb; position: sticky; top: 0; z-index: 100; }
+        h1 { margin: 0; font-size: 24px; color: #262626; }
+        .gallery-container { max-width: 935px; margin: 20px auto; padding: 0 5px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+        .grid-item { aspect-ratio: 10/16; overflow: hidden; background: #efefef; cursor: pointer; }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .grid-item:hover img { transform: scale(1.05); }
+
+        /* Lightbox Style */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
+        .lightbox img { 
+            max-width: 90%; max-height: 90%; 
+            object-fit: contain; 
+            user-select: none; 
+            -webkit-user-drag: none;
+        }
+        
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; font-size: 35px; padding: 10px 20px; cursor: pointer; z-index: 1010; border-radius: 8px; user-select: none; }
+        .nav-btn:hover { background: rgba(0,0,0,0.8); }
+        .nav-left { left: 20px; }
+        .nav-right { right: 20px; }
+
+        .top-bar { position: absolute; top: 20px; right: 20px; z-index: 1010; display: flex; gap: 10px; }
+        .top-bar button { background: rgba(0,0,0,0.5); color: white; border: none; font-size: 24px; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; }
+        .top-bar button:hover { background: rgba(0,0,0,0.8); }
+
+        /* ชุดปุ่มควบคุมมุมซ้ายบน */
+        .top-left-controls { position: absolute; top: 20px; left: 20px; z-index: 1010; display: flex; flex-direction: column; gap: 10px; }
+        
+        .control-bar { display: flex; gap: 15px; background: rgba(0,0,0,0.6); padding: 10px 25px; border-radius: 30px; align-items: center; justify-content: center; }
+        .control-bar button { background: none; border: none; color: white; font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .control-bar button:hover { color: #0095f6; transform: scale(1.1); }
+        .play-btn { font-size: 32px !important; }
+
+        .info-bar { display: flex; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; align-items: center; color: white; gap: 8px; font-size: 16px; justify-content: center; font-family: monospace; }
+        .info-bar input { width: 50px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; text-align: center; font-size: 16px; border-radius: 6px; padding: 4px; outline: none; transition: background 0.2s; font-family: monospace; }
+        .info-bar input:focus { background: rgba(255,255,255,0.4); border-color: #0095f6; }
+        
+        /* ซ่อนลูกศรใน input type number */
+        .info-bar input::-webkit-outer-spin-button, .info-bar input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .info-bar input[type=number] { -moz-appearance: textfield; }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
+            .top-left-controls { top: 15px; left: 15px; gap: 8px; }
+            .control-bar { padding: 5px 15px; gap: 10px; }
+            .control-bar button { font-size: 20px; }
+            .play-btn { font-size: 24px !important; }
+            .info-bar { font-size: 14px; padding: 5px 10px; }
+            .info-bar input { width: 40px; font-size: 14px; padding: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>TUKTA</h1>
+    </div>
+
+    <div class="gallery-container">
+        <div class="grid">
+            
+        <div class="grid-item" onclick="openLightbox(0)">
+            <img src="Tukta/01-ttukta.03-3840791139972622093_1-20260226_105326.jpg" loading="lazy" alt="Image 0">
+        </div>
+        <div class="grid-item" onclick="openLightbox(1)">
+            <img src="Tukta/01-ttukta.03-3876616405394660019_1-20260416_211150.jpg" loading="lazy" alt="Image 1">
+        </div>
+        <div class="grid-item" onclick="openLightbox(2)">
+            <img src="Tukta/01-ttukta.03-3889527846749662375_1-20260504_164434.jpg" loading="lazy" alt="Image 2">
+        </div>
+        <div class="grid-item" onclick="openLightbox(3)">
+            <img src="Tukta/01-ttukta.03-3890768163344684350_1-20260506_094852.jpg" loading="lazy" alt="Image 3">
+        </div>
+        <div class="grid-item" onclick="openLightbox(4)">
+            <img src="Tukta/01-ttukta.03-3896929989262405566_1-20260514_215118.jpg" loading="lazy" alt="Image 4">
+        </div>
+        <div class="grid-item" onclick="openLightbox(5)">
+            <img src="Tukta/01-ttukta.03-3899008547131775146_1-20260517_184101.jpg" loading="lazy" alt="Image 5">
+        </div>
+        <div class="grid-item" onclick="openLightbox(6)">
+            <img src="Tukta/01-ttukta.03-3900221175674929119_1-20260519_105018.jpg" loading="lazy" alt="Image 6">
+        </div>
+        <div class="grid-item" onclick="openLightbox(7)">
+            <img src="Tukta/02-ttukta.03-3840791141541323492_2-20260226_105326.jpg" loading="lazy" alt="Image 7">
+        </div>
+        <div class="grid-item" onclick="openLightbox(8)">
+            <img src="Tukta/02-ttukta.03-3876616404799096589_2-20260416_211150.jpg" loading="lazy" alt="Image 8">
+        </div>
+        <div class="grid-item" onclick="openLightbox(9)">
+            <img src="Tukta/02-ttukta.03-3889527848788055221_2-20260504_164434.jpg" loading="lazy" alt="Image 9">
+        </div>
+        <div class="grid-item" onclick="openLightbox(10)">
+            <img src="Tukta/02-ttukta.03-3890768165265714502_2-20260506_094852.jpg" loading="lazy" alt="Image 10">
+        </div>
+        <div class="grid-item" onclick="openLightbox(11)">
+            <img src="Tukta/02-ttukta.03-3896929989824452275_2-20260514_215118.jpg" loading="lazy" alt="Image 11">
+        </div>
+        <div class="grid-item" onclick="openLightbox(12)">
+            <img src="Tukta/02-ttukta.03-3899008545839938536_2-20260517_184101.jpg" loading="lazy" alt="Image 12">
+        </div>
+        <div class="grid-item" onclick="openLightbox(13)">
+            <img src="Tukta/02-ttukta.03-3900221175297428665_2-20260519_105018.jpg" loading="lazy" alt="Image 13">
+        </div>
+        <div class="grid-item" onclick="openLightbox(14)">
+            <img src="Tukta/03-ttukta.03-3840791140039754408_3-20260226_105326.jpg" loading="lazy" alt="Image 14">
+        </div>
+        <div class="grid-item" onclick="openLightbox(15)">
+            <img src="Tukta/03-ttukta.03-3876616404924937211_3-20260416_211150.jpg" loading="lazy" alt="Image 15">
+        </div>
+        <div class="grid-item" onclick="openLightbox(16)">
+            <img src="Tukta/03-ttukta.03-3889527847982759045_3-20260504_164434.jpg" loading="lazy" alt="Image 16">
+        </div>
+        <div class="grid-item" onclick="openLightbox(17)">
+            <img src="Tukta/03-ttukta.03-3890768163034318195_3-20260506_094852.jpg" loading="lazy" alt="Image 17">
+        </div>
+        <div class="grid-item" onclick="openLightbox(18)">
+            <img src="Tukta/03-ttukta.03-3896929990050943039_3-20260514_215118.jpg" loading="lazy" alt="Image 18">
+        </div>
+        <div class="grid-item" onclick="openLightbox(19)">
+            <img src="Tukta/03-ttukta.03-3899008548742375667_3-20260517_184101.jpg" loading="lazy" alt="Image 19">
+        </div>
+        <div class="grid-item" onclick="openLightbox(20)">
+            <img src="Tukta/03-ttukta.03-3900221175096130145_3-20260519_105018.jpg" loading="lazy" alt="Image 20">
+        </div>
+        <div class="grid-item" onclick="openLightbox(21)">
+            <img src="Tukta/04-ttukta.03-3840791140232661778_4-20260226_105326.jpg" loading="lazy" alt="Image 21">
+        </div>
+        <div class="grid-item" onclick="openLightbox(22)">
+            <img src="Tukta/04-ttukta.03-3876616404581007435_4-20260416_211150.jpg" loading="lazy" alt="Image 22">
+        </div>
+        <div class="grid-item" onclick="openLightbox(23)">
+            <img src="Tukta/04-ttukta.03-3889527847445882396_4-20260504_164434.jpg" loading="lazy" alt="Image 23">
+        </div>
+        <div class="grid-item" onclick="openLightbox(24)">
+            <img src="Tukta/04-ttukta.03-3890768163025942396_4-20260506_094852.jpg" loading="lazy" alt="Image 24">
+        </div>
+        <div class="grid-item" onclick="openLightbox(25)">
+            <img src="Tukta/04-ttukta.03-3896929990025759996_4-20260514_215118.jpg" loading="lazy" alt="Image 25">
+        </div>
+        <div class="grid-item" onclick="openLightbox(26)">
+            <img src="Tukta/04-ttukta.03-3899008546720746812_4-20260517_184101.jpg" loading="lazy" alt="Image 26">
+        </div>
+        <div class="grid-item" onclick="openLightbox(27)">
+            <img src="Tukta/04-ttukta.03-3900221175993728014_4-20260519_105018.jpg" loading="lazy" alt="Image 27">
+        </div>
+        <div class="grid-item" onclick="openLightbox(28)">
+            <img src="Tukta/05-ttukta.03-3840791140056548919_5-20260226_105326.jpg" loading="lazy" alt="Image 28">
+        </div>
+        <div class="grid-item" onclick="openLightbox(29)">
+            <img src="Tukta/05-ttukta.03-3876616405361140401_5-20260416_211150.jpg" loading="lazy" alt="Image 29">
+        </div>
+        <div class="grid-item" onclick="openLightbox(30)">
+            <img src="Tukta/05-ttukta.03-3889527847915623686_5-20260504_164434.jpg" loading="lazy" alt="Image 30">
+        </div>
+        <div class="grid-item" onclick="openLightbox(31)">
+            <img src="Tukta/05-ttukta.03-3890768163244063682_5-20260506_094852.jpg" loading="lazy" alt="Image 31">
+        </div>
+        <div class="grid-item" onclick="openLightbox(32)">
+            <img src="Tukta/05-ttukta.03-3896929989707017367_5-20260514_215118.jpg" loading="lazy" alt="Image 32">
+        </div>
+        <div class="grid-item" onclick="openLightbox(33)">
+            <img src="Tukta/05-ttukta.03-3900221175448463862_5-20260519_105018.jpg" loading="lazy" alt="Image 33">
+        </div>
+        <div class="grid-item" onclick="openLightbox(34)">
+            <img src="Tukta/06-ttukta.03-3840791139695788800_6-20260226_105326.jpg" loading="lazy" alt="Image 34">
+        </div>
+        <div class="grid-item" onclick="openLightbox(35)">
+            <img src="Tukta/06-ttukta.03-3876616405637957363_6-20260416_211150.jpg" loading="lazy" alt="Image 35">
+        </div>
+        <div class="grid-item" onclick="openLightbox(36)">
+            <img src="Tukta/06-ttukta.03-3889527847580083705_6-20260504_164434.jpg" loading="lazy" alt="Image 36">
+        </div>
+        <div class="grid-item" onclick="openLightbox(37)">
+            <img src="Tukta/06-ttukta.03-3890768164032563985_6-20260506_094852.jpg" loading="lazy" alt="Image 37">
+        </div>
+        <div class="grid-item" onclick="openLightbox(38)">
+            <img src="Tukta/06-ttukta.03-3896929989405031927_6-20260514_215118.jpg" loading="lazy" alt="Image 38">
+        </div>
+        <div class="grid-item" onclick="openLightbox(39)">
+            <img src="Tukta/06-ttukta.03-3900221175339363782_6-20260519_105018.jpg" loading="lazy" alt="Image 39">
+        </div>
+        <div class="grid-item" onclick="openLightbox(40)">
+            <img src="Tukta/07-ttukta.03-3840791142002707305_7-20260226_105326.jpg" loading="lazy" alt="Image 40">
+        </div>
+        <div class="grid-item" onclick="openLightbox(41)">
+            <img src="Tukta/07-ttukta.03-3889527847613671010_7-20260504_164434.jpg" loading="lazy" alt="Image 41">
+        </div>
+        <div class="grid-item" onclick="openLightbox(42)">
+            <img src="Tukta/07-ttukta.03-3890768164116436072_7-20260506_094852.jpg" loading="lazy" alt="Image 42">
+        </div>
+        <div class="grid-item" onclick="openLightbox(43)">
+            <img src="Tukta/07-ttukta.03-3900221175758845325_7-20260519_105018.jpg" loading="lazy" alt="Image 43">
+        </div>
+        <div class="grid-item" onclick="openLightbox(44)">
+            <img src="Tukta/08-ttukta.03-3840791140140409853_8-20260226_105326.jpg" loading="lazy" alt="Image 44">
+        </div>
+        <div class="grid-item" onclick="openLightbox(45)">
+            <img src="Tukta/08-ttukta.03-3889527848796475451_8-20260504_164434.jpg" loading="lazy" alt="Image 45">
+        </div>
+        <div class="grid-item" onclick="openLightbox(46)">
+            <img src="Tukta/08-ttukta.03-3890768164158382606_8-20260506_094852.jpg" loading="lazy" alt="Image 46">
+        </div>
+        <div class="grid-item" onclick="openLightbox(47)">
+            <img src="Tukta/08-ttukta.03-3900221177100969688_8-20260519_105018.jpg" loading="lazy" alt="Image 47">
+        </div>
+        <div class="grid-item" onclick="openLightbox(48)">
+            <img src="Tukta/09-ttukta.03-3889527847278118078_9-20260504_164434.jpg" loading="lazy" alt="Image 48">
+        </div>
+        <div class="grid-item" onclick="openLightbox(49)">
+            <img src="Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/01-ttukta.03-3840791139972622093_1-20260226_105326.jpg" loading="lazy" alt="Image 49">
+        </div>
+        <div class="grid-item" onclick="openLightbox(50)">
+            <img src="Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/02-ttukta.03-3840791141541323492_2-20260226_105326.jpg" loading="lazy" alt="Image 50">
+        </div>
+        <div class="grid-item" onclick="openLightbox(51)">
+            <img src="Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/03-ttukta.03-3840791140039754408_3-20260226_105326.jpg" loading="lazy" alt="Image 51">
+        </div>
+        <div class="grid-item" onclick="openLightbox(52)">
+            <img src="Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/04-ttukta.03-3840791140232661778_4-20260226_105326.jpg" loading="lazy" alt="Image 52">
+        </div>
+        <div class="grid-item" onclick="openLightbox(53)">
+            <img src="Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/05-ttukta.03-3840791140056548919_5-20260226_105326.jpg" loading="lazy" alt="Image 53">
+        </div>
+        <div class="grid-item" onclick="openLightbox(54)">
+            <img src="Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/06-ttukta.03-3840791139695788800_6-20260226_105326.jpg" loading="lazy" alt="Image 54">
+        </div>
+        <div class="grid-item" onclick="openLightbox(55)">
+            <img src="Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/07-ttukta.03-3840791142002707305_7-20260226_105326.jpg" loading="lazy" alt="Image 55">
+        </div>
+        <div class="grid-item" onclick="openLightbox(56)">
+            <img src="Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/08-ttukta.03-3840791140140409853_8-20260226_105326.jpg" loading="lazy" alt="Image 56">
+        </div>
+        <div class="grid-item" onclick="openLightbox(57)">
+            <img src="Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/01-ttukta.03-3890768163344684350_1-20260506_094852.jpg" loading="lazy" alt="Image 57">
+        </div>
+        <div class="grid-item" onclick="openLightbox(58)">
+            <img src="Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/02-ttukta.03-3890768165265714502_2-20260506_094852.jpg" loading="lazy" alt="Image 58">
+        </div>
+        <div class="grid-item" onclick="openLightbox(59)">
+            <img src="Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/03-ttukta.03-3890768163034318195_3-20260506_094852.jpg" loading="lazy" alt="Image 59">
+        </div>
+        <div class="grid-item" onclick="openLightbox(60)">
+            <img src="Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/04-ttukta.03-3890768163025942396_4-20260506_094852.jpg" loading="lazy" alt="Image 60">
+        </div>
+        <div class="grid-item" onclick="openLightbox(61)">
+            <img src="Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/05-ttukta.03-3890768163244063682_5-20260506_094852.jpg" loading="lazy" alt="Image 61">
+        </div>
+        <div class="grid-item" onclick="openLightbox(62)">
+            <img src="Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/06-ttukta.03-3890768164032563985_6-20260506_094852.jpg" loading="lazy" alt="Image 62">
+        </div>
+        <div class="grid-item" onclick="openLightbox(63)">
+            <img src="Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/07-ttukta.03-3890768164116436072_7-20260506_094852.jpg" loading="lazy" alt="Image 63">
+        </div>
+        <div class="grid-item" onclick="openLightbox(64)">
+            <img src="Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/08-ttukta.03-3890768164158382606_8-20260506_094852.jpg" loading="lazy" alt="Image 64">
+        </div>
+        <div class="grid-item" onclick="openLightbox(65)">
+            <img src="Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/01-ttukta.03-3889527846749662375_1-20260504_164434.jpg" loading="lazy" alt="Image 65">
+        </div>
+        <div class="grid-item" onclick="openLightbox(66)">
+            <img src="Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/02-ttukta.03-3889527848788055221_2-20260504_164434.jpg" loading="lazy" alt="Image 66">
+        </div>
+        <div class="grid-item" onclick="openLightbox(67)">
+            <img src="Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/03-ttukta.03-3889527847982759045_3-20260504_164434.jpg" loading="lazy" alt="Image 67">
+        </div>
+        <div class="grid-item" onclick="openLightbox(68)">
+            <img src="Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/04-ttukta.03-3889527847445882396_4-20260504_164434.jpg" loading="lazy" alt="Image 68">
+        </div>
+        <div class="grid-item" onclick="openLightbox(69)">
+            <img src="Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/05-ttukta.03-3889527847915623686_5-20260504_164434.jpg" loading="lazy" alt="Image 69">
+        </div>
+        <div class="grid-item" onclick="openLightbox(70)">
+            <img src="Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/06-ttukta.03-3889527847580083705_6-20260504_164434.jpg" loading="lazy" alt="Image 70">
+        </div>
+        <div class="grid-item" onclick="openLightbox(71)">
+            <img src="Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/07-ttukta.03-3889527847613671010_7-20260504_164434.jpg" loading="lazy" alt="Image 71">
+        </div>
+        <div class="grid-item" onclick="openLightbox(72)">
+            <img src="Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/08-ttukta.03-3889527848796475451_8-20260504_164434.jpg" loading="lazy" alt="Image 72">
+        </div>
+        <div class="grid-item" onclick="openLightbox(73)">
+            <img src="Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/09-ttukta.03-3889527847278118078_9-20260504_164434.jpg" loading="lazy" alt="Image 73">
+        </div>
+        <div class="grid-item" onclick="openLightbox(74)">
+            <img src="Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/01-ttukta.03-3876616405394660019_1-20260416_211150.jpg" loading="lazy" alt="Image 74">
+        </div>
+        <div class="grid-item" onclick="openLightbox(75)">
+            <img src="Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/02-ttukta.03-3876616404799096589_2-20260416_211150.jpg" loading="lazy" alt="Image 75">
+        </div>
+        <div class="grid-item" onclick="openLightbox(76)">
+            <img src="Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/03-ttukta.03-3876616404924937211_3-20260416_211150.jpg" loading="lazy" alt="Image 76">
+        </div>
+        <div class="grid-item" onclick="openLightbox(77)">
+            <img src="Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/04-ttukta.03-3876616404581007435_4-20260416_211150.jpg" loading="lazy" alt="Image 77">
+        </div>
+        <div class="grid-item" onclick="openLightbox(78)">
+            <img src="Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/05-ttukta.03-3876616405361140401_5-20260416_211150.jpg" loading="lazy" alt="Image 78">
+        </div>
+        <div class="grid-item" onclick="openLightbox(79)">
+            <img src="Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/06-ttukta.03-3876616405637957363_6-20260416_211150.jpg" loading="lazy" alt="Image 79">
+        </div>
+        <div class="grid-item" onclick="openLightbox(80)">
+            <img src="Tukta/ttukta.03-DYSCNc4D-UZ-20260513_211349.jpg" loading="lazy" alt="Image 80">
+        </div>
+        <div class="grid-item" onclick="openLightbox(81)">
+            <img src="Tukta/ttukta.03-DYSCNc4D-UZ-20260513_211349/ttukta.03-DYSCNc4D-UZ-20260513_211349.jpg" loading="lazy" alt="Image 81">
+        </div>
+        <div class="grid-item" onclick="openLightbox(82)">
+            <img src="Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/01-ttukta.03-3896929989262405566_1-20260514_215118.jpg" loading="lazy" alt="Image 82">
+        </div>
+        <div class="grid-item" onclick="openLightbox(83)">
+            <img src="Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/02-ttukta.03-3896929989824452275_2-20260514_215118.jpg" loading="lazy" alt="Image 83">
+        </div>
+        <div class="grid-item" onclick="openLightbox(84)">
+            <img src="Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/03-ttukta.03-3896929990050943039_3-20260514_215118.jpg" loading="lazy" alt="Image 84">
+        </div>
+        <div class="grid-item" onclick="openLightbox(85)">
+            <img src="Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/04-ttukta.03-3896929990025759996_4-20260514_215118.jpg" loading="lazy" alt="Image 85">
+        </div>
+        <div class="grid-item" onclick="openLightbox(86)">
+            <img src="Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/05-ttukta.03-3896929989707017367_5-20260514_215118.jpg" loading="lazy" alt="Image 86">
+        </div>
+        <div class="grid-item" onclick="openLightbox(87)">
+            <img src="Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/06-ttukta.03-3896929989405031927_6-20260514_215118.jpg" loading="lazy" alt="Image 87">
+        </div>
+        <div class="grid-item" onclick="openLightbox(88)">
+            <img src="Tukta/ttukta.03-DYcD6EpAOI0-20260517_184102/01-ttukta.03-3899008547131775146_1-20260517_184101.jpg" loading="lazy" alt="Image 88">
+        </div>
+        <div class="grid-item" onclick="openLightbox(89)">
+            <img src="Tukta/ttukta.03-DYcD6EpAOI0-20260517_184102/02-ttukta.03-3899008545839938536_2-20260517_184101.jpg" loading="lazy" alt="Image 89">
+        </div>
+        <div class="grid-item" onclick="openLightbox(90)">
+            <img src="Tukta/ttukta.03-DYcD6EpAOI0-20260517_184102/03-ttukta.03-3899008548742375667_3-20260517_184101.jpg" loading="lazy" alt="Image 90">
+        </div>
+        <div class="grid-item" onclick="openLightbox(91)">
+            <img src="Tukta/ttukta.03-DYcD6EpAOI0-20260517_184102/04-ttukta.03-3899008546720746812_4-20260517_184101.jpg" loading="lazy" alt="Image 91">
+        </div>
+        <div class="grid-item" onclick="openLightbox(92)">
+            <img src="Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/01-ttukta.03-3900221175674929119_1-20260519_105018.jpg" loading="lazy" alt="Image 92">
+        </div>
+        <div class="grid-item" onclick="openLightbox(93)">
+            <img src="Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/02-ttukta.03-3900221175297428665_2-20260519_105018.jpg" loading="lazy" alt="Image 93">
+        </div>
+        <div class="grid-item" onclick="openLightbox(94)">
+            <img src="Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/03-ttukta.03-3900221175096130145_3-20260519_105018.jpg" loading="lazy" alt="Image 94">
+        </div>
+        <div class="grid-item" onclick="openLightbox(95)">
+            <img src="Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/04-ttukta.03-3900221175993728014_4-20260519_105018.jpg" loading="lazy" alt="Image 95">
+        </div>
+        <div class="grid-item" onclick="openLightbox(96)">
+            <img src="Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/05-ttukta.03-3900221175448463862_5-20260519_105018.jpg" loading="lazy" alt="Image 96">
+        </div>
+        <div class="grid-item" onclick="openLightbox(97)">
+            <img src="Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/06-ttukta.03-3900221175339363782_6-20260519_105018.jpg" loading="lazy" alt="Image 97">
+        </div>
+        <div class="grid-item" onclick="openLightbox(98)">
+            <img src="Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/07-ttukta.03-3900221175758845325_7-20260519_105018.jpg" loading="lazy" alt="Image 98">
+        </div>
+        <div class="grid-item" onclick="openLightbox(99)">
+            <img src="Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/08-ttukta.03-3900221177100969688_8-20260519_105018.jpg" loading="lazy" alt="Image 99">
+        </div>
+        </div>
+    </div>
+
+    <!-- Lightbox / Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="top-bar">
+            <button onclick="toggleFullscreen()" title="Fullscreen (f)">⛶</button>
+            <button onclick="closeLightbox()" title="Close (Esc)">✖</button>
+        </div>
+        
+        <button class="nav-btn nav-left" onclick="prevImg()">❮</button>
+        <button class="nav-btn nav-right" onclick="nextImg()">❯</button>
+        
+        <img id="lightbox-img" src="" alt="Gallery Image">
+        
+        <!-- กลุ่มควบคุมซ้ายบน -->
+        <div class="top-left-controls">
+            <div class="control-bar">
+                <button onclick="zoomOut()" title="Zoom Out (-)">➖</button>
+                <button id="play-btn" class="play-btn" onclick="togglePlay()" title="Auto Slide (Space)">▶</button>
+                <button onclick="zoomIn()" title="Zoom In (+)">➕</button>
+            </div>
+            
+            <div class="info-bar">
+                <input type="number" id="img-input" min="1" onchange="jumpToImg()" title="Type number and press Enter">
+                <span>/</span>
+                <span id="total-img">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const images = ["Tukta/01-ttukta.03-3840791139972622093_1-20260226_105326.jpg", "Tukta/01-ttukta.03-3876616405394660019_1-20260416_211150.jpg", "Tukta/01-ttukta.03-3889527846749662375_1-20260504_164434.jpg", "Tukta/01-ttukta.03-3890768163344684350_1-20260506_094852.jpg", "Tukta/01-ttukta.03-3896929989262405566_1-20260514_215118.jpg", "Tukta/01-ttukta.03-3899008547131775146_1-20260517_184101.jpg", "Tukta/01-ttukta.03-3900221175674929119_1-20260519_105018.jpg", "Tukta/02-ttukta.03-3840791141541323492_2-20260226_105326.jpg", "Tukta/02-ttukta.03-3876616404799096589_2-20260416_211150.jpg", "Tukta/02-ttukta.03-3889527848788055221_2-20260504_164434.jpg", "Tukta/02-ttukta.03-3890768165265714502_2-20260506_094852.jpg", "Tukta/02-ttukta.03-3896929989824452275_2-20260514_215118.jpg", "Tukta/02-ttukta.03-3899008545839938536_2-20260517_184101.jpg", "Tukta/02-ttukta.03-3900221175297428665_2-20260519_105018.jpg", "Tukta/03-ttukta.03-3840791140039754408_3-20260226_105326.jpg", "Tukta/03-ttukta.03-3876616404924937211_3-20260416_211150.jpg", "Tukta/03-ttukta.03-3889527847982759045_3-20260504_164434.jpg", "Tukta/03-ttukta.03-3890768163034318195_3-20260506_094852.jpg", "Tukta/03-ttukta.03-3896929990050943039_3-20260514_215118.jpg", "Tukta/03-ttukta.03-3899008548742375667_3-20260517_184101.jpg", "Tukta/03-ttukta.03-3900221175096130145_3-20260519_105018.jpg", "Tukta/04-ttukta.03-3840791140232661778_4-20260226_105326.jpg", "Tukta/04-ttukta.03-3876616404581007435_4-20260416_211150.jpg", "Tukta/04-ttukta.03-3889527847445882396_4-20260504_164434.jpg", "Tukta/04-ttukta.03-3890768163025942396_4-20260506_094852.jpg", "Tukta/04-ttukta.03-3896929990025759996_4-20260514_215118.jpg", "Tukta/04-ttukta.03-3899008546720746812_4-20260517_184101.jpg", "Tukta/04-ttukta.03-3900221175993728014_4-20260519_105018.jpg", "Tukta/05-ttukta.03-3840791140056548919_5-20260226_105326.jpg", "Tukta/05-ttukta.03-3876616405361140401_5-20260416_211150.jpg", "Tukta/05-ttukta.03-3889527847915623686_5-20260504_164434.jpg", "Tukta/05-ttukta.03-3890768163244063682_5-20260506_094852.jpg", "Tukta/05-ttukta.03-3896929989707017367_5-20260514_215118.jpg", "Tukta/05-ttukta.03-3900221175448463862_5-20260519_105018.jpg", "Tukta/06-ttukta.03-3840791139695788800_6-20260226_105326.jpg", "Tukta/06-ttukta.03-3876616405637957363_6-20260416_211150.jpg", "Tukta/06-ttukta.03-3889527847580083705_6-20260504_164434.jpg", "Tukta/06-ttukta.03-3890768164032563985_6-20260506_094852.jpg", "Tukta/06-ttukta.03-3896929989405031927_6-20260514_215118.jpg", "Tukta/06-ttukta.03-3900221175339363782_6-20260519_105018.jpg", "Tukta/07-ttukta.03-3840791142002707305_7-20260226_105326.jpg", "Tukta/07-ttukta.03-3889527847613671010_7-20260504_164434.jpg", "Tukta/07-ttukta.03-3890768164116436072_7-20260506_094852.jpg", "Tukta/07-ttukta.03-3900221175758845325_7-20260519_105018.jpg", "Tukta/08-ttukta.03-3840791140140409853_8-20260226_105326.jpg", "Tukta/08-ttukta.03-3889527848796475451_8-20260504_164434.jpg", "Tukta/08-ttukta.03-3890768164158382606_8-20260506_094852.jpg", "Tukta/08-ttukta.03-3900221177100969688_8-20260519_105018.jpg", "Tukta/09-ttukta.03-3889527847278118078_9-20260504_164434.jpg", "Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/01-ttukta.03-3840791139972622093_1-20260226_105326.jpg", "Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/02-ttukta.03-3840791141541323492_2-20260226_105326.jpg", "Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/03-ttukta.03-3840791140039754408_3-20260226_105326.jpg", "Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/04-ttukta.03-3840791140232661778_4-20260226_105326.jpg", "Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/05-ttukta.03-3840791140056548919_5-20260226_105326.jpg", "Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/06-ttukta.03-3840791139695788800_6-20260226_105326.jpg", "Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/07-ttukta.03-3840791142002707305_7-20260226_105326.jpg", "Tukta/ttukta.03-DVNOzeNiUN5-20260226_105328/08-ttukta.03-3840791140140409853_8-20260226_105326.jpg", "Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/01-ttukta.03-3890768163344684350_1-20260506_094852.jpg", "Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/02-ttukta.03-3890768165265714502_2-20260506_094852.jpg", "Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/03-ttukta.03-3890768163034318195_3-20260506_094852.jpg", "Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/04-ttukta.03-3890768163025942396_4-20260506_094852.jpg", "Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/05-ttukta.03-3890768163244063682_5-20260506_094852.jpg", "Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/06-ttukta.03-3890768164032563985_6-20260506_094852.jpg", "Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/07-ttukta.03-3890768164116436072_7-20260506_094852.jpg", "Tukta/ttukta.03-DX-yQ6kD_ee-20260506_094853/08-ttukta.03-3890768164158382606_8-20260506_094852.jpg", "Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/01-ttukta.03-3889527846749662375_1-20260504_164434.jpg", "Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/02-ttukta.03-3889527848788055221_2-20260504_164434.jpg", "Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/03-ttukta.03-3889527847982759045_3-20260504_164434.jpg", "Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/04-ttukta.03-3889527847445882396_4-20260504_164434.jpg", "Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/05-ttukta.03-3889527847915623686_5-20260504_164434.jpg", "Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/06-ttukta.03-3889527847580083705_6-20260504_164434.jpg", "Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/07-ttukta.03-3889527847613671010_7-20260504_164434.jpg", "Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/08-ttukta.03-3889527848796475451_8-20260504_164434.jpg", "Tukta/ttukta.03-DX6YP4sgIXO-20260504_164436/09-ttukta.03-3889527847278118078_9-20260504_164434.jpg", "Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/01-ttukta.03-3876616405394660019_1-20260416_211150.jpg", "Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/02-ttukta.03-3876616404799096589_2-20260416_211150.jpg", "Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/03-ttukta.03-3876616404924937211_3-20260416_211150.jpg", "Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/04-ttukta.03-3876616404581007435_4-20260416_211150.jpg", "Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/05-ttukta.03-3876616405361140401_5-20260416_211150.jpg", "Tukta/ttukta.03-DXMghrBgAFH-20260416_211152/06-ttukta.03-3876616405637957363_6-20260416_211150.jpg", "Tukta/ttukta.03-DYSCNc4D-UZ-20260513_211349.jpg", "Tukta/ttukta.03-DYSCNc4D-UZ-20260513_211349/ttukta.03-DYSCNc4D-UZ-20260513_211349.jpg", "Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/01-ttukta.03-3896929989262405566_1-20260514_215118.jpg", "Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/02-ttukta.03-3896929989824452275_2-20260514_215118.jpg", "Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/03-ttukta.03-3896929990050943039_3-20260514_215118.jpg", "Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/04-ttukta.03-3896929990025759996_4-20260514_215118.jpg", "Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/05-ttukta.03-3896929989707017367_5-20260514_215118.jpg", "Tukta/ttukta.03-DYUrTI8jfaH-20260514_215119/06-ttukta.03-3896929989405031927_6-20260514_215118.jpg", "Tukta/ttukta.03-DYcD6EpAOI0-20260517_184102/01-ttukta.03-3899008547131775146_1-20260517_184101.jpg", "Tukta/ttukta.03-DYcD6EpAOI0-20260517_184102/02-ttukta.03-3899008545839938536_2-20260517_184101.jpg", "Tukta/ttukta.03-DYcD6EpAOI0-20260517_184102/03-ttukta.03-3899008548742375667_3-20260517_184101.jpg", "Tukta/ttukta.03-DYcD6EpAOI0-20260517_184102/04-ttukta.03-3899008546720746812_4-20260517_184101.jpg", "Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/01-ttukta.03-3900221175674929119_1-20260519_105018.jpg", "Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/02-ttukta.03-3900221175297428665_2-20260519_105018.jpg", "Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/03-ttukta.03-3900221175096130145_3-20260519_105018.jpg", "Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/04-ttukta.03-3900221175993728014_4-20260519_105018.jpg", "Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/05-ttukta.03-3900221175448463862_5-20260519_105018.jpg", "Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/06-ttukta.03-3900221175339363782_6-20260519_105018.jpg", "Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/07-ttukta.03-3900221175758845325_7-20260519_105018.jpg", "Tukta/ttukta.03-DYgXoQ5D5XF-20260519_105020/08-ttukta.03-3900221177100969688_8-20260519_105018.jpg"];
+        let currentIndex = 0;
+        let currentScale = 1;
+        let translateX = 0;
+        let translateY = 0;
+        let playing = false;
+        let playInterval;
+
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let swipeStartX = 0;
+
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        const playBtn = document.getElementById('play-btn');
+        const imgInput = document.getElementById('img-input');
+        const totalImgSpan = document.getElementById('total-img');
+
+        function openLightbox(index) {
+            currentIndex = index;
+            totalImgSpan.textContent = images.length;
+            imgInput.max = images.length;
+            
+            resetTransform();
+            updateImg(false);
+            lb.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeLightbox() {
+            lb.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            if(playing) togglePlay();
+            if(document.fullscreenElement) document.exitFullscreen();
+        }
+
+        function resetTransform() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+        }
+
+        function updateImg(smooth = true) {
+            lbImg.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
+            lbImg.src = images[currentIndex];
+            lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+            
+            // อัปเดตตัวเลขในช่อง Input
+            imgInput.value = currentIndex + 1;
+            
+            if (currentScale > 1) {
+                lbImg.style.cursor = isDragging ? 'grabbing' : 'grab';
+            } else {
+                lbImg.style.cursor = 'default';
+            }
+        }
+
+        function jumpToImg() {
+            let val = parseInt(imgInput.value);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > images.length) val = images.length;
+            
+            currentIndex = val - 1;
+            imgInput.value = val;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function nextImg() {
+            currentIndex = (currentIndex + 1) % images.length;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function prevImg() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            resetTransform();
+            updateImg(true);
+        }
+
+        function zoomIn() {
+            currentScale += 0.25;
+            updateImg(true);
+        }
+
+        function zoomOut() {
+            currentScale = Math.max(0.25, currentScale - 0.25);
+            if (currentScale <= 1) resetTransform();
+            updateImg(true);
+        }
+
+        function togglePlay() {
+            playing = !playing;
+            playBtn.innerHTML = playing ? '⏸' : '▶';
+            if(playing) {
+                playInterval = setInterval(nextImg, 2500);
+            } else {
+                clearInterval(playInterval);
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                lb.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function isInteractiveElement(target) {
+            const tag = target.tagName.toLowerCase();
+            return tag === 'button' || tag === 'input' || target.closest('button');
+        }
+
+        /* Drag, Pan & Swipe Events */
+        lb.addEventListener('mousedown', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
+            if (currentScale > 1) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                updateImg(false);
+                e.preventDefault();
+            } else {
+                isDragging = true;
+                swipeStartX = e.clientX;
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging && currentScale > 1) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateImg(false);
+            }
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
+            }
+        });
+
+        lb.addEventListener('touchstart', (e) => {
+            if (isInteractiveElement(e.target)) return;
+
+            if (currentScale > 1 && e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            } else if (currentScale === 1 && e.touches.length === 1) {
+                isDragging = true;
+                swipeStartX = e.touches[0].clientX;
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && currentScale > 1 && e.touches.length === 1) {
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                updateImg(false);
+            }
+        });
+
+        window.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                if (currentScale > 1) {
+                    updateImg(false);
+                } else {
+                    let diffX = e.changedTouches[0].clientX - swipeStartX;
+                    if (diffX > 50) prevImg();       
+                    else if (diffX < -50) nextImg(); 
+                }
+            }
+        });
+
+        /* คีย์บอร์ด Shortcut */
+        window.addEventListener('keydown', function(e) {
+            if (lb.style.display === 'flex') {
+                if (document.activeElement === imgInput) {
+                    if (e.key === 'Enter') {
+                        imgInput.blur(); 
+                    } else if (e.key === 'Escape') {
+                        imgInput.blur();
+                    }
+                    return; 
+                }
+
+                if (e.key === 'ArrowRight') {
+                    nextImg();
+                } else if (e.key === 'ArrowLeft') {
+                    prevImg();
+                } else if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === '+' || e.key === '=') {
+                    zoomIn();
+                } else if (e.key === '-') {
+                    zoomOut();
+                } else if (e.key === ' ' || e.code === 'Space') {
+                    e.preventDefault(); 
+                    togglePlay();
+                } else if (e.key.toLowerCase() === 'f') {
+                    toggleFullscreen();
+                }
+            }
+        });
+
+        /* ลูกกลิ้งเมาส์ & Shift+Scroll */
+        lb.addEventListener('wheel', function(e) {
+            if (lb.style.display === 'flex') {
+                e.preventDefault(); 
+                
+                if (e.shiftKey) {
+                    if (e.deltaY < 0) {
+                        zoomIn(); 
+                    } else {
+                        zoomOut(); 
+                    }
+                } else {
+                    if (e.deltaY > 0) {
+                        nextImg(); 
+                    } else {
+                        prevImg(); 
+                    }
+                }
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
