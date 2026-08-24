@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOK-VIDEOS</title>
+    <link rel="icon" href="https://img.icons8.com/3d-sugary/100/youtube.png">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fafafa; margin: 0; padding: 0; }
+        .header { text-align: center; padding: 20px; background: #fff; border-bottom: 1px solid #dbdbdb; position: sticky; top: 0; z-index: 100; }
+        h1 { margin: 0; font-size: 24px; color: #262626; }
+        .gallery-container { max-width: 935px; margin: 20px auto; padding: 0 5px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+        .grid-item { position: relative; aspect-ratio: 10/16; overflow: hidden; background: #000; cursor: pointer; }
+        .grid-item video { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .grid-item:hover video { transform: scale(1.05); }
+        .play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.8); font-size: 40px; pointer-events: none; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+
+        /* Lightbox Style */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
+        .lightbox video { 
+            max-width: 90%; max-height: 90%; 
+            object-fit: contain; 
+            user-select: none; 
+            -webkit-user-drag: none;
+            outline: none;
+        }
+        
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; font-size: 35px; padding: 10px 20px; cursor: pointer; z-index: 1010; border-radius: 8px; user-select: none; }
+        .nav-btn:hover { background: rgba(0,0,0,0.8); }
+        .nav-left { left: 20px; }
+        .nav-right { right: 20px; }
+
+        .top-bar { position: absolute; top: 20px; right: 20px; z-index: 1010; display: flex; gap: 10px; }
+        .top-bar button { background: rgba(0,0,0,0.5); color: white; border: none; font-size: 24px; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; }
+        .top-bar button:hover { background: rgba(0,0,0,0.8); }
+
+        .control-bar { position: absolute; top: 20px; left: 20px; display: flex; gap: 15px; background: rgba(0,0,0,0.6); padding: 10px 25px; border-radius: 30px; z-index: 1010; align-items: center; transition: all 0.2s; }
+        .control-bar button { background: none; border: none; color: white; font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color 0.2s, transform 0.2s; }
+        .control-bar button:hover { color: #0095f6; transform: scale(1.1); }
+        .play-btn { font-size: 32px !important; width: 35px; }
+        
+        #loop-status { font-size: 20px; margin-left: 5px; color: #4caf50; font-weight: bold; }
+        
+        /* แจ้งเตือนถ้านามสกุลไฟล์เล่นไม่ได้ */
+        #error-msg { display: none; position: absolute; top: 80px; background: rgba(220, 53, 69, 0.9); color: white; padding: 15px 25px; border-radius: 8px; font-weight: bold; z-index: 1020; text-align: center; }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
+            .control-bar { padding: 5px 15px; top: 15px; left: 15px; gap: 10px; }
+            .control-bar button { font-size: 20px; }
+            .play-btn { font-size: 24px !important; width: 25px; }
+            .play-icon { font-size: 50px; }
+            #loop-status { font-size: 16px; margin-left: 3px; }
+            #error-msg { width: 80%; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>YOK-VIDEOS</h1>
+    </div>
+
+    <div class="gallery-container">
+        <div class="grid">
+        <div class="grid-item" onclick="openLightbox(0)">
+            <video src="https://pub-8ef5b0979a3d49d4ac6ce30aa88c0071.r2.dev/Yok-Videos/yok1.mp4#t=0.1" preload="metadata" muted playsinline></video>
+            <div class="play-icon">▶</div>
+        </div>
+        <div class="grid-item" onclick="openLightbox(1)">
+            <video src="https://pub-8ef5b0979a3d49d4ac6ce30aa88c0071.r2.dev/Yok-Videos/yok2.mp4#t=0.1" preload="metadata" muted playsinline></video>
+            <div class="play-icon">▶</div>
+        </div>
+        <div class="grid-item" onclick="openLightbox(2)">
+            <video src="https://pub-8ef5b0979a3d49d4ac6ce30aa88c0071.r2.dev/Yok-Videos/yok3.mp4#t=0.1" preload="metadata" muted playsinline></video>
+            <div class="play-icon">▶</div>
+        </div>
+        <div class="grid-item" onclick="openLightbox(3)">
+            <video src="https://pub-8ef5b0979a3d49d4ac6ce30aa88c0071.r2.dev/Yok-Videos/yok4.mp4#t=0.1" preload="metadata" muted playsinline></video>
+            <div class="play-icon">▶</div>
+        </div>
+        
+        </div>
+    </div>
+
+    <!-- Lightbox / Modal -->
+    <div class="lightbox" id="lightbox">
+        
+        <div id="error-msg">⚠️ เบราว์เซอร์ไม่รองรับวิดีโอนี้ หรือไฟล์มีปัญหา<br>กรุณาแปลงไฟล์เป็น .mp4</div>
+
+        <div class="top-bar">
+            <button onclick="toggleFullscreen()" title="Fullscreen (f)">⛶</button>
+            <button onclick="closeLightbox()" title="Close (Esc)">✖</button>
+        </div>
+        
+        <button class="nav-btn nav-left" onclick="prevMedia()">❮</button>
+        <button class="nav-btn nav-right" onclick="nextMedia()">❯</button>
+        
+        <video id="lightbox-video" src="" controls playsinline></video>
+        
+        <div class="control-bar">
+            <button onclick="zoomOut()" title="Zoom Out (-)">➖</button>
+            <button id="play-btn" class="play-btn" onclick="togglePlay()" title="Play/Pause (Space)">⏸</button>
+            <button onclick="zoomIn()" title="Zoom In (+)">➕</button>
+            <button id="loop-btn" onclick="toggleLoop()" title="Loop (l)"><span style="font-family: Arial, sans-serif;">↻</span><span id="loop-status"></span></button>
+        </div>
+    </div>
+
+    <script>
+        const mediaList = [
+    "https://pub-8ef5b0979a3d49d4ac6ce30aa88c0071.r2.dev/Yok-Videos/yok1.mp4",
+    "https://pub-8ef5b0979a3d49d4ac6ce30aa88c0071.r2.dev/Yok-Videos/yok2.mp4",
+    "https://pub-8ef5b0979a3d49d4ac6ce30aa88c0071.r2.dev/Yok-Videos/yok3.mp4",
+    "https://pub-8ef5b0979a3d49d4ac6ce30aa88c0071.r2.dev/Yok-Videos/yok4.mp4"
+];
+        let currentIndex = 0;
+        let currentScale = 1;
+        let translateX = 0;
+        let translateY = 0;
+
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        
+        let isLooping = false; 
+
+        const lb = document.getElementById('lightbox');
+        const lbVid = document.getElementById('lightbox-video');
+        const playBtn = document.getElementById('play-btn');
+        const loopStatus = document.getElementById('loop-status');
+        const errorMsg = document.getElementById('error-msg');
+
+        function openLightbox(index) {
+            currentIndex = index;
+            resetTransform();
+            updateMedia(false);
+            lb.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeLightbox() {
+            lbVid.pause();
+            lb.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            if(document.fullscreenElement) document.exitFullscreen();
+        }
+
+        function resetTransform() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+        }
+
+        function updateMedia(smooth = true) {
+            errorMsg.style.display = 'none'; 
+            lbVid.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
+            lbVid.src = mediaList[currentIndex];
+            lbVid.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+            
+            if (currentScale > 1) {
+                lbVid.style.cursor = isDragging ? 'grabbing' : 'grab';
+            } else {
+                lbVid.style.cursor = 'default';
+            }
+
+            lbVid.play().then(() => {
+                playBtn.innerHTML = '⏸';
+            }).catch(e => {
+                console.log(e);
+                playBtn.innerHTML = '▶';
+            });
+        }
+
+        // ตรวจจับ Error
+        lbVid.onerror = function() {
+            errorMsg.style.display = 'block';
+            playBtn.innerHTML = '▶';
+        };
+
+        lbVid.onloadeddata = function() {
+            errorMsg.style.display = 'none';
+        };
+
+        function nextMedia() {
+            currentIndex = (currentIndex + 1) % mediaList.length;
+            resetTransform();
+            updateMedia(true);
+        }
+
+        function prevMedia() {
+            currentIndex = (currentIndex - 1 + mediaList.length) % mediaList.length;
+            resetTransform();
+            updateMedia(true);
+        }
+
+        function zoomIn() {
+            currentScale += 0.25;
+            updateMedia(true);
+        }
+
+        function zoomOut() {
+            currentScale = Math.max(0.25, currentScale - 0.25);
+            if (currentScale <= 1) resetTransform();
+            updateMedia(true);
+        }
+
+        function togglePlay() {
+            if (lbVid.paused) {
+                lbVid.play();
+                playBtn.innerHTML = '⏸';
+            } else {
+                lbVid.pause();
+                playBtn.innerHTML = '▶';
+            }
+        }
+
+        function toggleLoop() {
+            isLooping = !isLooping;
+            loopStatus.innerText = isLooping ? ' ✔' : '';
+        }
+
+        lbVid.addEventListener('play', () => playBtn.innerHTML = '⏸');
+        lbVid.addEventListener('pause', () => playBtn.innerHTML = '▶');
+        
+        lbVid.addEventListener('ended', () => {
+            if (isLooping) {
+                lbVid.currentTime = 0;
+                lbVid.play().catch(e => console.log(e));
+            } else {
+                nextMedia();
+            }
+        });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                lb.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        /* Drag & Pan */
+        lbVid.addEventListener('mousedown', (e) => {
+            if (currentScale > 1 && e.offsetY < lbVid.clientHeight - 40) { 
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                updateMedia(false);
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateMedia(false);
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                updateMedia(false);
+            }
+        });
+
+        lbVid.addEventListener('touchstart', (e) => {
+            if (currentScale > 1 && e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                updateMedia(false);
+            }
+        });
+
+        window.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                updateMedia(false);
+            }
+        });
+
+        /* คีย์บอร์ด Shortcut */
+        window.addEventListener('keydown', function(e) {
+            if (lb.style.display === 'flex') {
+                if (e.key === 'ArrowRight') {
+                    nextMedia();
+                } else if (e.key === 'ArrowLeft') {
+                    prevMedia();
+                } else if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === '+' || e.key === '=') {
+                    zoomIn();
+                } else if (e.key === '-') {
+                    zoomOut();
+                } else if (e.key === ' ' || e.code === 'Space') {
+                    e.preventDefault(); 
+                    togglePlay();
+                } else if (e.key.toLowerCase() === 'f') {
+                    toggleFullscreen();
+                } else if (e.key.toLowerCase() === 'l') {
+                    toggleLoop();
+                }
+            }
+        });
+
+        /* ลูกกลิ้งเมาส์ & Shift+Scroll */
+        lb.addEventListener('wheel', function(e) {
+            if (lb.style.display === 'flex') {
+                e.preventDefault(); 
+                
+                if (e.shiftKey) {
+                    if (e.deltaY < 0) {
+                        zoomIn(); 
+                    } else {
+                        zoomOut(); 
+                    }
+                } else {
+                    if (e.deltaY > 0) {
+                        nextMedia(); 
+                    } else {
+                        prevMedia(); 
+                    }
+                }
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
