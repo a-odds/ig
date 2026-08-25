@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NENI</title>
     <link rel="icon" href="https://img.icons8.com/fluency/48/instagram-pride.png">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fafafa; margin: 0; padding: 0; }
-        .header { text-align: center; padding: 20px; background: #fff; border-bottom: 1px solid #dbdbdb; position: sticky; top: 0; z-index: 100; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fafafa; margin: 0; padding: 0; overscroll-behavior-y: none; }
+        .header { text-align: center; padding: 20px; background: #fff; border-bottom: 1px solid #dbdbdb; position: relative; top: 0; z-index: 100; }
         h1 { margin: 0; font-size: 24px; color: #262626; }
         .gallery-container { max-width: 935px; margin: 20px auto; padding: 0 5px; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
@@ -15,27 +15,26 @@
         .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .grid-item:hover img { transform: scale(1.05); }
 
-        /* Lightbox Style */
-        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
-        .lightbox img { 
-            max-width: 90%; max-height: 90%; 
-            object-fit: contain; 
-            user-select: none; 
-            -webkit-user-drag: none;
+        #backToTopBtn {
+            display: none; position: fixed; bottom: 20px; right: 20px; z-index: 99; font-size: 24px; border: none; outline: none; background-color: rgba(0, 0, 0, 0.5); color: white; cursor: pointer; width: 50px; height: 50px; border-radius: 50%; transition: background-color 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        #backToTopBtn:hover { background-color: #0095f6; }
+
+        /* Lightbox Style - เพิ่ม touch-action เพื่อกันเบราว์เซอร์เลื่อนจอตอนถ่างนิ้วซูม */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; touch-action: none; }
+        .lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; user-select: none; -webkit-user-drag: none; transform-origin: center center; }
         
         .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; font-size: 35px; padding: 10px 20px; cursor: pointer; z-index: 1010; border-radius: 8px; user-select: none; }
         .nav-btn:hover { background: rgba(0,0,0,0.8); }
         .nav-left { left: 20px; }
         .nav-right { right: 20px; }
 
-        .top-bar { position: absolute; top: 20px; right: 20px; z-index: 1010; display: flex; gap: 10px; }
-        .top-bar button { background: rgba(0,0,0,0.5); color: white; border: none; font-size: 24px; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; }
-        .top-bar button:hover { background: rgba(0,0,0,0.8); }
+        .top-right-controls { position: absolute; top: 20px; right: 20px; z-index: 1010; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+        .top-right-controls .row { display: flex; gap: 10px; }
+        .top-right-controls button { background: rgba(0,0,0,0.5); color: white; border: none; font-size: 24px; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .top-right-controls button:hover { background: rgba(0,0,0,0.8); }
 
-        /* ชุดปุ่มควบคุมมุมซ้ายบน */
         .top-left-controls { position: absolute; top: 20px; left: 20px; z-index: 1010; display: flex; flex-direction: column; gap: 10px; }
-        
         .control-bar { display: flex; gap: 15px; background: rgba(0,0,0,0.6); padding: 10px 25px; border-radius: 30px; align-items: center; justify-content: center; }
         .control-bar button { background: none; border: none; color: white; font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .control-bar button:hover { color: #0095f6; transform: scale(1.1); }
@@ -44,19 +43,24 @@
         .info-bar { display: flex; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; align-items: center; color: white; gap: 8px; font-size: 16px; justify-content: center; font-family: monospace; }
         .info-bar input { width: 50px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; text-align: center; font-size: 16px; border-radius: 6px; padding: 4px; outline: none; transition: background 0.2s; font-family: monospace; }
         .info-bar input:focus { background: rgba(255,255,255,0.4); border-color: #0095f6; }
-        
-        /* ซ่อนลูกศรใน input type number */
         .info-bar input::-webkit-outer-spin-button, .info-bar input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .info-bar input[type=number] { -moz-appearance: textfield; }
+
+        .ui-element { transition: opacity 0.3s ease; }
+        .hide-ui { opacity: 0 !important; pointer-events: none; }
 
         @media (max-width: 768px) {
             .grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
             .top-left-controls { top: 15px; left: 15px; gap: 8px; }
+            .top-right-controls { top: 15px; right: 15px; gap: 8px; }
+            .top-right-controls button { width: 35px; height: 35px; font-size: 18px; }
             .control-bar { padding: 5px 15px; gap: 10px; }
             .control-bar button { font-size: 20px; }
             .play-btn { font-size: 24px !important; }
             .info-bar { font-size: 14px; padding: 5px 10px; }
             .info-bar input { width: 40px; font-size: 14px; padding: 2px; }
+            #backToTopBtn { width: 40px; height: 40px; font-size: 18px; bottom: 15px; right: 15px; }
+            .nav-btn { padding: 5px 10px; font-size: 24px; }
         }
     </style>
 </head>
@@ -198,20 +202,26 @@
         </div>
     </div>
 
-    <!-- Lightbox / Modal -->
+    <button id="backToTopBtn" onclick="scrollToTop()" title="Back to Top (b)">▲</button>
+
     <div class="lightbox" id="lightbox">
-        <div class="top-bar">
-            <button onclick="toggleFullscreen()" title="Fullscreen (f)">⛶</button>
-            <button onclick="closeLightbox()" title="Close (Esc)">✖</button>
+        <div class="top-right-controls ui-element">
+            <div class="row">
+                <button onclick="toggleFullscreen()" title="Fullscreen (f)">⛶</button>
+                <button onclick="closeLightbox()" title="Close (Esc)">✖</button>
+            </div>
+            <div class="row">
+                <button onclick="rotateCounterClockwise()" title="Rotate CCW (Shift+R)">↶</button>
+                <button onclick="rotateClockwise()" title="Rotate CW (R)">↷</button>
+            </div>
         </div>
         
-        <button class="nav-btn nav-left" onclick="prevImg()">❮</button>
-        <button class="nav-btn nav-right" onclick="nextImg()">❯</button>
+        <button class="nav-btn nav-left ui-element" onclick="prevImg()">❮</button>
+        <button class="nav-btn nav-right ui-element" onclick="nextImg()">❯</button>
         
         <img id="lightbox-img" src="" alt="Gallery Image">
         
-        <!-- กลุ่มควบคุมซ้ายบน -->
-        <div class="top-left-controls">
+        <div class="top-left-controls ui-element">
             <div class="control-bar">
                 <button onclick="zoomOut()" title="Zoom Out (-)">➖</button>
                 <button id="play-btn" class="play-btn" onclick="togglePlay()" title="Auto Slide (Space)">▶</button>
@@ -232,18 +242,37 @@
         let currentScale = 1;
         let translateX = 0;
         let translateY = 0;
+        let rotation = 0;
         let playing = false;
         let playInterval;
+        let idleTimer;
 
+        // ตัวแปรสำหรับ Mouse & Touch
         let isDragging = false;
         let startX = 0, startY = 0;
         let swipeStartX = 0;
+        
+        // ตัวแปรสำหรับ Multi-touch (Pinch to zoom) และ Double tap
+        let initialPinchDistance = null;
+        let initialScale = 1;
+        let lastTap = 0;
 
         const lb = document.getElementById('lightbox');
         const lbImg = document.getElementById('lightbox-img');
         const playBtn = document.getElementById('play-btn');
         const imgInput = document.getElementById('img-input');
         const totalImgSpan = document.getElementById('total-img');
+        const topBtn = document.getElementById('backToTopBtn');
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                topBtn.style.display = (lb.style.display !== 'flex') ? "block" : "none";
+            } else {
+                topBtn.style.display = "none";
+            }
+        };
+
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         function openLightbox(index) {
             currentIndex = index;
@@ -254,6 +283,8 @@
             updateImg(false);
             lb.style.display = 'flex';
             document.body.style.overflow = 'hidden'; 
+            topBtn.style.display = 'none';
+            resetIdleTimer();
         }
 
         function closeLightbox() {
@@ -261,90 +292,86 @@
             document.body.style.overflow = 'auto';
             if(playing) togglePlay();
             if(document.fullscreenElement) document.exitFullscreen();
+            window.dispatchEvent(new Event('scroll'));
         }
 
         function resetTransform() {
             currentScale = 1;
             translateX = 0;
             translateY = 0;
+            rotation = 0;
         }
 
         function updateImg(smooth = true) {
             lbImg.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
             lbImg.src = images[currentIndex];
-            lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
-            
-            // อัปเดตตัวเลขในช่อง Input
+            lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale}) rotate(${rotation}deg)`;
             imgInput.value = currentIndex + 1;
-            
-            if (currentScale > 1) {
-                lbImg.style.cursor = isDragging ? 'grabbing' : 'grab';
-            } else {
-                lbImg.style.cursor = 'default';
-            }
+            lbImg.style.cursor = (currentScale > 1) ? (isDragging ? 'grabbing' : 'grab') : 'default';
         }
+        
+        function rotateClockwise() { rotation += 90; updateImg(true); }
+        function rotateCounterClockwise() { rotation -= 90; updateImg(true); }
 
         function jumpToImg() {
             let val = parseInt(imgInput.value);
             if (isNaN(val) || val < 1) val = 1;
             if (val > images.length) val = images.length;
-            
             currentIndex = val - 1;
             imgInput.value = val;
             resetTransform();
             updateImg(true);
         }
 
-        function nextImg() {
-            currentIndex = (currentIndex + 1) % images.length;
-            resetTransform();
-            updateImg(true);
-        }
-
-        function prevImg() {
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
-            resetTransform();
-            updateImg(true);
-        }
-
-        function zoomIn() {
-            currentScale += 0.25;
-            updateImg(true);
-        }
-
-        function zoomOut() {
-            currentScale = Math.max(0.25, currentScale - 0.25);
-            if (currentScale <= 1) resetTransform();
-            updateImg(true);
-        }
+        function nextImg() { currentIndex = (currentIndex + 1) % images.length; resetTransform(); updateImg(true); }
+        function prevImg() { currentIndex = (currentIndex - 1 + images.length) % images.length; resetTransform(); updateImg(true); }
+        function zoomIn() { currentScale += 0.25; updateImg(true); }
+        function zoomOut() { currentScale = Math.max(0.25, currentScale - 0.25); if (currentScale <= 1) resetTransform(); updateImg(true); }
 
         function togglePlay() {
             playing = !playing;
             playBtn.innerHTML = playing ? '⏸' : '▶';
-            if(playing) {
-                playInterval = setInterval(nextImg, 2500);
-            } else {
-                clearInterval(playInterval);
-            }
+            if(playing) { playInterval = setInterval(nextImg, 2500); } 
+            else { clearInterval(playInterval); }
         }
 
         function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                lb.requestFullscreen().catch(err => console.log(err));
-            } else {
-                document.exitFullscreen();
+            if (!document.fullscreenElement) { lb.requestFullscreen().catch(err => console.log(err)); } 
+            else { document.exitFullscreen(); }
+        }
+        
+        function resetIdleTimer() {
+            const uiElements = document.querySelectorAll('.ui-element');
+            uiElements.forEach(el => el.classList.remove('hide-ui'));
+            if(document.fullscreenElement) document.body.style.cursor = 'default';
+            clearTimeout(idleTimer);
+            if (document.fullscreenElement && lb.style.display === 'flex') {
+                idleTimer = setTimeout(() => {
+                    uiElements.forEach(el => el.classList.add('hide-ui'));
+                    document.body.style.cursor = 'none';
+                }, 5000);
             }
         }
+        
+        window.addEventListener('mousemove', resetIdleTimer);
+        window.addEventListener('keydown', resetIdleTimer);
+        window.addEventListener('touchstart', resetIdleTimer, {passive: true});
+        document.addEventListener('fullscreenchange', resetIdleTimer);
 
         function isInteractiveElement(target) {
             const tag = target.tagName.toLowerCase();
             return tag === 'button' || tag === 'input' || target.closest('button');
         }
 
-        /* Drag, Pan & Swipe Events */
+        function getDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        /* --- Mouse Events --- */
         lb.addEventListener('mousedown', (e) => {
             if (isInteractiveElement(e.target)) return;
-
             if (currentScale > 1) {
                 isDragging = true;
                 startX = e.clientX - translateX;
@@ -369,98 +396,123 @@
         window.addEventListener('mouseup', (e) => {
             if (isDragging) {
                 isDragging = false;
-                if (currentScale > 1) {
-                    updateImg(false);
-                } else {
+                if (currentScale <= 1) {
                     let diffX = e.clientX - swipeStartX;
                     if (diffX > 50) prevImg();       
                     else if (diffX < -50) nextImg(); 
+                } else {
+                    updateImg(false);
                 }
             }
         });
 
+        /* --- Touch Events สำหรับมือถือ/แท็บเล็ต --- */
         lb.addEventListener('touchstart', (e) => {
             if (isInteractiveElement(e.target)) return;
 
-            if (currentScale > 1 && e.touches.length === 1) {
-                isDragging = true;
-                startX = e.touches[0].clientX - translateX;
-                startY = e.touches[0].clientY - translateY;
-            } else if (currentScale === 1 && e.touches.length === 1) {
-                isDragging = true;
-                swipeStartX = e.touches[0].clientX;
+            if (e.touches.length === 2) {
+                // จีบนิ้ว (Pinch to zoom)
+                e.preventDefault(); 
+                initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
+                initialScale = currentScale;
+                isDragging = false;
+            } else if (e.touches.length === 1) {
+                if (currentScale > 1) {
+                    isDragging = true;
+                    startX = e.touches[0].clientX - translateX;
+                    startY = e.touches[0].clientY - translateY;
+                } else {
+                    isDragging = true;
+                    swipeStartX = e.touches[0].clientX;
+                }
             }
-        });
+        }, { passive: false });
 
         window.addEventListener('touchmove', (e) => {
-            if (isDragging && currentScale > 1 && e.touches.length === 1) {
+            if (lb.style.display !== 'flex') return;
+
+            if (e.touches.length === 2 && initialPinchDistance) {
+                e.preventDefault();
+                const currentDistance = getDistance(e.touches[0], e.touches[1]);
+                const scaleDiff = currentDistance / initialPinchDistance;
+                currentScale = initialScale * scaleDiff;
+                
+                // จำกัดระยะซูม
+                if (currentScale < 1) currentScale = 1;
+                if (currentScale > 6) currentScale = 6;
+                
+                if (currentScale === 1) { translateX = 0; translateY = 0; }
+                updateImg(false);
+            } else if (isDragging && currentScale > 1 && e.touches.length === 1) {
+                e.preventDefault(); // ป้องกันหน้าจอเลื่อนขณะลากดูรูป
                 translateX = e.touches[0].clientX - startX;
                 translateY = e.touches[0].clientY - startY;
                 updateImg(false);
             }
-        });
+        }, { passive: false });
 
         window.addEventListener('touchend', (e) => {
+            if (lb.style.display !== 'flex') return;
+
+            if (e.touches.length < 2) { initialPinchDistance = null; }
+
+            // ตรวจสอบ Double Tap
+            let currentTime = new Date().getTime();
+            let tapLength = currentTime - lastTap;
+            if (tapLength < 300 && tapLength > 0 && e.changedTouches.length === 1 && !isInteractiveElement(e.target)) {
+                if (currentScale > 1) {
+                    resetTransform();
+                } else {
+                    currentScale = 2.5; // ซูมเข้าเมื่อแตะ 2 ครั้ง
+                }
+                updateImg(true);
+                isDragging = false;
+            }
+            lastTap = currentTime;
+
             if (isDragging) {
                 isDragging = false;
-                if (currentScale > 1) {
-                    updateImg(false);
-                } else {
+                if (currentScale === 1 && e.changedTouches.length === 1) {
                     let diffX = e.changedTouches[0].clientX - swipeStartX;
                     if (diffX > 50) prevImg();       
                     else if (diffX < -50) nextImg(); 
                 }
             }
-        });
 
-        /* คีย์บอร์ด Shortcut */
-        window.addEventListener('keydown', function(e) {
-            if (lb.style.display === 'flex') {
-                if (document.activeElement === imgInput) {
-                    if (e.key === 'Enter') {
-                        imgInput.blur(); 
-                    } else if (e.key === 'Escape') {
-                        imgInput.blur();
-                    }
-                    return; 
-                }
-
-                if (e.key === 'ArrowRight') {
-                    nextImg();
-                } else if (e.key === 'ArrowLeft') {
-                    prevImg();
-                } else if (e.key === 'Escape') {
-                    closeLightbox();
-                } else if (e.key === '+' || e.key === '=') {
-                    zoomIn();
-                } else if (e.key === '-') {
-                    zoomOut();
-                } else if (e.key === ' ' || e.code === 'Space') {
-                    e.preventDefault(); 
-                    togglePlay();
-                } else if (e.key.toLowerCase() === 'f') {
-                    toggleFullscreen();
-                }
+            if (currentScale <= 1) {
+                resetTransform();
+                updateImg(true);
             }
         });
 
-        /* ลูกกลิ้งเมาส์ & Shift+Scroll */
+        /* --- Keyboard & Scroll --- */
+        window.addEventListener('keydown', function(e) {
+            if (lb.style.display === 'flex') {
+                if (document.activeElement === imgInput) {
+                    if (e.key === 'Enter' || e.key === 'Escape') imgInput.blur(); 
+                    return; 
+                }
+                if (e.key === 'ArrowRight') nextImg();
+                else if (e.key === 'ArrowLeft') prevImg();
+                else if (e.key === 'Escape') closeLightbox();
+                else if (e.key === '+' || e.key === '=') zoomIn();
+                else if (e.key === '-') zoomOut();
+                else if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); togglePlay(); }
+                else if (e.key.toLowerCase() === 'f') toggleFullscreen();
+                else if (e.key === 'r' && !e.shiftKey) rotateClockwise();
+                else if (e.key === 'R' || (e.key === 'r' && e.shiftKey)) rotateCounterClockwise();
+            } else {
+                if (e.key.toLowerCase() === 'b') scrollToTop();
+            }
+        });
+
         lb.addEventListener('wheel', function(e) {
             if (lb.style.display === 'flex') {
                 e.preventDefault(); 
-                
                 if (e.shiftKey) {
-                    if (e.deltaY < 0) {
-                        zoomIn(); 
-                    } else {
-                        zoomOut(); 
-                    }
+                    if (e.deltaY < 0) zoomIn(); else zoomOut();
                 } else {
-                    if (e.deltaY > 0) {
-                        nextImg(); 
-                    } else {
-                        prevImg(); 
-                    }
+                    if (e.deltaY > 0) nextImg(); else prevImg();
                 }
             }
         }, { passive: false });
